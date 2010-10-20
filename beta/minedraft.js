@@ -5,12 +5,14 @@
 // Free to use and distribute at will
 // So long as you are nice to people, etc
 
+var gridSize = 32;
+
 //Box object to hold data for all drawn rects
 function Box() {
   this.x = 0;
   this.y = 0;
-  this.w = 1; // default width and height?
-  this.h = 1;
+  this.w = gridSize; // default width and height?
+  this.h = gridSize;
   this.fill = '#444444';
 }
 
@@ -28,6 +30,7 @@ function addRect(x, y, w, h, fill) {
 
 // holds all our rectangles
 var boxes = []; 
+var tools = [];
 
 var canvas;
 var ctx;
@@ -97,13 +100,7 @@ function init() {
   canvas.ondblclick = myDblClick;
   
   // add custom initialization here:
-  
-  // add an orange rectangle
-  addRect(200, 200, 40, 40, '#FFC02B');
-  
-  // add a smaller blue rectangle
-  addRect(25, 90, 25, 25, '#2BB8FF');
-}
+  }
 
 //wipes the canvas context
 function clear(c) {
@@ -118,6 +115,7 @@ function draw() {
     
     // Add stuff you want drawn in the background all the time here
     drawGrid();
+    drawTools();
 
     // draw all boxes
     var l = boxes.length;
@@ -134,8 +132,8 @@ function draw() {
     }
     
     // Add stuff you want drawn on top all the time here
-    
-    
+    drawDebug();
+
     canvasValid = true;
   }
 }
@@ -151,6 +149,25 @@ function drawshape(context, shape, fill) {
   if (shape.x + shape.w < 0 || shape.y + shape.h < 0) return;
   
   context.fillRect(shape.x,shape.y,shape.w,shape.h);
+}
+
+// Snap the box to the closest grid
+function alignBox() {
+  offX = mySel.x % gridSize;
+  offY = mySel.y % gridSize;
+
+  if(offX != 0 || offY != 0) {
+    if(offX <= gridSize / 2)
+      mySel.x -= offX;
+    if(offX > gridSize / 2)
+      mySel.x += gridSize - offX;
+
+    if(offY <= gridSize / 2)
+      mySel.y -= offY;
+    if(offY > gridSize / 2)
+      mySel.y += gridSize - offY;
+  }
+  invalidate();
 }
 
 // Happens when the mouse is moving inside the canvas
@@ -205,6 +222,7 @@ function myDown(e){
 function myUp(){
   isDrag = false;
   canvas.onmousemove = null;
+  alignBox();
 }
 
 // adds a new node
@@ -212,8 +230,8 @@ function myDblClick(e) {
   getMouse(e);
   // for this method width and height determine the starting X and Y, too.
   // so I left them as vars in case someone wanted to make them args for something and copy this code
-  var width = 20;
-  var height = 20;
+  var width = 32;
+  var height = 32;
   addRect(mx - (width / 2), my - (height / 2), width, height, '#77DD44');
 }
 
@@ -244,21 +262,36 @@ function getMouse(e) {
       my = e.pageY - offsetY
 }
 
-// If you dont want to use <body onLoad='init()'>
-// You could uncomment this init() reference and place the script reference inside the body tag
-//init();
-
 function drawGrid() {
-  for (var x = 64.5; x < WIDTH; x += 64) {
+  for (var x = gridSize + 0.5; x < WIDTH; x += gridSize) {
     ctx.moveTo(x, 0);
     ctx.lineTo(x, HEIGHT);
   }
 
-  for (var y = 64.5; y < HEIGHT; y += 64) {
+  for (var y = gridSize + 0.5; y < HEIGHT; y += gridSize) {
     ctx.moveTo(0, y);
     ctx.lineTo(WIDTH, y);
   }
 
   ctx.strokeStyle = "#666";
+  ctx.lineWidth = 1;
   ctx.stroke();
+}
+
+// Draw the toolbar
+function drawTools() {
+  addRect(0, 0, gridSize, gridSize, 'darkcyan');
+  addRect(0, gridSize * 1, gridSize, gridSize, 'darkgoldenrod');
+  addRect(0, gridSize * 2, gridSize, gridSize, 'darkgreen');
+  addRect(0, gridSize * 3, gridSize, gridSize, 'darkkhaki');
+}
+
+function drawDebug() {
+  var bottom = HEIGHT - 20;
+  var right = WIDTH - 50;
+
+  ctx.fillStyle = "orangered";
+  ctx.font = "10px sans-serif";
+  ctx.fillText("mx: " + mx, right, bottom);
+  ctx.fillText("my: " + my, right, bottom + 10);
 }
