@@ -1,4 +1,15 @@
 var gridSize = 32;
+var blocks = { 
+  "grass": [0, 0, 16, 16],
+  "redstone": [48, 48, 16, 16]
+};
+
+function drawBlocks() {
+  var img = document.getElementById("terrain");
+  var g = blocks.grass;
+  ctx.drawImage(img, g[0], g[1], g[2], g[3], 96, 96, gridSize + 1, gridSize + 1);
+
+}
 
 // Object to hold data for all drawn items
 function Obj() {
@@ -7,16 +18,19 @@ function Obj() {
   this.w = gridSize + 1; // default width and height?
   this.h = gridSize + 1;
   this.fill = '#444444';
+  this.name = 'grass';
+  this.rotate = 0;
 }
 
 //Initialize a new Box, add it, and invalidate the canvas
-function addObj(x, y, w, h, fill) {
+function addObj(x, y, fill, name, rotate) {
   var obj = new Obj;
   obj.x = x;
   obj.y = y;
-  obj.w = w + 1;
-  obj.h = h + 1;
   obj.fill = fill;
+  obj.name = name;
+  if(rotate !== undefined)
+    obj.rotate = rotate;
   objects.push(obj);
   invalidate();
 }
@@ -110,10 +124,12 @@ function draw() {
     drawGrid();
     drawTools();
 
+    // drawBlocks();
+
     // draw all boxes
     var l = objects.length;
     for (var i = 0; i < l; i++) {
-        drawshape(ctx, objects[i], objects[i].fill, objects[i].fill);
+        drawObject(ctx, objects[i], objects[i].fill, objects[i].fill);
     }
     
     // draw selection
@@ -134,18 +150,49 @@ function draw() {
 // Draws a single shape to a single context
 // draw() will call this with the normal canvas
 // myDown will call this with the ghost canvas
-function drawshape(context, shape, fill) {
+function drawObject(context, object, fill) {
   context.fillStyle = fill;
   
   // We can skip the drawing of elements that have moved off the screen:
-  if (shape.x > WIDTH || shape.y > HEIGHT) return; 
-  if (shape.x + shape.w < 0 || shape.y + shape.h < 0) return;
+  if (object.x > WIDTH || object.y > HEIGHT) return; 
+  if (object.x + object.w < 0 || object.y + object.h < 0) return;
   
-  context.fillRect(shape.x,shape.y,shape.w,shape.h);
+  context.fillRect(object.x, object.y, object.w, object.h);
+
+  if (context == ctx) {
+    //drawBlock(object);
+    n = object.name;
+    b = blocks[object.name];
+
+    //alert(b);
+    var img = document.getElementById("terrain");
+    if(object.rotate != 0) {
+      var destX = destY = 0
+      context.save();
+      if(object.rotate == 90) {
+        destX = object.x + 0;
+        destY = object.y + object.h;
+      }
+      context.translate(destX, destY);
+
+      context.rotate((object.rotate) * (Math.PI / 180));
+      context.translate(-destX, -destY);
+      context.drawImage(img, b[0], b[1], b[2], b[3], 0, 0, gridSize + 1, gridSize + 1);
+      context.restore();
+    } else {
+      context.drawImage(img, b[0], b[1], b[2], b[3], object.x, object.y, gridSize + 1, gridSize + 1);
+    }
+  }
+}
+
+function drawBlock(object) {
 }
 
 // Snap the box to the closest grid
 function alignBox() {
+  if(mySel == null)
+    return;
+
   offX = mySel.x % gridSize;
   offY = mySel.y % gridSize;
 
@@ -183,7 +230,7 @@ function myDown(e){
   var l = objects.length;
   for (var i = l-1; i >= 0; i--) {
     // draw shape onto ghost context
-    drawshape(gctx, objects[i], 'black', 'black');
+    drawObject(gctx, objects[i], 'black', 'black');
     
     // get image data at the mouse x,y pixel
     var imageData = gctx.getImageData(mx, my, 1, 1);
@@ -273,10 +320,10 @@ function drawGrid() {
 
 // Draw the toolbar
 function drawTools() {
-  addObj(0, 0, gridSize, gridSize, 'darkcyan');
-  addObj(0, gridSize * 1, gridSize, gridSize, 'darkgoldenrod');
-  addObj(0, gridSize * 2, gridSize, gridSize, 'darkgreen');
-  addObj(0, gridSize * 3, gridSize, gridSize, 'darkkhaki');
+  addObj(0, 0, 'darkcyan', 'grass');
+  addObj(0, gridSize * 1, 'darkgoldenrod', 'redstone');
+  addObj(0, gridSize * 2, 'darkgreen', 'grass');
+  addObj(0, gridSize * 3, 'darkkhaki', 'redstone', 90);
 }
 
 function drawDebug() {
