@@ -1,36 +1,29 @@
-// Last updated August 2010 by Simon Sarris
-// www.simonsarris.com
-// sarris@acm.org
-//
-// Free to use and distribute at will
-// So long as you are nice to people, etc
-
 var gridSize = 32;
 
-//Box object to hold data for all drawn rects
-function Box() {
+// Object to hold data for all drawn items
+function Obj() {
   this.x = 0;
   this.y = 0;
-  this.w = gridSize; // default width and height?
-  this.h = gridSize;
+  this.w = gridSize + 1; // default width and height?
+  this.h = gridSize + 1;
   this.fill = '#444444';
 }
 
 //Initialize a new Box, add it, and invalidate the canvas
-function addRect(x, y, w, h, fill) {
-  var rect = new Box;
-  rect.x = x;
-  rect.y = y;
-  rect.w = w
-  rect.h = h;
-  rect.fill = fill;
-  boxes.push(rect);
+function addObj(x, y, w, h, fill) {
+  var obj = new Obj;
+  obj.x = x;
+  obj.y = y;
+  obj.w = w + 1;
+  obj.h = h + 1;
+  obj.fill = fill;
+  objects.push(obj);
   invalidate();
 }
 
 // holds all our rectangles
-var boxes = []; 
-var tools = [];
+var objects = []; 
+// var tools = [];
 
 var canvas;
 var ctx;
@@ -118,9 +111,9 @@ function draw() {
     drawTools();
 
     // draw all boxes
-    var l = boxes.length;
+    var l = objects.length;
     for (var i = 0; i < l; i++) {
-        drawshape(ctx, boxes[i], boxes[i].fill, boxes[i].fill);
+        drawshape(ctx, objects[i], objects[i].fill, objects[i].fill);
     }
     
     // draw selection
@@ -187,10 +180,10 @@ function myMove(e){
 function myDown(e){
   getMouse(e);
   clear(gctx);
-  var l = boxes.length;
+  var l = objects.length;
   for (var i = l-1; i >= 0; i--) {
     // draw shape onto ghost context
-    drawshape(gctx, boxes[i], 'black', 'black');
+    drawshape(gctx, objects[i], 'black', 'black');
     
     // get image data at the mouse x,y pixel
     var imageData = gctx.getImageData(mx, my, 1, 1);
@@ -198,7 +191,7 @@ function myDown(e){
     
     // if the mouse pixel exists, select and break
     if (imageData.data[3] > 0) {
-      mySel = boxes[i];
+      mySel = objects[i];
       offsetx = mx - mySel.x;
       offsety = my - mySel.y;
       mySel.x = mx - offsetx;
@@ -232,7 +225,7 @@ function myDblClick(e) {
   // so I left them as vars in case someone wanted to make them args for something and copy this code
   var width = 32;
   var height = 32;
-  addRect(mx - (width / 2), my - (height / 2), width, height, '#77DD44');
+  addObj(mx - (width / 2), my - (height / 2), width, height, '#77DD44');
 }
 
 function invalidate() {
@@ -280,10 +273,10 @@ function drawGrid() {
 
 // Draw the toolbar
 function drawTools() {
-  addRect(0, 0, gridSize, gridSize, 'darkcyan');
-  addRect(0, gridSize * 1, gridSize, gridSize, 'darkgoldenrod');
-  addRect(0, gridSize * 2, gridSize, gridSize, 'darkgreen');
-  addRect(0, gridSize * 3, gridSize, gridSize, 'darkkhaki');
+  addObj(0, 0, gridSize, gridSize, 'darkcyan');
+  addObj(0, gridSize * 1, gridSize, gridSize, 'darkgoldenrod');
+  addObj(0, gridSize * 2, gridSize, gridSize, 'darkgreen');
+  addObj(0, gridSize * 3, gridSize, gridSize, 'darkkhaki');
 }
 
 function drawDebug() {
