@@ -109,7 +109,8 @@ function init() {
   canvas.ondblclick = myDblClick;
   
   // add custom initialization here:
-  }
+  drawTools();
+}
 
 //wipes the canvas context
 function clear(c) {
@@ -124,7 +125,7 @@ function draw() {
     
     // Add stuff you want drawn in the background all the time here
     drawGrid();
-    drawTools();
+    //drawTools();
 
     // drawBlocks();
 
@@ -179,7 +180,6 @@ function drawObject(context, object, fill) {
         destY = object.y + object.h;
       }
 
-      //alert(object.y);
       context.translate(destX, destY);
 
       context.rotate((360 - object.rotate) * (Math.PI / 180));
@@ -325,14 +325,15 @@ function drawGrid() {
   ctx.stroke();
 }
 
+var offset = 0;
 // Draw the toolbar
 function drawTools() {
-  addObj(0, 0, 'darkcyan', 'grass');
+  addObj(0 + offset, 0, 'darkcyan', 'grass');
   addObj(0, gridSize * 1, 'darkgoldenrod', 'redstone');
   addObj(0, gridSize * 2, 'transparent', 'rail-curve');
   addObj(0, gridSize * 3, 'transparent', 'rail-curve', 90);
-  addObj(0, gridSize * 4, 'transparent', 'rail-straight');
-
+  addObj(0 + offset, gridSize * 4, 'transparent', 'rail-straight');
+  offset += 1;
 }
 
 function drawDebug() {
