@@ -3,48 +3,9 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     <title>MineDraft.net</title>
+
     <style type="text/css">
-      :link,:visited { text-decoration:none }
-      ul,ol { list-style:none }
-      h1,h2,h3,h4,h5,h6,pre,code { font-size:1em; }
-      ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,body,html,p,blockquote,fieldset,input { margin:0; padding:0 }
-      a img,:link img,:visited img { border:none }
-      address { font-style:normal }
-
-      body, html {
-        background-color: #111;
-        color: #aaa;
-        font: 13px/18px Helvetica, Arial, sans-serif;
-      }
-      a, a:visited {
-        color: #ccaa33;
-        text-decoration: underline;
-      }
-      a:hover {
-        color: #777;
-      }
-      
-      h1 { 
-        font-size: 2em;
-        color: #ccaa33;
-      }
-      header { 
-        margin: 100px auto 0;
-        width: 650px;
-      }
-      section {
-        margin: 50px auto 0 auto;
-        width: 768px;
-      }
-      p { margin: 1em; }
-      img { 
-        border: 1px solid #666 !important;
-        margin-top: 2em;
-      }
-
-      canvas {
-        border: 1px solid #666;
-      }
+      @import url('style.css');
     </style>
 
     <script type="text/javascript" src="minedraft.js"></script>  
@@ -52,18 +13,11 @@
   </head>
  
   <body onload="init();">
-    <header>
-      <h1>Beta</h1>
-    </header>
-    <section>
-
-      <canvas id="minedraft" width="768" height="448">
+    <div id="wrapper">
+      <canvas id="minedraft">
         Your browser doesn't support HTML5 Canvas.
       </canvas>
-
-    <section>
-
+    </div>
     <img src="/images/terrain.png" id="terrain" />
-
   </body>
 </html>

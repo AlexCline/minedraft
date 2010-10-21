@@ -1,4 +1,4 @@
-var gridSize = 32;
+var gridSize = 16;
 var blocks = { 
   "grass": [0, 0, 16, 16],
   "stone": [16, 0, 16, 16],
@@ -81,8 +81,10 @@ var tools = [];
 
 var canvas;
 var ctx;
-var WIDTH;
 var HEIGHT;
+var WIDTH;
+var VHEIGHT; // Viewport height and width
+var VWIDTH;
 var INTERVAL = 20;  // how often, in milliseconds, we check to see if a redraw is needed
 
 var isDrag = false;
@@ -101,6 +103,9 @@ var mySel;
 var mySelColor = '#CC0000';
 var mySelWidth = 2;
 
+var gridColor = '#ccc';
+var gridWidth = 1;
+
 // we use a fake canvas to draw individual shapes for selection testing
 var ghostcanvas;
 var gctx; // fake canvas context
@@ -117,8 +122,8 @@ var stylePaddingLeft, stylePaddingTop, styleBorderLeft, styleBorderTop;
 // then add everything we want to intially exist on the canvas
 function init() {
   canvas = document.getElementById('minedraft');
-  HEIGHT = canvas.height;
-  WIDTH = canvas.width;
+  sizeCanvas();
+
   ctx = canvas.getContext('2d');
   ghostcanvas = document.createElement('canvas');
   ghostcanvas.height = HEIGHT;
@@ -145,9 +150,25 @@ function init() {
   canvas.onmousedown = myDown;
   canvas.onmouseup = myUp;
   //canvas.ondblclick = myDblClick;
+  window.onresize = sizeCanvas;
   
   // add custom initialization here:
   drawTools();
+}
+
+function sizeCanvas() {
+  VHEIGHT = window.innerHeight;
+  VWIDTH = window.innerWidth;
+
+  if (VHEIGHT != HEIGHT || VWIDTH != WIDTH) {
+    canvas.setAttribute("height", VHEIGHT);
+    canvas.setAttribute("width", VWIDTH);
+
+    HEIGHT = canvas.height;
+    WIDTH = canvas.width;
+    
+    invalidate();
+  }
 }
 
 //wipes the canvas context
@@ -159,13 +180,11 @@ function clear(c) {
 // It only ever does something if the canvas gets invalidated by our code
 function draw() {
   if (canvasValid == false) {
+    sizeCanvas();
     clear(ctx);
     
     // Add stuff you want drawn in the background all the time here
     drawGrid();
-    //drawTools();
-
-    // drawBlocks();
 
     // draw all boxes
     var l = objects.length;
@@ -252,9 +271,6 @@ function drawObject(context, object, fill) {
   }
 }
 
-function drawBlock(object) {
-}
-
 // Snap the box to the closest grid
 function alignObj() {
   if(mySel == null)
@@ -294,6 +310,22 @@ function myMove(e){
 function myDown(e){
   getMouse(e);
   clear(gctx);
+
+  if(checkObjectClicked())
+    return;
+
+  if(checkToolClicked())
+    return;
+
+  // havent returned means we have selected nothing
+  mySel = null;
+  // clear the ghost canvas for next time
+  clear(gctx);
+  // invalidate because we might need the selection border to disappear
+  invalidate();
+}
+
+function checkObjectClicked() {
   // Check to see if we've selected an object.
   var l = objects.length;
   for (var i = l-1; i >= 0; i--) {
@@ -315,11 +347,13 @@ function myDown(e){
       canvas.onmousemove = myMove;
       invalidate();
       clear(gctx);
-      return;
-    }
-    
+      return true;
+    } 
   }
+  return false;
+}
 
+function checkToolClicked() {
   // Check to see if we're selecting a tool
   l = tools.length;
   for(var i = 0; i < l; i++) {
@@ -338,16 +372,10 @@ function myDown(e){
       canvas.onmousemove = myMove;
       invalidate();
       clear(gctx);
-      return;      
+      return true;
      }
   }
-
-  // havent returned means we have selected nothing
-  mySel = null;
-  // clear the ghost canvas for next time
-  clear(gctx);
-  // invalidate because we might need the selection border to disappear
-  invalidate();
+  return false;
 }
 
 function myUp(){
@@ -404,8 +432,8 @@ function drawGrid() {
     ctx.lineTo(WIDTH, y);
   }
 
-  ctx.strokeStyle = "#666";
-  ctx.lineWidth = 1;
+  ctx.strokeStyle = gridColor;
+  ctx.lineWidth = gridWidth;
   ctx.stroke();
 }
 
