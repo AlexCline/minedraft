@@ -1,7 +1,9 @@
 var gridSize = 32;
 var blocks = { 
   "grass": [0, 0, 16, 16],
-  "redstone": [48, 48, 16, 16]
+  "redstone": [48, 48, 16, 16],
+  "rail-curve": [0, 112, 16, 16],
+  "rail-straight": [0, 128, 16, 16]
 };
 
 function drawBlocks() {
@@ -172,12 +174,17 @@ function drawObject(context, object, fill) {
       if(object.rotate == 90) {
         destX = object.x + 0;
         destY = object.y + object.h;
+      } else if(object.rotate == 180) {
+        destX = object.x + object.w;
+        destY = object.y + object.h;
       }
+
+      //alert(object.y);
       context.translate(destX, destY);
 
-      context.rotate((object.rotate) * (Math.PI / 180));
-      context.translate(-destX, -destY);
+      context.rotate((360 - object.rotate) * (Math.PI / 180));
       context.drawImage(img, b[0], b[1], b[2], b[3], 0, 0, gridSize + 1, gridSize + 1);
+      //context.translate(-object.x, -object.y);
       context.restore();
     } else {
       context.drawImage(img, b[0], b[1], b[2], b[3], object.x, object.y, gridSize + 1, gridSize + 1);
@@ -322,8 +329,10 @@ function drawGrid() {
 function drawTools() {
   addObj(0, 0, 'darkcyan', 'grass');
   addObj(0, gridSize * 1, 'darkgoldenrod', 'redstone');
-  addObj(0, gridSize * 2, 'darkgreen', 'grass');
-  addObj(0, gridSize * 3, 'darkkhaki', 'redstone', 90);
+  addObj(0, gridSize * 2, 'transparent', 'rail-curve');
+  addObj(0, gridSize * 3, 'transparent', 'rail-curve', 90);
+  addObj(0, gridSize * 4, 'transparent', 'rail-straight');
+
 }
 
 function drawDebug() {
