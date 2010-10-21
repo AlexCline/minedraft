@@ -206,7 +206,7 @@ function draw() {
     }
     
     // Add stuff you want drawn on top all the time here
-    drawDebug();
+    // drawDebug();
 
     canvasValid = true;
   }
