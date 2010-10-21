@@ -1,7 +1,31 @@
 var gridSize = 32;
 var blocks = { 
   "grass": [0, 0, 16, 16],
-  "redstone": [48, 48, 16, 16],
+  "stone": [16, 0, 16, 16],
+  "dirt": [32, 0, 16, 16],
+  "grassydirt": [48, 0, 16, 16],
+  "wood": [64, 0, 16, 16],
+  "step": [80, 0, 16, 8],
+  "brick": [112, 0, 16, 16],
+  "tnt": [128, 0, 16, 16],
+  "cobblestone": [0, 16, 16, 16],
+  "bedrock": [16, 16, 16, 16],
+  "sand": [32, 16, 16, 16],
+  "gravel": [48, 16, 16, 16],
+  "stump": [80, 16, 16, 16],
+  "iron": [96, 16, 16, 16],
+  "gold": [112, 16, 16, 16],
+  "diamond": [128, 16, 16, 16],
+  "goldore": [0, 32, 16, 16],
+  "ironore": [16, 32, 16, 16],
+  "coalore": [32, 32, 16, 16],
+  "mossycobblestone": [64, 32, 16, 16],
+  "obsidian": [80, 32, 16, 16],
+  "toolbox": [176, 32, 16, 16],
+  "sponge": [0, 48, 16, 16],
+  "glass": [16, 48, 16, 16],
+  "diamondore": [32, 48, 16, 16],
+  "redstoneore": [48, 48, 16, 16],
   "rail-curve": [0, 112, 16, 16],
   "rail-straight": [0, 128, 16, 16]
 };
@@ -19,13 +43,14 @@ function Obj() {
   this.y = 0;
   this.w = gridSize + 1; // default width and height?
   this.h = gridSize + 1;
-  this.fill = '#444444';
+  this.fill = 'transparent';
   this.name = 'grass';
   this.rotate = 0;
+  this.flip = "none";
 }
 
 //Initialize a new Box, add it, and invalidate the canvas
-function addObj(x, y, fill, name, rotate) {
+function addObj(x, y, fill, name, rotate, flip) {
   var obj = new Obj;
   obj.x = x;
   obj.y = y;
@@ -33,13 +58,26 @@ function addObj(x, y, fill, name, rotate) {
   obj.name = name;
   if(rotate !== undefined)
     obj.rotate = rotate;
+  if(flip !== undefined)
+    obj.flip = flip;
   objects.push(obj);
   invalidate();
 }
 
-// holds all our rectangles
+// Create a new Object and create a tool out of it.  The default values for objects are good enough for tools.
+function addTool(name, rotate, flip) {
+  var tool = new Obj;
+  tool.name = name;
+  tool.rotate = rotate;
+  tool.flip = flip;
+  tools.push(tool);
+  invalidate();
+}
+
+// holds all our live objects
 var objects = []; 
-// var tools = [];
+// Holds the items in the toolbar
+var tools = [];
 
 var canvas;
 var ctx;
@@ -106,7 +144,7 @@ function init() {
   // double click is for making new boxes
   canvas.onmousedown = myDown;
   canvas.onmouseup = myUp;
-  canvas.ondblclick = myDblClick;
+  //canvas.ondblclick = myDblClick;
   
   // add custom initialization here:
   drawTools();
@@ -132,7 +170,12 @@ function draw() {
     // draw all boxes
     var l = objects.length;
     for (var i = 0; i < l; i++) {
-        drawObject(ctx, objects[i], objects[i].fill, objects[i].fill);
+        drawObject(ctx, objects[i], objects[i].fill);
+    }
+
+    var l = tools.length;
+    for (var i = 0; i < l; i++) {
+        drawObject(ctx, tools[i], tools[i].fill);
     }
     
     // draw selection
@@ -170,22 +213,39 @@ function drawObject(context, object, fill) {
     //alert(b);
     var img = document.getElementById("terrain");
     if(object.rotate != 0) {
-      var destX = destY = 0
+      var destX = destY = 0;
+      var scaleX = scaleY = 1;
       context.save();
+
       if(object.rotate == 90) {
         destX = object.x + 0;
         destY = object.y + object.h;
       } else if(object.rotate == 180) {
         destX = object.x + object.w;
         destY = object.y + object.h;
+      } else if(object.rotate == 270) {
+        destX = object.x + object.w;
+        destY = object.y + 0;
       }
 
       context.translate(destX, destY);
+      
+      if(object.flip != "none") {
+        if(object.flip == "horiz") {
+          scaleX = -1;
+          context.translate(object.w, 0);
+        }  
+        else if(object.flip == "vert") {
+          scaleY = -1;
+          context.translate(0, -object.h);
+        }
+        context.scale(scaleX, scaleY);
+      }
 
       context.rotate((360 - object.rotate) * (Math.PI / 180));
       context.drawImage(img, b[0], b[1], b[2], b[3], 0, 0, gridSize + 1, gridSize + 1);
-      //context.translate(-object.x, -object.y);
       context.restore();
+
     } else {
       context.drawImage(img, b[0], b[1], b[2], b[3], object.x, object.y, gridSize + 1, gridSize + 1);
     }
@@ -196,7 +256,7 @@ function drawBlock(object) {
 }
 
 // Snap the box to the closest grid
-function alignBox() {
+function alignObj() {
   if(mySel == null)
     return;
 
@@ -234,10 +294,11 @@ function myMove(e){
 function myDown(e){
   getMouse(e);
   clear(gctx);
+  // Check to see if we've selected an object.
   var l = objects.length;
   for (var i = l-1; i >= 0; i--) {
     // draw shape onto ghost context
-    drawObject(gctx, objects[i], 'black', 'black');
+    drawObject(gctx, objects[i], 'black');
     
     // get image data at the mouse x,y pixel
     var imageData = gctx.getImageData(mx, my, 1, 1);
@@ -258,6 +319,29 @@ function myDown(e){
     }
     
   }
+
+  // Check to see if we're selecting a tool
+  l = tools.length;
+  for(var i = 0; i < l; i++) {
+    drawObject(gctx, tools[i], 'black');
+
+    var imageData = gctx.getImageData(mx, my, 1, 1);
+    if(imageData.data[3] > 0) {
+      t = tools[i];
+      addObj(t.x, t.y, t.fill, t.name, t.rotate, t.flip);
+      mySel = objects[objects.length - 1];
+      offsetx = mx - mySel.x;
+      offsety = my - mySel.y;
+      mySel.x = mx - offsetx;
+      mySel.y = my - offsety;
+      isDrag = true;
+      canvas.onmousemove = myMove;
+      invalidate();
+      clear(gctx);
+      return;      
+     }
+  }
+
   // havent returned means we have selected nothing
   mySel = null;
   // clear the ghost canvas for next time
@@ -269,7 +353,7 @@ function myDown(e){
 function myUp(){
   isDrag = false;
   canvas.onmousemove = null;
-  alignBox();
+  alignObj();
 }
 
 // adds a new node
@@ -328,12 +412,28 @@ function drawGrid() {
 var offset = 0;
 // Draw the toolbar
 function drawTools() {
-  addObj(0 + offset, 0, 'darkcyan', 'grass');
-  addObj(0, gridSize * 1, 'darkgoldenrod', 'redstone');
-  addObj(0, gridSize * 2, 'transparent', 'rail-curve');
-  addObj(0, gridSize * 3, 'transparent', 'rail-curve', 90);
-  addObj(0 + offset, gridSize * 4, 'transparent', 'rail-straight');
-  offset += 1;
+  addTool('grass', 0);
+  addTool('sand', 0);
+  addTool('rail-curve', 0);
+  addTool('rail-curve', 90);
+  addTool('rail-curve', 180, 'vert');
+  addTool('rail-curve', 90, 'horiz');
+  addTool('rail-straight', 0);
+  addTool('rail-straight', 90);
+  addTool('redstoneore', 0);
+  addTool('diamondore', 0);
+
+  for(i = 0; i < tools.length; i++) {
+    tools[i].y = i * gridSize;
+    drawObject(ctx, tools[0], tools[0].fill);
+  }
+
+  /*0 + offset, 0, 'darkcyan', 'grass');
+  addTool(0, gridSize * 1, 'darkgoldenrod', 'redstone');
+  addTool(0, gridSize * 2, 'transparent', 'rail-curve');
+  addTool(0, gridSize * 3, 'transparent', 'rail-curve', 90);
+  addTool(0 + offset, gridSize * 4, 'transparent', 'rail-straight');
+  offset += 1;*/
 }
 
 function drawDebug() {
