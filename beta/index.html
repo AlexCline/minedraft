@@ -10,38 +10,53 @@
     </style>
 
     <script type="text/javascript" src="javascripts/jquery-1.4.3.min.js"></script>
+    <script type="text/javascript" src="javascripts/jquery.guid.js"></script>
     <script type="text/javascript" src="javascripts/vtip-min.js"></script>
     <script type="text/javascript" src="javascripts/minedraft.js"></script>  
 
   </head>
  
   <body onload="init();">
-    <div id="wrapper">
+    <section id="wrapper">
       <canvas id="minedraft">
         Your browser doesn't support HTML5 Canvas.
       </canvas>
-    </div>
-    <div id="menu" class="overlay">
+    </section>
+    <section id="menu" class="overlay">
       <ul>
         <li><a href="#">About</a></li>
-        <li><a href="#">Help</a></li>
+        <li><a href="#" onclick="toggleHelp(true);">Help</a></li>
         <li><a href="#">Blog</a></li>
       </ul>
-    </div>
-    <div id="tools" class="overlay">
-      <canvas id="toolbox">Toolbox</canvas>
+    </section>
+    <section id="tools" class="overlay">
+      <canvas id="toolbox" height="1" width="1">Toolbox</canvas>
       <div class="zoom">
         <img src="/images/icons/control_add.png" onclick="zoom('in');" alt="Zoom In" title="Zoom In" class="vtip action" />
         <img src="/images/icons/bullet_white.png" />
         <img src="/images/icons/control_remove.png" onclick="zoom('out');" alt="Zoom Out" title="Zoom Out" class="vtip action" />
       </div>
       <img src="/images/icons/cross.png" onclick="eraseObjects();" alt="Erase" title="Erase all objects." class="vtip action erase" />
-    </div>
-    <!--div id="zoom" class="overlay">
-    </div-->
-    <div id="copy" class="overlay">
-      <a href="http://alexcline.net" target="_new">&copy; Alex Cline 2010</a>
-    </div>
+    </section>
+    <section id="copy" class="overlay">
+      <a href="http://alexcline.net">&copy; Alex Cline 2010</a>
+    </section>
+    <section id="help" class="overlay">
+      <div class="close">
+        <img src="/images/icons/cancel.png" onclick="toggleHelp(false);" alt="Close Help" />
+      </div>
+      <h1>Help</h1>
+
+      <p>To use:</p>
+      <ol>
+        <li>Drag a block from the toolbar on the left.</li>
+        <li>Drop it into the grid.</li>
+        <li>Repeat Step 1.</li>
+        <li>...</li>
+        <li>Profit.</li>
+      </ol>
+    </section>
     <img src="/images/terrain.png" id="terrain" />
+    <script type="text/javascript" src="javascripts/jquery.js"></script>
   </body>
 </html>
