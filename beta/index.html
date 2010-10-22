@@ -26,7 +26,7 @@
       <ul>
         <!--li><a href="#">About</a></li>
         <li><a href="#">Blog</a></li-->
-        <li><a href="#" onclick="toggleHelp(true);">Help</a></li>
+        <li><img src="/images/icons/help.png" alt="Help" class="help" onclick="toggleHelp(true);" /> <a href="#" onclick="toggleHelp(true);">Help</a></li>
       </ul>
     </section>
     <section id="tools" class="overlay">
@@ -39,7 +39,14 @@
       <img src="/images/icons/cross.png" onclick="eraseObjects();" alt="Erase" title="Erase all objects." class="vtip action erase" />
     </section>
     <section id="copy" class="overlay">
-      <a href="http://alexcline.net">&copy; Alex Cline 2010</a>
+      <a href="http://alexcline.net">
+        &copy; Alex Cline
+        <script type="text/javascript">
+          now = new Date();
+          year = now.getFullYear();
+          document.write(year);
+        </script>
+      </a>
     </section>
     <section id="help" class="overlay">
       <div class="close">

@@ -89,6 +89,11 @@ a:hover { color: #777; }
   padding: 0 8px;
 }
 
+#menu .help {
+  vertical-align: top;
+  cursor: pointer;
+}
+
 #menu a {
   font-size: 10px;
   color: #111;
