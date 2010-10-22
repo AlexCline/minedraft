@@ -24,9 +24,9 @@
     </section>
     <section id="menu" class="overlay">
       <ul>
-        <li><a href="#">About</a></li>
+        <!--li><a href="#">About</a></li>
+        <li><a href="#">Blog</a></li-->
         <li><a href="#" onclick="toggleHelp(true);">Help</a></li>
-        <li><a href="#">Blog</a></li>
       </ul>
     </section>
     <section id="tools" class="overlay">
@@ -55,8 +55,21 @@
         <li>...</li>
         <li>Profit.</li>
       </ol>
+      <p><em>Double-Click an object in the grid to delete it.</em></p>
     </section>
     <img src="/images/terrain.png" id="terrain" />
     <script type="text/javascript" src="javascripts/jquery.js"></script>
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-456444-6']);
+      _gaq.push(['_setDomainName', '.minedraft.net']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
   </body>
 </html>

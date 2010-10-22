@@ -1,5 +1,5 @@
 var gridSizeMinMax = [16, 64];
-var gridSize = 16;
+var gridSize = 32;
 
 var blocks = { 
   "grass": [0, 0, 16, 16],
@@ -172,7 +172,7 @@ function init() {
   canvas.onmouseup = myUp;
   toolcanvas.onmousedown = myToolboxDown;
   toolcanvas.onmouseup = myUp;
-  //canvas.ondblclick = myDblClick;
+  canvas.ondblclick = myDblClick;
   window.onresize = sizeCanvas;
   
   // add custom initialization here:
@@ -295,9 +295,11 @@ function drawObject(context, object, fill) {
 }
 
 function eraseObjects(){
-  objects = [];
-  mySel = null;
-  invalidate();
+  if(confirm("Delete all the blocks?")) {
+    objects = [];
+    mySel = null;
+    invalidate();
+  }
 }
 
 // Snap the box to the closest grid
@@ -472,14 +474,38 @@ function myUp(){
   alignObj();
 }
 
-// adds a new node
+// Delete the object on doubleclick
 function myDblClick(e) {
   getMouse(e);
-  // for this method width and height determine the starting X and Y, too.
-  // so I left them as vars in case someone wanted to make them args for something and copy this code
-  var width = 32;
-  var height = 32;
-  addObj(mx - (width / 2), my - (height / 2), width, height, '#77DD44');
+  clear(gctx);
+
+  // Check to see if we've selected an object.
+  var l = objects.length;
+  for (var i = l-1; i >= 0; i--) {
+    // draw shape onto ghost context
+    drawObject(gctx, objects[i], 'black');
+
+    // get image data at the mouse x,y pixel
+    var imageData = gctx.getImageData(mx, my, 1, 1);
+    var index = (mx + my * imageData.width) * 4;
+
+    // if the mouse pixel exists, select and break
+    if (imageData.data[3] > 0) {
+      objects.splice(i, 1);
+      mySel = null;
+      invalidate();
+      clear(gctx);
+      return true;
+    }
+  }
+
+  // havent returned means we have selected nothing
+  mySel = null;
+  // clear the ghost canvas for next time  
+  clear(gctx);
+  // invalidate because we might need the selection border to disappear
+  invalidate();
+
 }
 
 function invalidate() {
@@ -560,6 +586,7 @@ function drawTools() {
   addTool('rail-straight', 90);
   addTool('redstoneore', 0);
   addTool('diamondore', 0);
+  addTool('cobblestone', 0);
 
   sizeToolbox();
   //toolcanvas.setAttribute("style", "border: 1px solid red;");
