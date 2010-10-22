@@ -1,4 +1,6 @@
-var gridSize = 16;
+var gridSizeMinMax = [16, 64];
+var gridSize = 32;
+
 var blocks = { 
   "grass": [0, 0, 16, 16],
   "stone": [16, 0, 16, 16],
@@ -81,6 +83,8 @@ var tools = [];
 
 var canvas;
 var ctx;
+var toolcanvas; // Toolbox canvas and context
+var tctx;
 var HEIGHT;
 var WIDTH;
 var VHEIGHT; // Viewport height and width
@@ -109,6 +113,8 @@ var gridWidth = 1;
 // we use a fake canvas to draw individual shapes for selection testing
 var ghostcanvas;
 var gctx; // fake canvas context
+var ghosttoolcanvas;
+var gtctx;
 
 // since we can drag from anywhere in a node
 // instead of just its x/y corner, we need to save
@@ -117,19 +123,27 @@ var offsetx, offsety;
 
 // Padding and border style widths for mouse offsets
 var stylePaddingLeft, stylePaddingTop, styleBorderLeft, styleBorderTop;
+var toolboxStylePaddingLeft, toolboxStylePaddingTop, toolboxStyleBorderLeft, toolboxStyleBorderTop;
 
 // initialize our canvas, add a ghost canvas, set draw loop
 // then add everything we want to intially exist on the canvas
 function init() {
   canvas = document.getElementById('minedraft');
   sizeCanvas();
-
   ctx = canvas.getContext('2d');
+
   ghostcanvas = document.createElement('canvas');
   ghostcanvas.height = HEIGHT;
   ghostcanvas.width = WIDTH;
   gctx = ghostcanvas.getContext('2d');
-  
+
+  toolcanvas = document.getElementById('toolbox');
+  tctx = toolcanvas.getContext('2d');
+  ghosttoolcanvas = document.createElement('canvas');
+  //ghosttoolcanvas.height = toolcanvas.height;
+  //ghosttoolcanvas.width = toolcanvas.width;
+  gtctx = ghosttoolcanvas.getContext('2d');
+    
   //fixes a problem where double clicking causes text to get selected on the canvas
   canvas.onselectstart = function () { return false; }
   
@@ -141,6 +155,13 @@ function init() {
     styleBorderLeft  = parseInt(document.defaultView.getComputedStyle(canvas, null)['borderLeftWidth'], 10)  || 0;
     styleBorderTop   = parseInt(document.defaultView.getComputedStyle(canvas, null)['borderTopWidth'], 10)   || 0;
   }
+
+  if (document.defaultView && document.defaultView.getComputedStyle) {
+    toolboxStylePaddingLeft = parseInt(document.defaultView.getComputedStyle(toolcanvas, null)['paddingLeft'], 10)      || 0;
+    toolboxStylePaddingTop  = parseInt(document.defaultView.getComputedStyle(toolcanvas, null)['paddingTop'], 10)       || 0;
+    toolboxStyleBorderLeft  = parseInt(document.defaultView.getComputedStyle(toolcanvas, null)['borderLeftWidth'], 10)  || 0;
+    toolboxStyleBorderTop   = parseInt(document.defaultView.getComputedStyle(toolcanvas, null)['borderTopWidth'], 10)   || 0;
+  }
   
   // make draw() fire every INTERVAL milliseconds
   setInterval(draw, INTERVAL);
@@ -149,6 +170,8 @@ function init() {
   // double click is for making new boxes
   canvas.onmousedown = myDown;
   canvas.onmouseup = myUp;
+  toolcanvas.onmousedown = myToolboxDown;
+  toolcanvas.onmouseup = myUp;
   //canvas.ondblclick = myDblClick;
   window.onresize = sizeCanvas;
   
@@ -182,6 +205,7 @@ function draw() {
   if (canvasValid == false) {
     sizeCanvas();
     clear(ctx);
+    clear(tctx);
     
     // Add stuff you want drawn in the background all the time here
     drawGrid();
@@ -189,12 +213,12 @@ function draw() {
     // draw all boxes
     var l = objects.length;
     for (var i = 0; i < l; i++) {
-        drawObject(ctx, objects[i], objects[i].fill);
+      drawObject(ctx, objects[i], objects[i].fill);
     }
 
     var l = tools.length;
     for (var i = 0; i < l; i++) {
-        drawObject(ctx, tools[i], tools[i].fill);
+      drawObject(tctx, tools[i], tools[i].fill);
     }
     
     // draw selection
@@ -224,7 +248,7 @@ function drawObject(context, object, fill) {
   
   context.fillRect(object.x, object.y, object.w, object.h);
 
-  if (context == ctx) {
+  if (context != gctx || context != gtctx) {
     //drawBlock(object);
     n = object.name;
     b = blocks[object.name];
@@ -264,7 +288,6 @@ function drawObject(context, object, fill) {
       context.rotate((360 - object.rotate) * (Math.PI / 180));
       context.drawImage(img, b[0], b[1], b[2], b[3], 0, 0, gridSize + 1, gridSize + 1);
       context.restore();
-
     } else {
       context.drawImage(img, b[0], b[1], b[2], b[3], object.x, object.y, gridSize + 1, gridSize + 1);
     }
@@ -314,9 +337,6 @@ function myDown(e){
   if(checkObjectClicked())
     return;
 
-  if(checkToolClicked())
-    return;
-
   // havent returned means we have selected nothing
   mySel = null;
   // clear the ghost canvas for next time
@@ -324,6 +344,22 @@ function myDown(e){
   // invalidate because we might need the selection border to disappear
   invalidate();
 }
+
+function myToolboxDown(e){
+  getMouseInToolbox(e);
+  clear(gtctx);
+
+  if(checkToolClicked())
+    return;
+
+  // havent returned means we have selected nothing
+  mySel = null;
+  // clear the ghost canvas for next time
+  clear(gtctx);
+  // invalidate because we might need the selection border to disappear
+  invalidate();
+}
+
 
 function checkObjectClicked() {
   // Check to see if we've selected an object.
@@ -356,13 +392,15 @@ function checkObjectClicked() {
 function checkToolClicked() {
   // Check to see if we're selecting a tool
   l = tools.length;
-  for(var i = 0; i < l; i++) {
-    drawObject(gctx, tools[i], 'black');
 
-    var imageData = gctx.getImageData(mx, my, 1, 1);
+  for(var i = 0; i < l; i++) {
+    drawObject(gtctx, tools[i], 'black');
+
+    var imageData = gtctx.getImageData(mx, my, 1, 1);
     if(imageData.data[3] > 0) {
       t = tools[i];
-      addObj(t.x, t.y, t.fill, t.name, t.rotate, t.flip);
+      //addObj(t.x, t.y, t.fill, t.name, t.rotate, t.flip);
+      addObj(mx - (t.w / 2), my - (t.h / 2), t.fill, t.name, t.rotate, t.flip);      
       mySel = objects[objects.length - 1];
       offsetx = mx - mySel.x;
       offsety = my - mySel.y;
@@ -371,11 +409,45 @@ function checkToolClicked() {
       isDrag = true;
       canvas.onmousemove = myMove;
       invalidate();
-      clear(gctx);
+      clear(gtctx);
       return true;
      }
   }
   return false;
+}
+
+function zoom(dir) {
+  var min = gridSizeMinMax[0];
+  var max = gridSizeMinMax[1];
+
+  if(dir == "in") {
+    if(gridSize >= max)
+      return;
+    gridSize += 16;
+    invalidate();
+    resizeObjects();
+  }else if(dir == "out") {
+    if(gridSize <= min)
+      return;
+    gridSize -= 16;
+    invalidate();
+    resizeObjects();
+  }
+}
+
+function resizeObjects() {
+  for(var i = 0; i < objects.length; i++) {
+    objects[i].h = gridSize;
+    objects[i].w = gridSize;
+    /* objects[i].x = gridSize * i;
+    objects[i].y = gridSize * i; */
+  }
+  for(var j = 0; j < tools.length; j++) {
+    tools[j].h = gridSize;
+    tools[j].w = gridSize;
+    /* tools[j].x = gridSize * j; */
+    tools[j].y = gridSize * j;
+  }
 }
 
 function myUp(){
@@ -421,7 +493,29 @@ function getMouse(e) {
       my = e.pageY - offsetY
 }
 
+function getMouseInToolbox(e) {
+  var element = toolcanvas, offsetX = 0, offsetY = 0;
+
+  if (element.offsetParent) {
+    do {
+      offsetX += element.offsetLeft;
+      offsetY += element.offsetTop;
+    } while ((element = element.offsetParent));
+  }
+
+  // Add padding and border style widths to offset
+  offsetX += toolboxStylePaddingLeft;
+  offsetY += toolboxStylePaddingTop;
+
+  offsetX += toolboxStyleBorderLeft;
+  offsetY += toolboxStyleBorderTop;
+
+  mx = e.pageX - offsetX;
+  my = e.pageY - offsetY
+}
+
 function drawGrid() {
+  ctx.beginPath();
   for (var x = gridSize + 0.5; x < WIDTH; x += gridSize) {
     ctx.moveTo(x, 0);
     ctx.lineTo(x, HEIGHT);
@@ -451,17 +545,17 @@ function drawTools() {
   addTool('redstoneore', 0);
   addTool('diamondore', 0);
 
+  toolcanvas.setAttribute("height", tools.length * gridSize);
+  toolcanvas.setAttribute("width", gridSize);
+
+  ghosttoolcanvas.height = toolcanvas.height;
+  ghosttoolcanvas.width = toolcanvas.width;
+  //toolcanvas.setAttribute("style", "border: 1px solid red;");
+
   for(i = 0; i < tools.length; i++) {
     tools[i].y = i * gridSize;
-    drawObject(ctx, tools[0], tools[0].fill);
+    drawObject(tctx, tools[0], tools[0].fill);
   }
-
-  /*0 + offset, 0, 'darkcyan', 'grass');
-  addTool(0, gridSize * 1, 'darkgoldenrod', 'redstone');
-  addTool(0, gridSize * 2, 'transparent', 'rail-curve');
-  addTool(0, gridSize * 3, 'transparent', 'rail-curve', 90);
-  addTool(0 + offset, gridSize * 4, 'transparent', 'rail-straight');
-  offset += 1;*/
 }
 
 function drawDebug() {

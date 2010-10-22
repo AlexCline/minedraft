@@ -5,10 +5,13 @@
     <title>MineDraft.net</title>
 
     <style type="text/css">
-      @import url('style.css');
+      @import url('stylesheets/style.css');
+      @import url('stylesheets/vtip.css');
     </style>
 
-    <script type="text/javascript" src="minedraft.js"></script>  
+    <script type="text/javascript" src="javascripts/jquery-1.4.3.min.js"></script>
+    <script type="text/javascript" src="javascripts/vtip-min.js"></script>
+    <script type="text/javascript" src="javascripts/minedraft.js"></script>  
 
   </head>
  
@@ -17,6 +20,16 @@
       <canvas id="minedraft">
         Your browser doesn't support HTML5 Canvas.
       </canvas>
+    </div>
+    <div id="tools" class="overlay">
+      <canvas id="toolbox">Toolbox</canvas>
+    </div>
+    <div id="zoom" class="overlay">
+      <img src="/images/icons/control_add.png" onclick="zoom('in');" alt="Zoom In" title="Zoom In" class="vtip" />
+      <img src="/images/icons/control_remove.png" onclick="zoom('out');" alt="Zoom Out" title="Zoom Out" class="vtip" />
+    </div>
+    <div id="copy" class="overlay">
+      <a href="http://alexcline.net" target="_new">&copy; Alex Cline 2010</a>
     </div>
     <img src="/images/terrain.png" id="terrain" />
   </body>
