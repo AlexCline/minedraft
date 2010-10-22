@@ -1,5 +1,5 @@
 var gridSizeMinMax = [16, 64];
-var gridSize = 32;
+var gridSize = 16;
 
 var blocks = { 
   "grass": [0, 0, 16, 16],
@@ -104,7 +104,7 @@ var canvasValid = false;
 var mySel; 
 
 // The selection color and width. Right now we have a red selection with a small width
-var mySelColor = '#CC0000';
+var mySelColor = 'orangered';
 var mySelWidth = 2;
 
 var gridColor = '#ccc';
@@ -294,6 +294,12 @@ function drawObject(context, object, fill) {
   }
 }
 
+function eraseObjects(){
+  objects = [];
+  mySel = null;
+  invalidate();
+}
+
 // Snap the box to the closest grid
 function alignObj() {
   if(mySel == null)
@@ -419,28 +425,38 @@ function checkToolClicked() {
 function zoom(dir) {
   var min = gridSizeMinMax[0];
   var max = gridSizeMinMax[1];
+  var oldSize = gridSize;
 
   if(dir == "in") {
     if(gridSize >= max)
       return;
     gridSize += 16;
     invalidate();
-    resizeObjects();
+    sizeToolbox();
+    resizeObjects(dir, oldSize);
   }else if(dir == "out") {
     if(gridSize <= min)
       return;
     gridSize -= 16;
     invalidate();
-    resizeObjects();
+    sizeToolbox();
+    resizeObjects(dir, oldSize);
   }
 }
 
-function resizeObjects() {
+function resizeObjects(dir, oldSize) {
   for(var i = 0; i < objects.length; i++) {
     objects[i].h = gridSize;
     objects[i].w = gridSize;
-    /* objects[i].x = gridSize * i;
-    objects[i].y = gridSize * i; */
+    mySel = objects[i];
+
+    // Get the object's old ratio to apply to the new position.    
+    xRatio = objects[i].x / oldSize;
+    yRatio = objects[i].y / oldSize;
+
+    objects[i].x = gridSize * xRatio;
+    objects[i].y = gridSize * yRatio;
+
   }
   for(var j = 0; j < tools.length; j++) {
     tools[j].h = gridSize;
@@ -545,17 +561,21 @@ function drawTools() {
   addTool('redstoneore', 0);
   addTool('diamondore', 0);
 
-  toolcanvas.setAttribute("height", tools.length * gridSize);
-  toolcanvas.setAttribute("width", gridSize);
-
-  ghosttoolcanvas.height = toolcanvas.height;
-  ghosttoolcanvas.width = toolcanvas.width;
+  sizeToolbox();
   //toolcanvas.setAttribute("style", "border: 1px solid red;");
 
   for(i = 0; i < tools.length; i++) {
     tools[i].y = i * gridSize;
     drawObject(tctx, tools[0], tools[0].fill);
   }
+}
+
+function sizeToolbox() {
+  toolcanvas.setAttribute("height", tools.length * gridSize);
+  toolcanvas.setAttribute("width", gridSize);
+
+  ghosttoolcanvas.height = toolcanvas.height;
+  ghosttoolcanvas.width = toolcanvas.width;  
 }
 
 function drawDebug() {
