@@ -72,6 +72,10 @@ a:hover { color: #777; }
   margin: 5px auto;
 }
 
+#tools > img {
+  margin-bottom: 10px;
+}
+
 #menu {
   top: -1px;
   right: 50px;

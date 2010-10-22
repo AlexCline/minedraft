@@ -26,7 +26,8 @@
       <ul>
         <!--li><a href="#">About</a></li>
         <li><a href="#">Blog</a></li-->
-        <li><img src="/images/icons/help.png" alt="Help" class="help" onclick="toggleHelp(true);" /> <a href="#" onclick="toggleHelp(true);">Help</a></li>
+        <li><img src="/images/icons/world_link.png" alt="Create Link" title="Link to this Minedraft." class="vtip action link" /> <a href="#">Link</a></li>
+        <li><img src="/images/icons/help.png" alt="Help" class="help" onclick="toggleHelp();" /> <a href="#" onclick="toggleHelp();">Help</a></li>
       </ul>
     </section>
     <section id="tools" class="overlay">
@@ -50,7 +51,7 @@
     </section>
     <section id="help" class="overlay">
       <div class="close">
-        <img src="/images/icons/cancel.png" onclick="toggleHelp(false);" alt="Close Help" />
+        <img src="/images/icons/cancel.png" onclick="toggleHelp();" alt="Close Help" />
       </div>
       <h1>Help</h1>
 
@@ -67,7 +68,7 @@
     <img src="/images/terrain.png" id="terrain" />
     <script type="text/javascript" src="javascripts/jquery.js"></script>
     <script type="text/javascript">
-      var _gaq = _gaq || [];
+/*      var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-456444-6']);
       _gaq.push(['_setDomainName', '.minedraft.net']);
       _gaq.push(['_trackPageview']);
@@ -76,7 +77,7 @@
         var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
         ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      })();
+      })(); */
     </script>
   </body>
 </html>

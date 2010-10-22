@@ -176,7 +176,7 @@ function init() {
   window.onresize = sizeCanvas;
   
   // add custom initialization here:
-  drawTools();
+  initTools();
 }
 
 function sizeCanvas() {
@@ -463,8 +463,12 @@ function resizeObjects(dir, oldSize) {
   for(var j = 0; j < tools.length; j++) {
     tools[j].h = gridSize;
     tools[j].w = gridSize;
-    /* tools[j].x = gridSize * j; */
-    tools[j].y = gridSize * j;
+
+    /*xRatio = tools[j].x / oldSize;
+    yRatio = tools[j].y / oldSize;
+
+    tools[j].x = gridSize * xRatio;
+    tools[j].y = gridSize * yRatio;*/
   }
 }
 
@@ -575,34 +579,54 @@ function drawGrid() {
 
 var offset = 0;
 // Draw the toolbar
-function drawTools() {
-  addTool('grass', 0);
+function initTools() {
+  /*addTool('grass', 0);
   addTool('sand', 0);
   addTool('rail-curve', 0);
+  addTool('redstoneore', 0);
+  addTool('diamondore', 0);
+  addTool('cobblestone', 0);*/
+
+  $.each(blocks, function(index, value) {
+    addTool(index, 0);
+  });
+
   addTool('rail-curve', 90);
   addTool('rail-curve', 180, 'vert');
   addTool('rail-curve', 90, 'horiz');
-  addTool('rail-straight', 0);
   addTool('rail-straight', 90);
-  addTool('redstoneore', 0);
-  addTool('diamondore', 0);
-  addTool('cobblestone', 0);
+
 
   sizeToolbox();
   //toolcanvas.setAttribute("style", "border: 1px solid red;");
+  
+  drawTools();
+}
 
+function drawTools() {
+  var toolX = -gridSize;
+  var toolY = 0;
   for(i = 0; i < tools.length; i++) {
-    tools[i].y = i * gridSize;
+    if(i % 10 == 0) {
+      toolX += gridSize;
+      toolY = 0;
+    }else{
+      toolY = toolY + gridSize;
+    }
+    tools[i].y = toolY;
+    tools[i].x = toolX;
     drawObject(tctx, tools[0], tools[0].fill);
   }
+
 }
 
 function sizeToolbox() {
-  toolcanvas.setAttribute("height", tools.length * gridSize);
-  toolcanvas.setAttribute("width", gridSize);
+  toolcanvas.setAttribute("height", 10 * gridSize);
+  toolcanvas.setAttribute("width", Math.ceil(tools.length / 10) * gridSize);
 
   ghosttoolcanvas.height = toolcanvas.height;
-  ghosttoolcanvas.width = toolcanvas.width;  
+  ghosttoolcanvas.width = toolcanvas.width;
+  drawTools();
 }
 
 function drawDebug() {

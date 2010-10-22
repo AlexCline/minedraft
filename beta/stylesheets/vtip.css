@@ -2,3 +2,4 @@ p#vtip { display: none; position: absolute; padding: 10px; left: 5px; font-size:
 p#vtip #vtipArrow { position: absolute; top: -10px; left: 5px }
 p.vtip { display: none; position: absolute; padding: 10px; left: 5px; font-size: 0.9em; background-color: white; border: 1px solid #a6c9e2; -moz-border-radius: 5px; -webkit-border-radius: 5px; z-index: 9999 }
 p.vtip .vtipArrowLeft { position: absolute; top: 5px; left: -10px }
+p.vtip .vtipArrow { position: absolute; top: -10px; left: 5px }
