@@ -17,18 +17,33 @@
   </head>
  
   <body onload="init();">
+    <section id="about" class="overlay">
+      <div class="close"><img src="/images/icons/cancel.png" alt="Close" onclick="$('#about').toggle();"/></div>
+      <h1>MineDraft</h1>
+      <p>
+        MineDraft allows you to draft your MineCraft ideas.
+      </p>
+      <p>
+        Have a cool new idea you want to share with your friends?  Draw it in MineDraft and share the link with your friends.  No need to log into Minecraft and take screenshots or videos and no uploading to file sharing sites.
+      </p>
+      <p>
+        Just click a block and start drafting!
+      </p>
+      <p id="copy">
+        <a href="http://alexcline.net">
+          &copy; Alex Cline
+          <script type="text/javascript">
+            now = new Date();
+            year = now.getFullYear();
+            document.write(year);
+          </script>
+        </a>
+      </p>
+    </section>
     <section id="wrapper">
       <canvas id="minedraft">
         Your browser doesn't support HTML5 Canvas.
       </canvas>
-    </section>
-    <section id="menu" class="overlay">
-      <ul>
-        <!--li><a href="#">About</a></li>
-        <li><a href="#">Blog</a></li-->
-        <li><img src="/images/icons/world_link.png" alt="Create Link" title="Link to this Minedraft." class="vtip action link" /> <a href="#">Link</a></li>
-        <li><img src="/images/icons/help.png" alt="Help" class="help" onclick="toggleHelp();" /> <a href="#" onclick="toggleHelp();">Help</a></li>
-      </ul>
     </section>
     <section id="tools" class="overlay">
       <canvas id="toolbox" height="1" width="1">Toolbox</canvas>
@@ -39,15 +54,13 @@
       </div>
       <img src="/images/icons/cross.png" onclick="eraseObjects();" alt="Erase" title="Erase all objects." class="vtip action erase" />
     </section>
-    <section id="copy" class="overlay">
-      <a href="http://alexcline.net">
-        &copy; Alex Cline
-        <script type="text/javascript">
-          now = new Date();
-          year = now.getFullYear();
-          document.write(year);
-        </script>
-      </a>
+    <section id="menu" class="overlay">
+      <ul>
+        <li><a href="#" onclick="$('#about').toggle();">About</a></li>
+        <!--li><a href="#">Blog</a></li-->
+        <li><img src="/images/icons/world_link.png" alt="Create Link" title="Link to this Minedraft." class="vtip action link" /> <a href="#">Link</a></li>
+        <li><img src="/images/icons/help.png" alt="Help" class="help" onclick="toggleHelp();" /> <a href="#" onclick="toggleHelp();">Help</a></li>
+      </ul>
     </section>
     <section id="help" class="overlay">
       <div class="close">
@@ -65,7 +78,9 @@
       </ol>
       <p><em>Double-Click an object in the grid to delete it.</em></p>
     </section>
+
     <img src="/images/terrain.png" id="terrain" />
+
     <script type="text/javascript" src="javascripts/jquery.js"></script>
     <script type="text/javascript">
 /*      var _gaq = _gaq || [];

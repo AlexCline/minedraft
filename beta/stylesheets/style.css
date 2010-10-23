@@ -127,15 +127,7 @@ a:hover { color: #777; }
 }
 
 #copy {
-  bottom: -1px;
-  right: 10px;
-  padding: 5px 10px;
-  -moz-border-top-left-radius: 5px;
-  border-top-left-radius: 5px;
-  -moz-border-top-right-radius: 5px;
-  border-top-right-radius: 5px;  
-  background-color: #ddd;
-  border-color: #bbb;
+  margin-top: 1.5em !important;
 }
 
 #copy a {
@@ -154,7 +146,7 @@ canvas {
   width: 100%; */
 }
 
-#help {
+#help, #about {
   display: none;
   position: absolute;
   top: 100px;
@@ -167,13 +159,13 @@ canvas {
   border-radius: 5px;
 }
 
-#help .close {
+.close {
   float: right;
   cursor: pointer;
   margin-right: -.5em;
 }
 
-#help p {
+#help p, #about p {
   margin: .5em; 
 }
 
