@@ -11,9 +11,11 @@
 
     <script type="text/javascript" src="javascripts/jquery-1.4.3.min.js"></script>
     <script type="text/javascript" src="javascripts/jquery.guid.js"></script>
+    <script type="text/javascript" src="javascripts/jquery.url.min.js"></script>
     <script type="text/javascript" src="javascripts/vtip-min.js"></script>
-    <script type="text/javascript" src="javascripts/minedraft.js"></script>  
-
+    <script type="text/javascript" src="javascripts/json2.js"></script>
+    <script type="text/javascript" src="javascripts/base64.js"></script>    
+    <script type="text/javascript" src="javascripts/minedraft.js"></script>
   </head>
  
   <body onload="init();">
@@ -60,7 +62,7 @@
       <ul>
         <li><a href="#" onclick="$('#about').toggle();">About</a></li>
         <!--li><a href="#">Blog</a></li-->
-        <li><img src="/images/icons/world_link.png" alt="Create Link" title="Link to this Minedraft." class="vtip action link" /> <a href="#">Link</a></li>
+        <li><img src="/images/icons/world_link.png" alt="Create Link" title="Link to this Minedraft." class="vtip action link" onclick="createLinks()" /> <a href="#" onclick="createLinks();">Link</a></li>
         <li><img src="/images/icons/help.png" alt="Help" class="help" onclick="toggleHelp();" /> <a href="#" onclick="toggleHelp();">Help</a></li>
       </ul>
     </section>
@@ -81,6 +83,14 @@
       <p><em>Double-Click an object in the grid to delete it.</em></p>
       <p><em>Click and drag objects to move them around.</em></p>
       <p><em>Click and drag an empty space in the grid to scroll around.</em></p>
+    </section>
+    <section id="links" class="overlay">
+      <h1>Links</h1>
+      <label for="full">Full Link: </label><input name="full" id="full-link" />
+      <label for="bitly">Bitly Link: </label><input name="bitly" id="bitly-link" />
+      <label for="html">HTML: </label><input name="html" id="html-link" />
+      <label for="reddit">Reddit: </label><input name="reddit" id="reddit-link" />
+      <label for="bbcode">BBCode: </label><input name="bbcode" id="bbcode-link" />
     </section>
 
     <img src="/images/terrain.png" id="terrain" />

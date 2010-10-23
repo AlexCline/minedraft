@@ -1,3 +1,4 @@
+var hostname = "beta.minedraft.net";
 var gridSizeMinMax = [16, 64];
 var gridSize = 32;
 
@@ -183,6 +184,7 @@ function init() {
   
   // add custom initialization here:
   initTools();
+  decodeObjects();
 }
 
 function sizeCanvas() {
@@ -293,7 +295,8 @@ function drawObject(context, object, fill) {
       }
 
       context.rotate((360 - object.rotate) * (Math.PI / 180));
-      context.drawImage(img, b[0], b[1], b[2], b[3], 0, 0, gridSize + 1, gridSize + 1);
+      //alert(objects);
+      //context.drawImage(img, b[0], b[1], b[2], b[3], 0, 0, gridSize + 1, gridSize + 1);
       context.restore();
     } else {
       context.drawImage(img, b[0], b[1], b[2], b[3], object.x, object.y, gridSize + 1, gridSize + 1);
@@ -739,4 +742,53 @@ function drawDebug() {
   ctx.font = "10px sans-serif";
   ctx.fillText("mx: " + mx, right, bottom);
   ctx.fillText("my: " + my, right, bottom + 10);
+}
+
+function createLinks() {
+  var bitlyUrl;
+  $("#links").toggle();
+  enc = encodeObjects();
+  generateBitlyUrl(enc);
+  $("#full-link").val("http://"+hostname+"/?md=" + enc);
+  $("#bitly-link").val(bitlyUrl);
+}
+
+function generateBitlyUrl(enc) {
+  var url = "http://"+hostname+"/?md="+enc;
+  var bitlyUser = "minedraft";
+  var bitlyKey = "R_f2239290351ea78c03e76d513099b4dd";
+  var bitlyUrl;
+
+  $.ajax({
+    url:"http://api.bit.ly/v3/shorten",
+    data:{longUrl:url, apiKey:bitlyKey, login:bitlyUser},
+    dataType:"jsonp",
+    success:function(v) {
+      bitlyUrl = v.data.url;
+      $('#bitly-link').val(bitlyUrl);
+      $('#html-link').val('<a href="'+ bitlyUrl +'">My Minedraft</a>');
+      $('#reddit-link').val('[My Minedraft]('+ bitlyUrl +')');
+      $('#bbcode-link').val('[url='+ bitlyUrl +']My Minedraft[/url]');
+    }
+  });
+
+  return bitlyUrl + "::";
+}
+
+function encodeObjects() {
+  var toEncode;
+  // Encode all the objects except the current tool.
+  if(activeTool)
+    toEncode = objects.slice(0, objects.length - 1);
+  else
+    toEncode = objects;
+
+  return Base64.encode(JSON.stringify(toEncode));
+}
+
+function decodeObjects() {
+  var mdParam = $.url.param('md');
+
+  if(mdParam != "")
+    objects = JSON.parse(Base64.decode(mdParam));
 }
