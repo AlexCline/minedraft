@@ -92,7 +92,9 @@ var VWIDTH;
 var INTERVAL = 20;  // how often, in milliseconds, we check to see if a redraw is needed
 
 var isDrag = false;
+var isScroll = false;
 var mx, my; // mouse coordinates
+var msx, msy; // mouse coordinates for old scroll position.
 
  // when set to true, the canvas will redraw everything
  // invalidate() just sets this to false right now
@@ -210,6 +212,7 @@ function draw() {
     sizeCanvas();
     clear(ctx);
     clear(tctx);
+
     
     // Add stuff you want drawn in the background all the time here
     drawGrid();
@@ -351,6 +354,18 @@ function myMove(e){
     // something is changing position so we better invalidate the canvas!
     invalidate();
   }
+  if (isScroll) {
+    getMouse(e);
+    
+    for(var i = 0; i < objects.length; i++) {
+      objects[i].x += (mx - msx);
+      objects[i].y += (my - msy);
+    }
+
+    msx = mx;
+    msy = my;
+    invalidate();
+  }
 }
 
 // Happens when the mouse is clicked in the canvas
@@ -377,12 +392,21 @@ function myDown(e){
     drawCurrentTool();
   }
 
+  scrollCanvas(e);
+
   // havent returned means we have selected nothing
   //mySel = null;
   // clear the ghost canvas for next time
   clear(gctx);
   // invalidate because we might need the selection border to disappear
   invalidate();
+}
+
+function scrollCanvas(e) {
+  isScroll = true;
+  getMouse(e);
+  msx = mx;
+  msy = my;
 }
 
 function drawCurrentTool() {
@@ -404,7 +428,6 @@ function myToolboxDown(e){
   // invalidate because we might need the selection border to disappear
   invalidate();
 }
-
 
 function checkObjectClicked() {
   // Check to see if we've selected an object.
@@ -516,7 +539,7 @@ function resizeObjects(dir, oldSize) {
 }
 
 function myUp(){
-  if(activeTool == null) {
+  if(activeTool == null && oldActiveTool != null) {
     //isDrag = false;
     //canvas.onmousemove = null;
     alignObj();
@@ -524,9 +547,24 @@ function myUp(){
     oldActiveTool = null;
     setCursor();
     addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.fill, activeTool.name, activeTool.rotate, activeTool.flip);
-    mySel = objects[objects.length - 1];    
+    mySel = objects[objects.length - 1];
+  }
+  if(isScroll) {
+    var tmpSel = mySel;
+    for(var i = 0; i < objects.length; i++) {
+      mySel = objects[i];
+      alignObj();
+    }
+    mySel = tmpSel;
+    isScroll = false;
   }
 }
+
+function mouseHasMoved() {
+  if(Math.abs(msx - mx) > 5 || Math.abs(msy - my) > 5)
+    return true;
+}
+
 
 function setCursor() {
   if(oldActiveTool)
