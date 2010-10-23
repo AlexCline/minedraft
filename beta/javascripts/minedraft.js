@@ -103,6 +103,10 @@ var canvasValid = false;
 // If in the future we want to select multiple objects, this will get turned into an array
 var mySel; 
 
+// The currently selected tool.
+var activeTool;
+var oldActiveTool;
+
 // The selection color and width. Right now we have a red selection with a small width
 var mySelColor = 'orangered';
 var mySelWidth = 2;
@@ -171,7 +175,7 @@ function init() {
   canvas.onmousedown = myDown;
   canvas.onmouseup = myUp;
   toolcanvas.onmousedown = myToolboxDown;
-  toolcanvas.onmouseup = myUp;
+  //toolcanvas.onmouseup = myUp;
   canvas.ondblclick = myDblClick;
   window.onresize = sizeCanvas;
   
@@ -296,10 +300,22 @@ function drawObject(context, object, fill) {
 
 function eraseObjects(){
   if(confirm("Delete all the blocks?")) {
+    var tool = objects[objects.length - 1];
     objects = [];
-    mySel = null;
+    objects.push(tool);
+    //mySel = null;
+    //activeTool = null;
+    //isDrag = false;
     invalidate();
   }
+}
+
+function clearTool() {
+  objects.splice(objects.length - 1, 1);
+  activeTool = null;
+  mySel = null;
+  isDrag = false;
+  invalidate();
 }
 
 // Snap the box to the closest grid
@@ -342,11 +358,31 @@ function myDown(e){
   getMouse(e);
   clear(gctx);
 
-  if(checkObjectClicked())
-    return;
+  //  addObj(ctx, activeTool, activeTool.fill);
+
+  if(activeTool) {
+    // Remove the current tool
+    objects.splice(objects.length - 1);
+
+    // Check if we've selected a block on the canvas,
+    // if so, add a new tool and return.
+    if(checkObjectClicked()) {
+      return;
+    }
+    
+    // Add a block to the canvas and set it to the current object, then align it.
+    addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.fill, activeTool.name, activeTool.rotate, activeTool.flip);
+    mySel = objects[objects.length - 1];
+    alignObj();
+    //mySel = null;
+
+    // Add a new tool
+    addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.fill, activeTool.name, activeTool.rotate, activeTool.flip);
+    mySel = objects[objects.length - 1];
+  }
 
   // havent returned means we have selected nothing
-  mySel = null;
+  //mySel = null;
   // clear the ghost canvas for next time
   clear(gctx);
   // invalidate because we might need the selection border to disappear
@@ -388,6 +424,9 @@ function checkObjectClicked() {
       mySel.x = mx - offsetx;
       mySel.y = my - offsety;
       isDrag = true;
+      oldActiveTool = activeTool;
+      activeTool = null;
+      setCursor();
       canvas.onmousemove = myMove;
       invalidate();
       clear(gctx);
@@ -406,10 +445,13 @@ function checkToolClicked() {
 
     var imageData = gtctx.getImageData(mx, my, 1, 1);
     if(imageData.data[3] > 0) {
+      if(activeTool)
+        objects.splice(objects.length - 1, 1);
       t = tools[i];
       //addObj(t.x, t.y, t.fill, t.name, t.rotate, t.flip);
       addObj(mx - (t.w / 2), my - (t.h / 2), t.fill, t.name, t.rotate, t.flip);      
       mySel = objects[objects.length - 1];
+      activeTool = objects[objects.length - 1];
       offsetx = mx - mySel.x;
       offsety = my - mySel.y;
       mySel.x = mx - offsetx;
@@ -473,9 +515,23 @@ function resizeObjects(dir, oldSize) {
 }
 
 function myUp(){
-  isDrag = false;
-  canvas.onmousemove = null;
-  alignObj();
+  if(activeTool == null) {
+    //isDrag = false;
+    //canvas.onmousemove = null;
+    alignObj();
+    activeTool = oldActiveTool;
+    oldActiveTool = null;
+    setCursor();
+    addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.fill, activeTool.name, activeTool.rotate, activeTool.flip);
+    mySel = objects[objects.length - 1];    
+  }
+}
+
+function setCursor() {
+  if(oldActiveTool)
+    document.body.style.cursor = 'move';
+  else
+    document.body.style.cursor = 'default';
 }
 
 // Delete the object on doubleclick
@@ -483,6 +539,8 @@ function myDblClick(e) {
   getMouse(e);
   clear(gctx);
 
+  // Remove the current tool.
+  objects.splice(objects.length - 1, 1);
   // Check to see if we've selected an object.
   var l = objects.length;
   for (var i = l-1; i >= 0; i--) {
@@ -496,20 +554,25 @@ function myDblClick(e) {
     // if the mouse pixel exists, select and break
     if (imageData.data[3] > 0) {
       objects.splice(i, 1);
-      mySel = null;
       invalidate();
       clear(gctx);
+      // add the Tool back
+      addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.fill, activeTool.name, activeTool.rotate, activeTool.flip);
+      mySel = objects[objects.length - 1];    
       return true;
     }
   }
 
+  addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.fill, activeTool.name, activeTool.rotate, activeTool.flip);
+  mySel = objects[objects.length - 1];    
+
   // havent returned means we have selected nothing
-  mySel = null;
+  //mySel = null;
   // clear the ghost canvas for next time  
   clear(gctx);
   // invalidate because we might need the selection border to disappear
   invalidate();
-
+  
 }
 
 function invalidate() {
