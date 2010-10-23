@@ -2,7 +2,7 @@ var helpVisible = false;
 function toggleHelp() {
   if(!helpVisible) {
     $('#help').fadeIn('slow');
-    showHelpTip($('#toolbox'), "Drag the blocks from here.", "right");
+    showHelpTip($('#toolbox'), "Click the blocks in here.", "right");
     showHelpTip($('.zoom img'), "Use these to zoom in and out.", "right");
     showHelpTip($('.erase'), "Click here to erase everything.", "right");
     showHelpTip($('.link'), "Click here to create a link to this Minedraft.", "below");

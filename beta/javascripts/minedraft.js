@@ -8,26 +8,26 @@ var blocks = {
   "grassydirt": [48, 0, 16, 16],
   "wood": [64, 0, 16, 16],
   "step": [80, 0, 16, 8],
-  "brick": [112, 0, 16, 16],
-  "tnt": [128, 0, 16, 16],
   "cobblestone": [0, 16, 16, 16],
+  "brick": [112, 0, 16, 16],
   "bedrock": [16, 16, 16, 16],
   "sand": [32, 16, 16, 16],
   "gravel": [48, 16, 16, 16],
   "stump": [80, 16, 16, 16],
-  "iron": [96, 16, 16, 16],
-  "gold": [112, 16, 16, 16],
-  "diamond": [128, 16, 16, 16],
   "goldore": [0, 32, 16, 16],
   "ironore": [16, 32, 16, 16],
   "coalore": [32, 32, 16, 16],
-  "mossycobblestone": [64, 32, 16, 16],
-  "obsidian": [80, 32, 16, 16],
-  "toolbox": [176, 32, 16, 16],
-  "sponge": [0, 48, 16, 16],
-  "glass": [16, 48, 16, 16],
   "diamondore": [32, 48, 16, 16],
   "redstoneore": [48, 48, 16, 16],
+  "glass": [16, 48, 16, 16],
+  "mossycobblestone": [64, 32, 16, 16],
+  "obsidian": [80, 32, 16, 16],
+  "iron": [96, 16, 16, 16],
+  "gold": [112, 16, 16, 16],
+  "diamond": [128, 16, 16, 16],
+  "toolbox": [176, 32, 16, 16],
+  "sponge": [0, 48, 16, 16],
+  "tnt": [128, 0, 16, 16],
   "rail-curve": [0, 112, 16, 16],
   "rail-straight": [0, 128, 16, 16]
 };
@@ -358,8 +358,6 @@ function myDown(e){
   getMouse(e);
   clear(gctx);
 
-  //  addObj(ctx, activeTool, activeTool.fill);
-
   if(activeTool) {
     // Remove the current tool
     objects.splice(objects.length - 1);
@@ -371,14 +369,12 @@ function myDown(e){
     }
     
     // Add a block to the canvas and set it to the current object, then align it.
-    addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.fill, activeTool.name, activeTool.rotate, activeTool.flip);
-    mySel = objects[objects.length - 1];
+    drawCurrentTool();
     alignObj();
     //mySel = null;
 
     // Add a new tool
-    addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.fill, activeTool.name, activeTool.rotate, activeTool.flip);
-    mySel = objects[objects.length - 1];
+    drawCurrentTool();
   }
 
   // havent returned means we have selected nothing
@@ -387,6 +383,11 @@ function myDown(e){
   clear(gctx);
   // invalidate because we might need the selection border to disappear
   invalidate();
+}
+
+function drawCurrentTool() {
+  addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.fill, activeTool.name, activeTool.rotate, activeTool.flip);
+  mySel = objects[objects.length - 1];  
 }
 
 function myToolboxDown(e){
@@ -667,14 +668,14 @@ function initTools() {
 }
 
 function drawTools() {
-  var toolX = -gridSize;
-  var toolY = 0;
+  var toolY = -gridSize;
+  var toolX = 0;
   for(i = 0; i < tools.length; i++) {
-    if(i % 10 == 0) {
-      toolX += gridSize;
-      toolY = 0;
+    if(i % 4 == 0) {
+      toolY += gridSize;
+      toolX = 0;
     }else{
-      toolY = toolY + gridSize;
+      toolX = toolX + gridSize;
     }
     tools[i].y = toolY;
     tools[i].x = toolX;
@@ -684,8 +685,8 @@ function drawTools() {
 }
 
 function sizeToolbox() {
-  toolcanvas.setAttribute("height", 10 * gridSize);
-  toolcanvas.setAttribute("width", Math.ceil(tools.length / 10) * gridSize);
+  toolcanvas.setAttribute("height", Math.ceil(tools.length / 4 ) * gridSize);
+  toolcanvas.setAttribute("width", 4 * gridSize);
 
   ghosttoolcanvas.height = toolcanvas.height;
   ghosttoolcanvas.width = toolcanvas.width;
