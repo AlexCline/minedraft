@@ -48,9 +48,10 @@
       </canvas>
     </section>
     <section id="tools" class="overlay">
+      <ul id="toolbox-list"></ul>
       <canvas id="toolbox" height="1" width="1">Toolbox</canvas>
-      <br />
-      <a href="#" onclick="clearTool();">Clear Tool</a>
+      <div style="clear: both;">
+      <a onclick="clearTool();" href="#">Clear Tool</a>
       <div class="zoom">
         <img src="/images/icons/control_add.png" onclick="zoom('in');" alt="Zoom In" title="Zoom In" class="vtip action" />
         <img src="/images/icons/bullet_white.png" />

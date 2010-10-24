@@ -52,8 +52,15 @@ a:hover { color: #777; }
   border-bottom-right-radius: 5px;
 }
 
+ul#toolbox-list {
+  float: left;
+  width: 32px;
+  text-align: left;
+}
+
 #tools canvas {
   border: 1px solid #bbb;
+  float: right;
 }
 
 #tools img {
