@@ -1,27 +1,33 @@
 var hostname = "beta.minedraft.net";
 var gridSizeMinMax = [16, 64];
-var gridSize = 32;
+var gridSize = 16;
 
 var blocks = { 
   "grass": [0, 0, 16, 16],
-  "stone": [16, 0, 16, 16],
-  "dirt": [32, 0, 16, 16],
   "grassydirt": [48, 0, 16, 16],
+  "dirt": [32, 0, 16, 16],
+  "stone": [16, 0, 16, 16],
+  "snow": [32, 64, 16, 16],
+  "snowydirt": [64, 64, 16, 16],
   "wood": [64, 0, 16, 16],
   "step": [80, 0, 16, 8],
   "cobblestone": [0, 16, 16, 16],
-  "brick": [112, 0, 16, 16],
+  "mossycobblestone": [64, 32, 16, 16],
   "bedrock": [16, 16, 16, 16],
   "sand": [32, 16, 16, 16],
+  "clay": [128, 64, 16, 16],
   "gravel": [48, 16, 16, 16],
+  "tilled": [112, 80, 16, 16],
+  "wettilled": [96, 80, 16, 16],
   "stump": [80, 16, 16, 16],
   "goldore": [0, 32, 16, 16],
   "ironore": [16, 32, 16, 16],
   "coalore": [32, 32, 16, 16],
   "diamondore": [32, 48, 16, 16],
   "redstoneore": [48, 48, 16, 16],
+  "wool": [0, 64, 16, 16],
+  "brick": [112, 0, 16, 16],
   "glass": [16, 48, 16, 16],
-  "mossycobblestone": [64, 32, 16, 16],
   "obsidian": [80, 32, 16, 16],
   "iron": [96, 16, 16, 16],
   "gold": [112, 16, 16, 16],
@@ -29,6 +35,21 @@ var blocks = {
   "toolbox": [176, 32, 16, 16],
   "sponge": [0, 48, 16, 16],
   "tnt": [128, 0, 16, 16],
+  "lava": [208, 224, 16, 16],
+  "water": [208, 192, 16, 16],
+  "ice": [48, 64, 16, 16],
+  "torch": [0, 80, 16, 16],
+  "poweredredstonetorch": [48, 96, 16, 16],
+  "unpoweredredstonetorch": [48, 112, 16, 16],
+  "poweredredstoneline": [80, 96, 16, 16],
+  "unpoweredredstoneline": [80, 80, 16, 16],
+  "poweredredstonecross": [64, 96, 16, 16],
+  "unpoweredredstonecross": [64, 80, 16, 16],
+  "ladder": [48, 80, 16, 16],
+  "redflower": [192, 0, 16, 16],
+  "yellowflower": [208, 0, 16, 16],
+  "redmushroom": [192, 16, 16, 16],
+  "brownmushroom": [208, 16, 16, 16],
   "rail-curve": [0, 112, 16, 16],
   "rail-straight": [0, 128, 16, 16]
 };
@@ -296,7 +317,7 @@ function drawObject(context, object, fill) {
 
       context.rotate((360 - object.rotate) * (Math.PI / 180));
       //alert(objects);
-      //context.drawImage(img, b[0], b[1], b[2], b[3], 0, 0, gridSize + 1, gridSize + 1);
+      context.drawImage(img, b[0], b[1], b[2], b[3], 0, 0, gridSize + 1, gridSize + 1);
       context.restore();
     } else {
       context.drawImage(img, b[0], b[1], b[2], b[3], object.x, object.y, gridSize + 1, gridSize + 1);
@@ -305,8 +326,8 @@ function drawObject(context, object, fill) {
 }
 
 function eraseObjects(){
-  if(confirm("Delete all the blocks?")) {
-    var tool = objects[objects.length - 1];
+  if(confirm("Delete all the blocks?") && objects.length > 0) {
+    var tool = objects.pop();
     objects = [];
     objects.push(tool);
     //mySel = null;
@@ -317,11 +338,13 @@ function eraseObjects(){
 }
 
 function clearTool() {
-  objects.splice(objects.length - 1, 1);
-  activeTool = null;
-  mySel = null;
-  isDrag = false;
-  invalidate();
+  if(activeTool) {
+    objects.splice(objects.length - 1, 1);
+    activeTool = null;
+    mySel = null;
+    isDrag = false;
+    invalidate();
+  }
 }
 
 // Snap the box to the closest grid
@@ -685,13 +708,6 @@ function drawGrid() {
 var offset = 0;
 // Draw the toolbar
 function initTools() {
-  /*addTool('grass', 0);
-  addTool('sand', 0);
-  addTool('rail-curve', 0);
-  addTool('redstoneore', 0);
-  addTool('diamondore', 0);
-  addTool('cobblestone', 0);*/
-
   $.each(blocks, function(index, value) {
     addTool(index, 0);
   });
@@ -701,10 +717,7 @@ function initTools() {
   addTool('rail-curve', 90, 'horiz');
   addTool('rail-straight', 90);
 
-
   sizeToolbox();
-  //toolcanvas.setAttribute("style", "border: 1px solid red;");
-  
   drawTools();
 }
 
@@ -720,14 +733,16 @@ function drawTools() {
     }
     tools[i].y = toolY;
     tools[i].x = toolX;
-    drawObject(tctx, tools[0], tools[0].fill);
+    drawObject(tctx, tools[i], tools[i].fill);
   }
-
 }
 
 function sizeToolbox() {
   toolcanvas.setAttribute("height", Math.ceil(tools.length / 4 ) * gridSize);
   toolcanvas.setAttribute("width", 4 * gridSize);
+
+  //toolcanvas.setAttribute("height", 10 * gridSize);
+  //toolcanvas.setAttribute("width", 10 * gridSize);
 
   ghosttoolcanvas.height = toolcanvas.height;
   ghosttoolcanvas.width = toolcanvas.width;
