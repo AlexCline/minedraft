@@ -167,6 +167,10 @@ var toolboxStylePaddingLeft, toolboxStylePaddingTop, toolboxStyleBorderLeft, too
 // initialize our canvas, add a ghost canvas, set draw loop
 // then add everything we want to intially exist on the canvas
 function init() {
+  cookieGridSize = getCookie("gridSize");
+  if(cookieGridSize != null && cookieGridSize != "")
+    gridSize = parseFloat(cookieGridSize);
+
   canvas = document.getElementById('minedraft');
   sizeCanvas();
   ctx = canvas.getContext('2d');
@@ -547,17 +551,15 @@ function zoom(dir) {
     if(gridSize >= max)
       return;
     gridSize += 16;
-    invalidate();
-    sizeToolbox();
-    resizeObjects(dir, oldSize);
   }else if(dir == "out") {
     if(gridSize <= min)
       return;
     gridSize -= 16;
-    invalidate();
-    sizeToolbox();
-    resizeObjects(dir, oldSize);
   }
+  invalidate();
+  sizeToolbox();
+  resizeObjects(dir, oldSize);
+  setCookie("gridSize", gridSize, 365);
 }
 
 function resizeObjects(dir, oldSize) {
@@ -746,18 +748,16 @@ function toolboxFlyout(cat) {
       $.each(toolCats[k], function(i, v) {
         addTool(toolCats[k][i], 0);
       })
+      if(k == "Tracks")
+        addRotatedTracks();
     });
   } else {
     $.each(toolCats[cat], function(i, v) {
       addTool(toolCats[cat][i], 0);
     });
   }
-  if(cat == "Tracks") {
-    addTool('rail-curve', 90);
-    addTool('rail-curve', 180, blockOrientations.vert);
-    addTool('rail-curve', 90, blockOrientations.horiz);
-    addTool('rail-straight', 90);
-  }
+  if(cat == "Tracks")
+    addRotatedTracks();
   sizeToolbox();
   //$("#toolbox-wrapper").css("right", -gridSize - 14);
   $("#toolbox-list li a").removeClass("active");
@@ -765,12 +765,16 @@ function toolboxFlyout(cat) {
   $("#toolbox-wrapper").show();
 }
 
+function addRotatedTracks() {
+  addTool('rail-curve', 90);
+  addTool('rail-curve', 180, blockOrientations.vert);
+  addTool('rail-curve', 90, blockOrientations.horiz);
+  addTool('rail-straight', 90);
+}
+
 function initTools() {
   var toolBox = "";
   $.each(toolCats, function(key, value) {
-    //if(key == 'All')
-    //  $("#toolbox-list").append('<li class="' + key + '"><a onclick="toolboxFlyout(\'' + key + '\');" href="#" class="active vtip" title="Show ' + key + ' blocks."><img src="/images/tools/' + key.toLowerCase() + '.gif" /> </a></li>');
-    //else
     $("#toolbox-list").append('<li class="' + key + '"><a onclick="toolboxFlyout(\'' + key + '\');" href="#" class="active vtip" title="Show ' + key + ' blocks."><img src="/images/tools/' + key.toLowerCase() + '.png" /> </a></li>');
   });
   vtip();
@@ -783,7 +787,7 @@ function drawTools() {
   var toolY = 0; //-gridSize;
   var toolX = -gridSize - 3;
   for(i = 0; i < tools.length; i++) {
-    if(i % 10 == 0) {
+    if(i % 13 == 0) {
       toolY = 0;
       toolX += (gridSize + 3);
     } else {
@@ -799,9 +803,9 @@ function sizeToolbox() {
   //toolcanvas.setAttribute("height", tools.length * (gridSize + 3) - 2);
   //toolcanvas.setAttribute("width", gridSize);
   
-  if (tools.length >= 10) {
-    toolcanvas.setAttribute("height", 10 * (gridSize + 3) - 2);
-    toolcanvas.setAttribute("width", Math.ceil(tools.length / 10) * (gridSize + 3) - 2);
+  if (tools.length >= 12) {
+    toolcanvas.setAttribute("height", 13 * (gridSize + 3) - 2);
+    toolcanvas.setAttribute("width", Math.ceil(tools.length / 13) * (gridSize + 3) - 3);
   } else {
     toolcanvas.setAttribute("height", tools.length * (gridSize + 3) - 2);
     toolcanvas.setAttribute("width", gridSize);
@@ -811,7 +815,7 @@ function sizeToolbox() {
 
   $("#toolbox-list img").height(gridSize);
   $("#toolbox-list a").width(gridSize);
-  $("#toolbox-wrapper").css("right", -(Math.ceil(tools.length / 10) * (gridSize + 3)) - 12);
+  $("#toolbox-wrapper").css("right", -(Math.ceil(tools.length / 13) * (gridSize + 3)) - 12);
 
   drawTools();
 }
@@ -898,7 +902,28 @@ function decodeObjects() {
           addObj(v[0], v[1], 't', v[2], v[3], v[4])
       });
     } catch(err) {
-      alert(err);
+      $("body").append('<section id="parseError" class="overlay"><div class="close"><img src="/images/icons/cancel.png" onclick="$(\'#parseError\').toggleFade();" alt="Close Help" /></div><h1>Error</h1><p>Sorry, there was a problem parsing the URL you specified.  It may have been munged at some point and the MineDraft it pointed to can\'t be found.</p></section>');
+      $("#parseError").toggleFade();
     }
   }
+}
+
+function setCookie(c_name, value, expires) {
+  var date = new Date();
+  date.setDate(date.getDate() + expires);
+  document.cookie = c_name + "=" + escape(value) + ((expires == null) ? "" : ";expires=" + date.toUTCString());
+}
+
+function getCookie(c_name) {
+  if (document.cookie.length > 0) {
+    c_start = document.cookie.indexOf(c_name + "=");
+    if (c_start != -1) {
+      c_start += c_name.length + 1;
+      c_end = document.cookie.indexOf(";", c_start);
+      if (c_end == -1)
+        c_end = document.cookie.length;
+      return unescape(document.cookie.substring(c_start, c_end)); 
+    }
+  }
+  return "";
 }

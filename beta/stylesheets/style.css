@@ -214,7 +214,7 @@ canvas {
   width: 100%; */
 }
 
-#help, #about, #links {
+#help, #about, #links, #parseError {
   display: none;
   position: absolute;
   top: 100px;
@@ -225,6 +225,7 @@ canvas {
   background-color: #ddd;
   -moz-border-radius: 5px;
   border-radius: 5px;
+  z-index: 101;
 }
 
 #links input {
