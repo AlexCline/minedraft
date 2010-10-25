@@ -63,14 +63,13 @@ var toolCats = {
   "Tracks": [ "rail-straight", "rail-curve" ],
   "Redstone": [ "redstone-torch-on", "redstone-torch-off", "redstone-line-on", "redstone-line-off", "redstone-cross-on", "redstone-cross-off" ],
   "Misc": [ "ladder", "step", "toolbox", "sponge", "red-flower", "yellow-flower", "red-mushroom", "brown-mushroom"]
-}
+};
 
-function drawBlocks() {
-  var img = document.getElementById("terrain");
-  var g = blocks.grass;
-  ctx.drawImage(img, g[0], g[1], g[2], g[3], 96, 96, gridSize + 1, gridSize + 1);
-
-}
+var blockOrientations = {
+  "none": 0,
+  "vert": 1,
+  "horiz": 2
+};
 
 // Object to hold data for all drawn items
 function Obj() {
@@ -78,33 +77,33 @@ function Obj() {
   this.y = 0;
   this.w = gridSize + 1; // default width and height?
   this.h = gridSize + 1;
-  this.fill = 'transparent';
-  this.name = 'grass';
-  this.rotate = 0;
-  this.flip = "none";
+  this.f = 't';
+  this.n = 'grass';
+  this.r = 0;
+  this.o = blockOrientations.none;
 }
 
 //Initialize a new Box, add it, and invalidate the canvas
-function addObj(x, y, fill, name, rotate, flip) {
+function addObj(x, y, fill, name, rotate, orientation) {
   var obj = new Obj;
   obj.x = x;
   obj.y = y;
-  obj.fill = fill;
-  obj.name = name;
+  obj.f = fill;
+  obj.n = name;
   if(rotate !== undefined)
-    obj.rotate = rotate;
-  if(flip !== undefined)
-    obj.flip = flip;
+    obj.r = rotate;
+  if(orientation !== undefined)
+    obj.o = orientation;
   objects.push(obj);
   invalidate();
 }
 
 // Create a new Object and create a tool out of it.  The default values for objects are good enough for tools.
-function addTool(name, rotate, flip) {
+function addTool(name, rotate, orientation) {
   var tool = new Obj;
-  tool.name = name;
-  tool.rotate = rotate;
-  tool.flip = flip;
+  tool.n = name;
+  tool.r = rotate;
+  tool.o = orientation;
   tools.push(tool);
   invalidate();
 }
@@ -254,14 +253,14 @@ function draw() {
     // draw all boxes
     var l = objects.length;
     for (var i = 0; i < l; i++) {
-      drawObject(ctx, objects[i], objects[i].fill);
+      drawObject(ctx, objects[i], objects[i].f);
     }
 
     var l = tools.length;
     tctx.strokeStyle = "#eee";
     tctx.lineWidth = 3;
     for (var i = 0; i < l; i++) {
-      drawObject(tctx, tools[i], tools[i].fill);
+      drawObject(tctx, tools[i], tools[i].f);
       tctx.beginPath();
       tctx.moveTo(0, tools[i].y + gridSize + 2);
       tctx.lineTo(gridSize, tools[i].y + gridSize + 2);
@@ -287,7 +286,10 @@ function draw() {
 // draw() will call this with the normal canvas
 // myDown will call this with the ghost canvas
 function drawObject(context, object, fill) {
-  context.fillStyle = fill;
+  if(fill == 't')
+    context.fillStyle = 'transparent';
+  else
+    context.fillStyle = fill;
   
   // We can skip the drawing of elements that have moved off the screen:
   if (object.x > WIDTH || object.y > HEIGHT) return; 
@@ -297,42 +299,42 @@ function drawObject(context, object, fill) {
 
   if (context != gctx || context != gtctx) {
     //drawBlock(object);
-    n = object.name;
-    b = blocks[object.name];
+    n = object.n;
+    b = blocks[object.n];
 
     //alert(b);
     var img = document.getElementById("terrain");
-    if(object.rotate != 0) {
+    if(object.r != 0) {
       var destX = destY = 0;
       var scaleX = scaleY = 1;
       context.save();
 
-      if(object.rotate == 90) {
+      if(object.r == 90) {
         destX = object.x + 0;
         destY = object.y + object.h;
-      } else if(object.rotate == 180) {
+      } else if(object.r == 180) {
         destX = object.x + object.w;
         destY = object.y + object.h;
-      } else if(object.rotate == 270) {
+      } else if(object.r == 270) {
         destX = object.x + object.w;
         destY = object.y + 0;
       }
 
       context.translate(destX, destY);
       
-      if(object.flip != "none") {
-        if(object.flip == "horiz") {
+      if(object.o != blockOrientations.none) {
+        if(object.o == blockOrientations.horiz) {
           scaleX = -1;
           context.translate(object.w, 0);
         }  
-        else if(object.flip == "vert") {
+        else if(object.o == blockOrientations.vert) {
           scaleY = -1;
           context.translate(0, -object.h);
         }
         context.scale(scaleX, scaleY);
       }
 
-      context.rotate((360 - object.rotate) * (Math.PI / 180));
+      context.rotate((360 - object.r) * (Math.PI / 180));
       //alert(objects);
       context.drawImage(img, b[0], b[1], b[2], b[3], 0, 0, gridSize + 1, gridSize + 1);
       context.restore();
@@ -454,7 +456,7 @@ function scrollCanvas(e) {
 }
 
 function drawCurrentTool() {
-  addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.fill, activeTool.name, activeTool.rotate, activeTool.flip);
+  addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.f, activeTool.n, activeTool.r, activeTool.o);
   mySel = objects[objects.length - 1];  
 }
 
@@ -516,8 +518,8 @@ function checkToolClicked() {
       if(activeTool)
         objects.splice(objects.length - 1, 1);
       t = tools[i];
-      //addObj(t.x, t.y, t.fill, t.name, t.rotate, t.flip);
-      addObj(mx - (t.w / 2), my - (t.h / 2), t.fill, t.name, t.rotate, t.flip);      
+      //addObj(t.x, t.y, t.f, t.n, t.r, t.o);
+      addObj(mx - (t.w / 2), my - (t.h / 2), t.f, t.n, t.r, t.o);
       mySel = objects[objects.length - 1];
       activeTool = objects[objects.length - 1];
       offsetx = mx - mySel.x;
@@ -590,7 +592,7 @@ function myUp(){
     activeTool = oldActiveTool;
     oldActiveTool = null;
     setCursor();
-    addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.fill, activeTool.name, activeTool.rotate, activeTool.flip);
+    addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.f, activeTool.n, activeTool.r, activeTool.o);
     mySel = objects[objects.length - 1];
   }
   if(isScroll) {
@@ -640,13 +642,13 @@ function myDblClick(e) {
       invalidate();
       clear(gctx);
       // add the Tool back
-      addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.fill, activeTool.name, activeTool.rotate, activeTool.flip);
+      addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.f, activeTool.n, activeTool.r, activeTool.o);
       mySel = objects[objects.length - 1];    
       return true;
     }
   }
 
-  addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.fill, activeTool.name, activeTool.rotate, activeTool.flip);
+  addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.f, activeTool.n, activeTool.r, activeTool.o);
   mySel = objects[objects.length - 1];    
 
   // havent returned means we have selected nothing
@@ -745,8 +747,8 @@ function toolboxFlyout(cat) {
   });
   if(cat == "Tracks") {
     addTool('rail-curve', 90);
-    addTool('rail-curve', 180, 'vert');
-    addTool('rail-curve', 90, 'horiz');
+    addTool('rail-curve', 180, blockOrientations.vert);
+    addTool('rail-curve', 90, blockOrientations.horiz);
     addTool('rail-straight', 90);
   }
   sizeToolbox();
@@ -832,19 +834,40 @@ function generateBitlyUrl(enc) {
 }
 
 function encodeObjects() {
-  var toEncode;
+  var toEncode, clean = [], tmp;
   // Encode all the objects except the current tool.
   if(activeTool)
-    toEncode = objects.slice(0, objects.length - 1);
-  else
-    toEncode = objects;
+    objects.pop();
+  toEncode = objects;
 
-  return Base64.encode(JSON.stringify(toEncode));
+  
+  // Clean up the data a bit before we encode it.
+  $.each(objects, function(key, value) {
+    tmp = [];
+    tmp.push(value.x);
+    tmp.push(value.y);
+    tmp.push(value.n);
+    if(value.r != 0 || value.o != blockOrientations.none) {
+      tmp.push(value.r);
+      tmp.push(value.o);
+    }
+    clean.push(tmp);
+  });  
+  //alert(JSON.stringify(clean));
+  return Base64.encode(JSON.stringify(clean));
 }
 
 function decodeObjects() {
   var mdParam = $.url.param('md');
+  var tmp = [];
 
-  if(mdParam != "")
-    objects = JSON.parse(Base64.decode(mdParam));
+  if(mdParam != ""){
+    tmp = JSON.parse(Base64.decode(mdParam));
+    $.each(tmp, function(i, v) {
+      if(v.length == 3)
+        addObj(v[0], v[1], 't', v[2], 0, blockOrientations.none);
+      else
+        addObj(v[0], v[1], 't', v[2], v[3], v[4])
+    });
+  }
 }

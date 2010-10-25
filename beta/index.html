@@ -54,6 +54,7 @@
     </section>
     <section id="menu" class="overlay">
       <ul>
+        <li><img src="/images/icons/house.png" alt="MineDraft.net" class="action home" onclick="window.location('http://minedraft.net');" /> <a href="http://minedraft.net">MineDraft.net</a></li>
         <li><img src="/images/icons/world_link.png" alt="Create Link" title="Link to this Minedraft." class="vtip action link" onclick="createLinks()" /> <a href="#" onclick="createLinks();">Link to this Minedraft</a></li>
         <li class="last"><img src="/images/icons/help.png" alt="Help" class="help" onclick="toggleHelp();" /> <a href="#" onclick="toggleHelp();">Help</a></li>
       </ul>
@@ -107,19 +108,30 @@
     </section>
 
     <img src="/images/terrain.png" id="terrain" />
-
     <script type="text/javascript" src="javascripts/jquery.js"></script>
-    <script type="text/javascript">
-/*      var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-456444-6']);
-      _gaq.push(['_setDomainName', '.minedraft.net']);
-      _gaq.push(['_trackPageview']);
 
-      (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      })(); */
-    </script>
+    <section id="google" class="overlay">
+      <script type="text/javascript"><!--
+        google_ad_client = "pub-8011900212776107";
+        /* MineDraft.net */
+        google_ad_slot = "4095360530";
+        google_ad_width = 468;
+        google_ad_height = 15;
+        //-->
+      </script>
+      <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
+      <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-456444-6']);
+        _gaq.push(['_setDomainName', '.minedraft.net']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+      </script>
+    </section>
   </body>
 </html>

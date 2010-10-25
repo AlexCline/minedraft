@@ -196,6 +196,19 @@ a:hover { color: #777; }
   color: #111;
 }
 
+#google {
+  bottom: -1;
+  left: 10px;
+  margin-top: 1.5em !important;
+  -moz-border-top-left-radius: 5px;
+  border-top-left-radius: 5px;
+  -moz-border-top-right-radius: 5px;
+  border-top-right-radius: 5px;
+  border-color: #bbb;
+  background-color: #eee;
+  padding: 5px;
+}
+
 canvas {
 /*  border: 1px solid #666;
   height: 100%;
@@ -251,6 +264,6 @@ img#terrain {
 }
 
 #about {
-  width: 670px;
-  margin-left: -320px;
+  width: 745px;
+  margin-left: -370px;
 }
