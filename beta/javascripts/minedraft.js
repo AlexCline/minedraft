@@ -62,7 +62,8 @@ var toolCats = {
   "Fluids": [ "water", "ice", "lava" ],
   "Tracks": [ "rail-straight", "rail-curve" ],
   "Redstone": [ "redstone-torch-on", "redstone-torch-off", "redstone-line-on", "redstone-line-off", "redstone-cross-on", "redstone-cross-off" ],
-  "Misc": [ "ladder", "step", "toolbox", "sponge", "red-flower", "yellow-flower", "red-mushroom", "brown-mushroom"]
+  "Misc": [ "ladder", "step", "toolbox", "sponge", "red-flower", "yellow-flower", "red-mushroom", "brown-mushroom"],
+  "All": []
 };
 
 var blockOrientations = {
@@ -258,12 +259,13 @@ function draw() {
 
     var l = tools.length;
     tctx.strokeStyle = "#eee";
-    tctx.lineWidth = 3;
+    tctx.lineWidth = 2;
     for (var i = 0; i < l; i++) {
       drawObject(tctx, tools[i], tools[i].f);
       tctx.beginPath();
-      tctx.moveTo(0, tools[i].y + gridSize + 2);
-      tctx.lineTo(gridSize, tools[i].y + gridSize + 2);
+      tctx.moveTo(tools[i].x, tools[i].y + gridSize + 2);
+      tctx.lineTo(tools[i].x + gridSize + 2, tools[i].y + gridSize + 2);
+      tctx.lineTo(tools[i].x + gridSize + 2, tools[i].y - 1);
       tctx.stroke();
     }
     
@@ -738,13 +740,18 @@ var offset = 0;
 }*/
 
 function toolboxFlyout(cat) {
-  if(cat == "all"){
-    alert("foo");
-  }
   tools = [];
-  $.each(toolCats[cat], function(i, v) {
-    addTool(toolCats[cat][i], 0);
-  });
+  if(cat == "All"){
+    $.each(toolCats, function(k, v) {
+      $.each(toolCats[k], function(i, v) {
+        addTool(toolCats[k][i], 0);
+      })
+    });
+  } else {
+    $.each(toolCats[cat], function(i, v) {
+      addTool(toolCats[cat][i], 0);
+    });
+  }
   if(cat == "Tracks") {
     addTool('rail-curve', 90);
     addTool('rail-curve', 180, blockOrientations.vert);
@@ -752,7 +759,7 @@ function toolboxFlyout(cat) {
     addTool('rail-straight', 90);
   }
   sizeToolbox();
-  $("#toolbox-wrapper").css("right", -gridSize - 14);
+  //$("#toolbox-wrapper").css("right", -gridSize - 14);
   $("#toolbox-list li a").removeClass("active");
   $("#toolbox-list li."+cat+" a").addClass("active");
   $("#toolbox-wrapper").show();
@@ -761,7 +768,10 @@ function toolboxFlyout(cat) {
 function initTools() {
   var toolBox = "";
   $.each(toolCats, function(key, value) {
-    $("#toolbox-list").append('<li class="' + key + '"><a onclick="toolboxFlyout(\'' + key + '\');" href="#" class="active vtip" title="Show ' + key + ' blocks."><img src="/images/tools/' + key.toLowerCase() + '.png" /> </a></li>');
+    if(key == 'All')
+      $("#toolbox-list").append('<li class="' + key + '"><a onclick="toolboxFlyout(\'' + key + '\');" href="#" class="active vtip" title="Show ' + key + ' blocks."><img src="/images/tools/' + key.toLowerCase() + '.gif" /> </a></li>');
+    else
+      $("#toolbox-list").append('<li class="' + key + '"><a onclick="toolboxFlyout(\'' + key + '\');" href="#" class="active vtip" title="Show ' + key + ' blocks."><img src="/images/tools/' + key.toLowerCase() + '.png" /> </a></li>');
   });
   vtip();
   $("#toolbox-list img").height(gridSize);
@@ -771,23 +781,37 @@ function initTools() {
 
 function drawTools() {
   var toolY = 0; //-gridSize;
-  var toolX = 0;
+  var toolX = -gridSize - 3;
   for(i = 0; i < tools.length; i++) {
-    tools[i].y = i * (gridSize + 3);
+    if(i % 10 == 0) {
+      toolY = 0;
+      toolX += (gridSize + 3);
+    } else {
+      toolY += (gridSize + 3);
+      toolX = toolX;
+    }
+    tools[i].y = toolY;
     tools[i].x = toolX;
   }
 }
 
 function sizeToolbox() {
-  toolcanvas.setAttribute("height", tools.length * (gridSize + 3) - 2);
-  toolcanvas.setAttribute("width", gridSize);
-
+  //toolcanvas.setAttribute("height", tools.length * (gridSize + 3) - 2);
+  //toolcanvas.setAttribute("width", gridSize);
+  
+  if (tools.length >= 10) {
+    toolcanvas.setAttribute("height", 10 * (gridSize + 3) - 2);
+    toolcanvas.setAttribute("width", Math.ceil(tools.length / 10) * (gridSize + 3) - 2);
+  } else {
+    toolcanvas.setAttribute("height", tools.length * (gridSize + 3) - 2);
+    toolcanvas.setAttribute("width", gridSize);
+  }
   ghosttoolcanvas.height = toolcanvas.height;
   ghosttoolcanvas.width = toolcanvas.width;
 
   $("#toolbox-list img").height(gridSize);
   $("#toolbox-list a").width(gridSize);
-  $("#toolbox-wrapper").css("right", -gridSize - 14);
+  $("#toolbox-wrapper").css("right", -(Math.ceil(tools.length / 10) * (gridSize + 3)) - 12);
 
   drawTools();
 }
