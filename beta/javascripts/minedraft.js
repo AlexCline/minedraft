@@ -768,10 +768,10 @@ function toolboxFlyout(cat) {
 function initTools() {
   var toolBox = "";
   $.each(toolCats, function(key, value) {
-    if(key == 'All')
-      $("#toolbox-list").append('<li class="' + key + '"><a onclick="toolboxFlyout(\'' + key + '\');" href="#" class="active vtip" title="Show ' + key + ' blocks."><img src="/images/tools/' + key.toLowerCase() + '.gif" /> </a></li>');
-    else
-      $("#toolbox-list").append('<li class="' + key + '"><a onclick="toolboxFlyout(\'' + key + '\');" href="#" class="active vtip" title="Show ' + key + ' blocks."><img src="/images/tools/' + key.toLowerCase() + '.png" /> </a></li>');
+    //if(key == 'All')
+    //  $("#toolbox-list").append('<li class="' + key + '"><a onclick="toolboxFlyout(\'' + key + '\');" href="#" class="active vtip" title="Show ' + key + ' blocks."><img src="/images/tools/' + key.toLowerCase() + '.gif" /> </a></li>');
+    //else
+    $("#toolbox-list").append('<li class="' + key + '"><a onclick="toolboxFlyout(\'' + key + '\');" href="#" class="active vtip" title="Show ' + key + ' blocks."><img src="/images/tools/' + key.toLowerCase() + '.png" /> </a></li>');
   });
   vtip();
   $("#toolbox-list img").height(gridSize);
@@ -828,6 +828,7 @@ function drawDebug() {
 
 function createLinks() {
   var bitlyUrl;
+  $("#bitly-link").css("background", "#fff url('/images/spinner.gif') no-repeat 10px center");
   $("#links").fadeIn('slow');
   enc = encodeObjects();
   generateBitlyUrl(enc);
@@ -847,6 +848,7 @@ function generateBitlyUrl(enc) {
     dataType:"jsonp",
     success:function(v) {
       bitlyUrl = v.data.url;
+      $("#bitly-link").css("background-image", "none");
       $('#bitly-link').val(bitlyUrl);
       $('#html-link').val('<a href="'+ bitlyUrl +'">My Minedraft</a>');
       $('#reddit-link').val('[My Minedraft]('+ bitlyUrl +')');
@@ -886,12 +888,17 @@ function decodeObjects() {
   var tmp = [];
 
   if(mdParam != ""){
-    tmp = JSON.parse(Base64.decode(mdParam));
-    $.each(tmp, function(i, v) {
-      if(v.length == 3)
-        addObj(v[0], v[1], 't', v[2], 0, blockOrientations.none);
-      else
-        addObj(v[0], v[1], 't', v[2], v[3], v[4])
-    });
+    try{
+      tmp = JSON.parse(Base64.decode(mdParam));
+    
+      $.each(tmp, function(i, v) {
+        if(v.length == 3)
+          addObj(v[0], v[1], 't', v[2], 0, blockOrientations.none);
+        else
+          addObj(v[0], v[1], 't', v[2], v[3], v[4])
+      });
+    } catch(err) {
+      alert(err);
+    }
   }
 }
