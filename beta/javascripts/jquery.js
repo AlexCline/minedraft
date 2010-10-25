@@ -2,9 +2,10 @@ var helpVisible = false;
 function toggleHelp() {
   if(!helpVisible) {
     $('#help').fadeIn('slow');
-    showHelpTip($('#toolbox'), "Click the blocks in here.", "right");
-    showHelpTip($('.zoom img'), "Use these to zoom in and out.", "right");
+    showHelpTip($('#toolbox-list'), "Click the blocks in here.", "right");
+    showHelpTip($('.zoom img.mid'), "Use these to zoom in and out.", "right");
     showHelpTip($('.erase'), "Click here to erase everything.", "right");
+    showHelpTip($('.clearTool'), "Click here to clear the active tool.", "right");
     showHelpTip($('.link'), "Click here to create a link to this Minedraft.", "below");
     
     helpVisible = true;
@@ -28,7 +29,7 @@ function showHelpTip(obj, str, orient){
   $("body").append('<p class="vtip helpTip" id="'+tipId+'"><img class="'+imgCName+'" />'+str+"</p>");
   $("p#"+tipId+" ."+imgCName).attr("src",imgPath);
   if(orient == "right") {
-    top=(obj.offset().top + (obj.height() / 2) - $("p#"+tipId).height());
+    top=(obj.offset().top + (obj.width() / 2) - 17);
     left=(obj.offset().left + obj.width() + 10 );
   } else if(orient == "below") {
     top = (obj.offset().top + obj.height() + 10 );

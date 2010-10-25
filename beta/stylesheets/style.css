@@ -52,15 +52,47 @@ a:hover { color: #777; }
   border-bottom-right-radius: 5px;
 }
 
-ul#toolbox-list {
+#toolbox-list {
   float: left;
+  margin-left 8px;
+}
+
+#toolbox-list li {
+  margin-bottom: 3px;
+}
+
+#toolbox-list img {
+  border: 2px solid #eee;
+  height: 32px;
+}
+
+#toolbox-list a {
+  display: block;
+  padding-right: 8px;
   width: 32px;
-  text-align: left;
+}
+
+#toolbox-list a.active{
+  background: transparent url('/images/right.png') no-repeat right center;
+}
+
+#toolbox-wrapper {
+  position: absolute;
+  right: -10px;
+  top: 3px;
+  display: none;
+  padding: 5px;
+  -moz-border-top-right-radius: 5px;
+  border-top-right-radius: 5px;
+  -moz-border-bottom-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-left-style: none;
 }
 
 #tools canvas {
-  border: 1px solid #bbb;
+  border: 2px solid #eee;
   float: right;
+  background-color: #999;
 }
 
 #tools img {
@@ -72,17 +104,17 @@ ul#toolbox-list {
   cursor: pointer;
 }
 
-#tools div.zoom {
-  margin: 10px 0;
+/*#tools div.zoom {
+  margin: 20px 0;
   display: inline;
 }
 
 #tools div.zoom img {
   margin: 5px auto;
-}
+}*/
 
 #tools > img {
-  margin-bottom: 10px;
+  margin: 10px auto;
 }
 
 #menu {
@@ -99,10 +131,15 @@ ul#toolbox-list {
 
 #menu li {
   display: inline;
-  padding: 0 8px;
+  padding: 0 12px 0 6px;
+  border-right: 1px solid #777;
 }
 
-#menu .help {
+#menu li.last {
+  border-right-style: none;
+}
+
+#menu img {
   vertical-align: top;
   cursor: pointer;
 }
@@ -116,33 +153,45 @@ ul#toolbox-list {
   text-decoration: underline;
 }
 
-#zoom {
-  top: 368px;
-  left: -1px;
-  padding: 0 5px;
+#foot {
+  bottom: -1px;
+  right: 10px;
+  margin-top: 1.5em !important;
+  -moz-border-top-left-radius: 5px;
+  border-top-left-radius: 5px;
   -moz-border-top-right-radius: 5px;
   border-top-right-radius: 5px;
-  -moz-border-bottom-right-radius: 5px;
-  border-bottom-right-radius: 5px;
+  border-color: #bbb;
+  background-color: #eee;
+  padding: 5px;
 }
 
-#zoom img { 
-  margin: 0;
-  padding: 5px 0;
-  display: block;
+#foot li {
+  display: inline;
+  padding: 0 8px;
+}
+
+#foot li {
+  display: inline;
+  padding: 0 12px 0 6px;
+  border-right: 1px solid #bbb;
+}
+
+#foot li.last {
+  border-right-style: none;
+}
+
+#foot img {
+  vertical-align: top;
   cursor: pointer;
 }
 
-#copy {
-  margin-top: 1.5em !important;
-}
-
-#copy a {
+#foot a {
   font-size: 10px;
   color: #999;
 }
 
-#copy:hover, #copy:hover a {
+#foot:hover, #foot:hover a {
   border-color: #777;
   color: #111;
 }
@@ -199,4 +248,9 @@ canvas {
 
 img#terrain {
   display: none;
+}
+
+#about {
+  width: 670px;
+  margin-left: -320px;
 }

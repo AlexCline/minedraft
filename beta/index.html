@@ -12,6 +12,7 @@
     <script type="text/javascript" src="javascripts/jquery-1.4.3.min.js"></script>
     <script type="text/javascript" src="javascripts/jquery.guid.js"></script>
     <script type="text/javascript" src="javascripts/jquery.url.min.js"></script>
+    <script type="text/javascript" src="javascripts/jquery.togglefade.min.js"></script>   
     <script type="text/javascript" src="javascripts/vtip-min.js"></script>
     <script type="text/javascript" src="javascripts/json2.js"></script>
     <script type="text/javascript" src="javascripts/base64.js"></script>    
@@ -20,8 +21,8 @@
  
   <body onload="init();">
     <section id="about" class="overlay">
-      <div class="close"><img src="/images/icons/cancel.png" alt="Close" onclick="$('#about').toggle();"/></div>
-      <h1>MineDraft</h1>
+      <div class="close"><img src="/images/icons/cancel.png" alt="Close" onclick="$('#about').toggleFade();"/></div>
+      <img src="/images/logo.png" />
       <p>
         MineDraft allows you to draft your MineCraft ideas.
       </p>
@@ -31,16 +32,6 @@
       <p>
         Just click a block and start drafting!
       </p>
-      <p id="copy">
-        <a href="http://alexcline.net">
-          &copy; Alex Cline
-          <script type="text/javascript">
-            now = new Date();
-            year = now.getFullYear();
-            document.write(year);
-          </script>
-        </a>
-      </p>
     </section>
     <section id="wrapper">
       <canvas id="minedraft">
@@ -49,22 +40,22 @@
     </section>
     <section id="tools" class="overlay">
       <ul id="toolbox-list"></ul>
-      <canvas id="toolbox" height="1" width="1">Toolbox</canvas>
-      <div style="clear: both;">
-      <a onclick="clearTool();" href="#">Clear Tool</a>
+      <div id="toolbox-wrapper" class="overlay">
+        <canvas id="toolbox" height="1" width="1">Toolbox</canvas>
+      </div>
+      <div style="clear: both;"></div>
+      <img src="/images/icons/cross.png" onclick="clearTool();" alt="Clear Active Tool" title="Clear the active tool." class="vtip action clearTool"/>
       <div class="zoom">
         <img src="/images/icons/control_add.png" onclick="zoom('in');" alt="Zoom In" title="Zoom In" class="vtip action" />
-        <img src="/images/icons/bullet_white.png" />
+        <img src="/images/icons/bullet_white.png" class="mid"/>
         <img src="/images/icons/control_remove.png" onclick="zoom('out');" alt="Zoom Out" title="Zoom Out" class="vtip action" />
       </div>
-      <img src="/images/icons/cross.png" onclick="eraseObjects();" alt="Erase" title="Erase all objects." class="vtip action erase" />
+      <img src="/images/icons/page_white_delete.png" onclick="eraseObjects();" alt="Erase" title="Erase all objects." class="vtip action erase" />
     </section>
     <section id="menu" class="overlay">
       <ul>
-        <li><a href="#" onclick="$('#about').toggle();">About</a></li>
-        <!--li><a href="#">Blog</a></li-->
-        <li><img src="/images/icons/world_link.png" alt="Create Link" title="Link to this Minedraft." class="vtip action link" onclick="createLinks()" /> <a href="#" onclick="createLinks();">Link</a></li>
-        <li><img src="/images/icons/help.png" alt="Help" class="help" onclick="toggleHelp();" /> <a href="#" onclick="toggleHelp();">Help</a></li>
+        <li><img src="/images/icons/world_link.png" alt="Create Link" title="Link to this Minedraft." class="vtip action link" onclick="createLinks()" /> <a href="#" onclick="createLinks();">Link to this Minedraft</a></li>
+        <li class="last"><img src="/images/icons/help.png" alt="Help" class="help" onclick="toggleHelp();" /> <a href="#" onclick="toggleHelp();">Help</a></li>
       </ul>
     </section>
     <section id="help" class="overlay">
@@ -87,7 +78,7 @@
     </section>
     <section id="links" class="overlay">
       <div class="close">
-        <img src="/images/icons/cancel.png" onclick="$('#links').toggle();" alt="Close Help" />
+        <img src="/images/icons/cancel.png" onclick="$('#links').toggleFade();" alt="Close Help" />
       </div>
       <h1>Links</h1>
       <label for="full">Full Link: </label><input name="full" id="full-link" />
@@ -95,6 +86,24 @@
       <label for="html">HTML: </label><input name="html" id="html-link" />
       <label for="reddit">Reddit: </label><input name="reddit" id="reddit-link" />
       <label for="bbcode">BBCode: </label><input name="bbcode" id="bbcode-link" />
+    </section>
+
+    <section id="foot" class="overlay">
+      <ul>
+        <li><img src="/images/icons/comment.png" /> <a href="#">Feedback</a></li>
+        <li><img src="/images/icons/help.png" alt="About" class="about action" onclick="$('#about').toggle();" /> <a href="#" onclick="$('#about').toggleFade();">About</a></li>
+        <li class="last">
+          <a href="http://alexcline.net">
+            &copy; Alex Cline
+            <script type="text/javascript">
+              now = new Date();
+              year = now.getFullYear();
+              document.write(year);
+            </script>
+          </a>
+
+        </li>
+      </ul>
     </section>
 
     <img src="/images/terrain.png" id="terrain" />

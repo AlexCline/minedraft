@@ -1,6 +1,6 @@
 var hostname = "beta.minedraft.net";
 var gridSizeMinMax = [16, 64];
-var gridSize = 16;
+var gridSize = 32;
 
 var blocks = { 
   "grass": [0, 0, 16, 16],
@@ -60,7 +60,7 @@ var toolCats = {
   "Crafted": [ "wood", "cobblestone", "mossy-cobblestone", "glass", "brick", "iron", "gold", "diamond" ],
   "Ground": [ "grassy-dirt", "grass", "snowy-dirt", "snow", "tilled", "tilled-wet" ],
   "Fluids": [ "water", "ice", "lava" ],
-  "Tracks": [ "rail-curve", "rail-straight" ],
+  "Tracks": [ "rail-straight", "rail-curve" ],
   "Redstone": [ "redstone-torch-on", "redstone-torch-off", "redstone-line-on", "redstone-line-off", "redstone-cross-on", "redstone-cross-off" ],
   "Misc": [ "ladder", "step", "toolbox", "sponge", "red-flower", "yellow-flower", "red-mushroom", "brown-mushroom"]
 }
@@ -258,8 +258,14 @@ function draw() {
     }
 
     var l = tools.length;
+    tctx.strokeStyle = "#eee";
+    tctx.lineWidth = 3;
     for (var i = 0; i < l; i++) {
       drawObject(tctx, tools[i], tools[i].fill);
+      tctx.beginPath();
+      tctx.moveTo(0, tools[i].y + gridSize + 2);
+      tctx.lineTo(gridSize, tools[i].y + gridSize + 2);
+      tctx.stroke();
     }
     
     // draw selection
@@ -338,12 +344,13 @@ function drawObject(context, object, fill) {
 
 function eraseObjects(){
   if(confirm("Delete all the blocks?") && objects.length > 0) {
-    var tool = objects.pop();
-    objects = [];
-    objects.push(tool);
-    //mySel = null;
-    //activeTool = null;
-    //isDrag = false;
+    if(activeTool) {
+      var tool = objects.pop();
+      objects = [];
+      objects.push(tool);
+    } else {
+      objects = [];
+    }
     invalidate();
   }
 }
@@ -723,62 +730,68 @@ var offset = 0;
     addTool(index, 0);
   });
 
-  addTool('rail-curve', 90);
-  addTool('rail-curve', 180, 'vert');
-  addTool('rail-curve', 90, 'horiz');
-  addTool('rail-straight', 90);
 
   sizeToolbox();
   drawTools();
 }*/
 
 function toolboxFlyout(cat) {
+  if(cat == "all"){
+    alert("foo");
+  }
   tools = [];
   $.each(toolCats[cat], function(i, v) {
     addTool(toolCats[cat][i], 0);
   });
+  if(cat == "Tracks") {
+    addTool('rail-curve', 90);
+    addTool('rail-curve', 180, 'vert');
+    addTool('rail-curve', 90, 'horiz');
+    addTool('rail-straight', 90);
+  }
   sizeToolbox();
-  drawTools();
-  
+  $("#toolbox-wrapper").css("right", -gridSize - 14);
+  $("#toolbox-list li a").removeClass("active");
+  $("#toolbox-list li."+cat+" a").addClass("active");
+  $("#toolbox-wrapper").show();
 }
 
 function initTools() {
   var toolBox = "";
   $.each(toolCats, function(key, value) {
-    $("#toolbox-list").append('<li><a onclick="toolboxFlyout(\'' + key + '\');" href="#"><img src="/images/tools/' + key.toLowerCase() + '.png" /></a></li>');
+    $("#toolbox-list").append('<li class="' + key + '"><a onclick="toolboxFlyout(\'' + key + '\');" href="#" class="active vtip" title="Show ' + key + ' blocks."><img src="/images/tools/' + key.toLowerCase() + '.png" /> </a></li>');
   });
+  vtip();
+  $("#toolbox-list img").height(gridSize);
+  $("#toolbox-list a").width(gridSize);
+
 }
 
 function drawTools() {
   var toolY = 0; //-gridSize;
   var toolX = 0;
   for(i = 0; i < tools.length; i++) {
-    /*if(i % 4 == 0) {
-      toolY += gridSize;
-      toolX = 0;
-    }else{
-      toolX = toolX + gridSize;
-    }*/
-    tools[i].y = i * gridSize;
+    tools[i].y = i * (gridSize + 3);
     tools[i].x = toolX;
-    drawObject(tctx, tools[i], tools[i].fill);
   }
 }
 
 function sizeToolbox() {
-  toolcanvas.setAttribute("height", tools.length * gridSize);
+  toolcanvas.setAttribute("height", tools.length * (gridSize + 3) - 2);
   toolcanvas.setAttribute("width", gridSize);
-
-  //toolcanvas.setAttribute("height", 10 * gridSize);
-  //toolcanvas.setAttribute("width", 10 * gridSize);
 
   ghosttoolcanvas.height = toolcanvas.height;
   ghosttoolcanvas.width = toolcanvas.width;
+
+  $("#toolbox-list img").height(gridSize);
+  $("#toolbox-list a").width(gridSize);
+  $("#toolbox-wrapper").css("right", -gridSize - 14);
+
   drawTools();
 }
 
 function drawDebug() {
-  var bottom = HEIGHT - 20;
+  var bottom = HEIGHT - 100;
   var right = WIDTH - 50;
 
   ctx.fillStyle = "orangered";
@@ -789,7 +802,7 @@ function drawDebug() {
 
 function createLinks() {
   var bitlyUrl;
-  $("#links").toggle();
+  $("#links").fadeIn('slow');
   enc = encodeObjects();
   generateBitlyUrl(enc);
   $("#full-link").val("http://"+hostname+"/?md=" + enc);
