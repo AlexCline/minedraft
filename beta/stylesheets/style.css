@@ -54,7 +54,6 @@ a:hover { color: #777; }
 
 #toolbox-list {
   float: left;
-  margin-left 8px;
 }
 
 #toolbox-list li {
@@ -197,7 +196,7 @@ a:hover { color: #777; }
 }
 
 #google {
-  bottom: -1;
+  bottom: -6px;
   left: 10px;
   margin-top: 1.5em !important;
   -moz-border-top-left-radius: 5px;
