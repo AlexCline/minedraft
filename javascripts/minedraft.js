@@ -1,4 +1,4 @@
-var hostname = "beta.minedraft.net";
+var hostname = "minedraft.net";
 var gridSizeMinMax = [16, 64];
 var gridSize = 32;
 
