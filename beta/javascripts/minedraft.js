@@ -167,6 +167,9 @@ var toolboxStylePaddingLeft, toolboxStylePaddingTop, toolboxStyleBorderLeft, too
 // initialize our canvas, add a ghost canvas, set draw loop
 // then add everything we want to intially exist on the canvas
 function init() {
+  if(!supports_canvas())
+    return;
+
   cookieGridSize = getCookie("gridSize");
   if(cookieGridSize != null && cookieGridSize != "")
     gridSize = parseFloat(cookieGridSize);
@@ -902,7 +905,7 @@ function decodeObjects() {
           addObj(v[0], v[1], 't', v[2], v[3], v[4])
       });
     } catch(err) {
-      $("body").append('<section id="parseError" class="overlay"><div class="close"><img src="/images/icons/cancel.png" onclick="$(\'#parseError\').toggleFade();" alt="Close Help" /></div><h1>Error</h1><p>Sorry, there was a problem parsing the URL you specified.  It may have been munged at some point and the MineDraft it pointed to can\'t be found.</p></section>');
+      $("body").append('<div id="parseError" class="overlay"><div class="close"><img src="/images/icons/cancel.png" onclick="$(\'#parseError\').toggleFade();" alt="Close Help" /></div><h1>Error</h1><p>Sorry, there was a problem parsing the URL you specified.  It may have been munged at some point and the MineDraft it pointed to can\'t be found.</p></div>');
       $("#parseError").toggleFade();
     }
   }
@@ -926,4 +929,8 @@ function getCookie(c_name) {
     }
   }
   return "";
+}
+
+function supports_canvas() {
+  return !!document.createElement('canvas').getContext;
 }

@@ -22,7 +22,7 @@
   </head>
  
   <body onload="init();">
-    <section id="about" class="overlay">
+    <div id="about" class="overlay">
       <div class="close"><img src="/images/icons/cancel.png" alt="Close" onclick="$('#about').toggleFade();"/></div>
       <img src="/images/logo.png" />
       <p>
@@ -37,13 +37,13 @@
       <p class="mojang">
         <a href="http://minecraft.net">Minecraft</a> and associated Minecraft images are Copyright 2009-2010 <a href="http://mojang.com">Mojang Specifications</a>.
       </p>
-    </section>
-    <section id="wrapper">
+    </div>
+    <div id="wrapper">
       <canvas id="minedraft">
         Your browser doesn't support HTML5 Canvas.
       </canvas>
-    </section>
-    <section id="tools" class="overlay">
+    </div>
+    <div id="tools" class="overlay">
       <ul id="toolbox-list"></ul>
       <div id="toolbox-wrapper" class="overlay">
         <canvas id="toolbox" height="1" width="1">Toolbox</canvas>
@@ -56,15 +56,15 @@
         <img src="/images/icons/control_remove.png" onclick="zoom('out');" alt="Zoom Out" title="Zoom Out" class="vtip action" />
       </div>
       <img src="/images/icons/page_white_delete.png" onclick="eraseObjects();" alt="Erase" title="Erase all objects." class="vtip action erase" />
-    </section>
-    <section id="menu" class="overlay">
+    </div>
+    <div id="menu" class="overlay">
       <ul>
         <li><img src="/images/icons/house.png" alt="MineDraft.net" class="action home" onclick="window.location('http://minedraft.net');" /> <a href="http://minedraft.net">MineDraft.net</a></li>
         <li><img src="/images/icons/world_link.png" alt="Create Link" title="Link to this Minedraft." class="vtip action link" onclick="createLinks()" /> <a href="#" onclick="createLinks();">Link to this Minedraft</a></li>
         <li class="last"><img src="/images/icons/help.png" alt="Help" class="help" onclick="toggleHelp();" /> <a href="#" onclick="toggleHelp();">Help</a></li>
       </ul>
-    </section>
-    <section id="help" class="overlay">
+    </div>
+    <div id="help" class="overlay">
       <div class="close">
         <img src="/images/icons/cancel.png" onclick="toggleHelp();" alt="Close Help" />
       </div>
@@ -81,8 +81,8 @@
       <p><em>Double-Click an object in the grid to delete it.</em></p>
       <p><em>Click and drag objects to move them around.</em></p>
       <p><em>Click and drag an empty space in the grid to scroll around.</em></p>
-    </section>
-    <section id="links" class="overlay">
+    </div>
+    <div id="links" class="overlay">
       <div class="close">
         <img src="/images/icons/cancel.png" onclick="$('#links').toggleFade();" alt="Close Help" />
       </div>
@@ -92,9 +92,9 @@
       <label for="html-link">HTML: </label><input name="html" id="html-link" />
       <label for="reddit-link">Reddit: </label><input name="reddit" id="reddit-link" />
       <label for="bbcode-link">BBCode: </label><input name="bbcode" id="bbcode-link" />
-    </section>
+    </div>
 
-    <section id="feedback" class="overlay">
+    <div id="feedback" class="overlay">
       <div class="close">
         <img src="/images/icons/cancel.png" onclick="$('#feedback').toggleFade();" alt="Close Help" />
       </div>
@@ -111,9 +111,9 @@
         <input type="image" src="https://www.paypal.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
         <img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
       </form>
-    </section>
+    </div>
 
-    <section id="foot" class="overlay">
+    <div id="foot" class="overlay">
       <ul>
         <li><img src="/images/icons/comment.png" alt="Feedback" class="feedback action" onclick="$('#feedback').toggleFade();" /> <a href="#" onclick="$('#feedback').toggleFade();">Feedback</a></li>
         <li><img src="/images/icons/help.png" alt="About" class="about action" onclick="$('#about').toggle();" /> <a href="#" onclick="$('#about').toggleFade();">About</a></li>
@@ -128,12 +128,12 @@
           </a>
         </li>
       </ul>
-    </section>
+    </div>
 
     <img src="/images/terrain.png" id="terrain" />
     <script type="text/javascript" src="javascripts/jquery.js"></script>
 
-    <section id="google" class="overlay">
+    <div id="google" class="overlay">
       <script type="text/javascript">
         google_ad_client = "pub-8011900212776107";
         /* MineDraft.net */
@@ -154,13 +154,13 @@
           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
         })();
       </script>
-    </section>
-    <!--[if lt IE 9]>
-      <script type="text/javascript">
+    </div>
+    <script type="text/javascript">
+      if(!supports_canvas()) {
         $('body').append('<div id="browser" class="overlay"><h1>Unsupported Browser</h1><p>Sorry, it appears you\'re using an unsupported browser.  Please follow the links below to download the latest version of a browser that is compatible with MineDraft.net.</p><br /><ul><li><img src="/images/browsers/firefox.png" alt="firefox" /><a href="http://www.mozilla.com/en-US/firefox/personal.html">Firefox</a></li><li><img src="/images/browsers/safari.png" alt="firefox" /><a href="http://www.apple.com/safari/">Safari</a></li><li><img src="/images/browsers/chrome.png" alt="firefox" /><a href="http://www.google.com/chrome/index.html">Chrome</a></li><li><img src="/images/browsers/opera.png" alt="firefox" /><a href="http://www.opera.com/">Opera</a></li></ul></div>');
         $('div#browser').show();
-      </script>
-    <![endif]-->
+      }
+    </script>
 
   </body>
 </html>

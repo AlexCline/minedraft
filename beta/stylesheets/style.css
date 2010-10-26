@@ -21,7 +21,10 @@ a, a:visited {
   color: #111;
   text-decoration: underline;
 }
-a:hover { color: #777; }
+a:hover { 
+  color: #777;
+  text-decoration: underline;
+}
 
 #wrapper {
   width: 100%;
@@ -42,7 +45,7 @@ a:hover { color: #777; }
 }
 
 #tools {
-  top: 10px;
+  top: 15px;
   left: -1px;
   padding: 5px;
   text-align: center;
@@ -266,6 +269,7 @@ img#terrain {
 #about {
   width: 745px;
   margin-left: -370px;
+  z-index: 200;
 }
 
 .mojang {
@@ -275,4 +279,9 @@ img#terrain {
 
 .mojang a {
   color: #777;
+}
+
+#browser li img {
+  vertical-align: middle;
+  margin: .5em;
 }
