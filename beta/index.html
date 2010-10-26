@@ -15,6 +15,10 @@
     <script type="text/javascript" src="javascripts/json2.js"></script>
     <script type="text/javascript" src="javascripts/base64.js"></script>    
     <script type="text/javascript" src="javascripts/minedraft.js"></script>
+
+    <!--[if lt IE 9]>
+      <script type="text/javascript" src="/javascripts/html5.js"></script>
+    <![endif]-->
   </head>
  
   <body onload="init();">
@@ -151,5 +155,12 @@
         })();
       </script>
     </section>
+    <!--[if lt IE 9]>
+      <script type="text/javascript">
+        $('body').append('<div id="browser" class="overlay"><h1>Unsupported Browser</h1><p>Sorry, it appears you\'re using an unsupported browser.  Please follow the links below to download the latest version of a browser that is compatible with MineDraft.net.</p><br /><ul><li><img src="/images/browsers/firefox.png" alt="firefox" /><a href="http://www.mozilla.com/en-US/firefox/personal.html">Firefox</a></li><li><img src="/images/browsers/safari.png" alt="firefox" /><a href="http://www.apple.com/safari/">Safari</a></li><li><img src="/images/browsers/chrome.png" alt="firefox" /><a href="http://www.google.com/chrome/index.html">Chrome</a></li><li><img src="/images/browsers/opera.png" alt="firefox" /><a href="http://www.opera.com/">Opera</a></li></ul></div>');
+        $('div#browser').show();
+      </script>
+    <![endif]-->
+
   </body>
 </html>
