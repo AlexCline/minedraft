@@ -141,6 +141,7 @@ var INTERVAL = 20;  // how often, in milliseconds, we check to see if a redraw i
 
 var isDrag = false;
 var isScroll = false;
+var isDragDraw = false;
 var mx, my; // mouse coordinates
 var msx, msy; // mouse coordinates for old scroll position.
 
@@ -152,6 +153,7 @@ var canvasValid = false;
 // The node (if any) being selected.
 // If in the future we want to select multiple objects, this will get turned into an array
 var mySel; 
+var lastObj;
 
 // The currently selected tool.
 var activeTool;
@@ -454,6 +456,24 @@ function myMove(e){
     msy = my;
     invalidate();
   }
+  if (isDragDraw) {
+    getMouse(e);
+    var lastX, lastY, diffX, diffY;
+    // Else we're just clicking and dragging the empty canvas.
+    if(objects.length > 0) {
+      lastObj = objects[objects.length - 2];
+      lastX = lastObj.x;
+      lastY = lastObj.y;
+    } else
+      lastX = lastY = 0;
+
+    diffX = mx - lastX; //lastX - mx;
+    diffY = my - lastY; //lastY - my;
+    if(diffX >= gridSize || diffX < 0 || diffY >= gridSize || diffY < 0){ 
+      alignObj();
+      drawCurrentTool();
+    }
+  }
 }
 
 // Happens when the mouse is clicked in the canvas
@@ -479,11 +499,13 @@ function myDown(e){
     // Add a block to the canvas and set it to the current object, then align it.
     drawCurrentTool();
     alignObj();
-    //mySel = null;
 
     // Add a new tool
     drawCurrentTool();
   }
+  
+  isDragDraw = true;
+  canvas.onmousemove = myMove;
 
   // havent returned means we have selected nothing
   //mySel = null;
@@ -647,6 +669,10 @@ function myUp(){
     mySel = tmpSel;
     isScroll = false;
   }
+  if(isDragDraw) {
+    isDragDraw = false;
+  }
+
 }
 
 function mouseHasMoved() {
