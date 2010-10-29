@@ -66,7 +66,8 @@ var toolCats = {
   "Tracks": [ "rail-straight", "rail-curve" ],
   "Redstone": [ "redstone-torch-on", "redstone-torch-off", "redstone-line-on", "redstone-line-off", "redstone-cross-on", "redstone-cross-off" ],
   "Misc": [ "ladder", "step", "toolbox", "sponge", "red-flower", "yellow-flower", "red-mushroom", "brown-mushroom"],
-  "All": []
+  "All": [],
+  "Tools": []
 };
 
 var blockOrientations = {
@@ -178,6 +179,12 @@ function init() {
   cookieGridSize = getCookie("gridSize");
   if(cookieGridSize != null && cookieGridSize != "")
     gridSize = parseFloat(cookieGridSize);
+  cookieLockToolbox = getCookie("lockToolboxSize");
+  if(cookieLockToolbox != null && cookieLockToolbox != "") {
+    lockToolboxSize = false; // Set this to false so it'll be set to true when we call toggleToolboxLock
+    toggleToolboxLock();
+    currToolboxSize = parseFloat(cookieLockToolbox);
+  }
 
   canvas = document.getElementById('minedraft');
   sizeCanvas();
@@ -786,8 +793,14 @@ function initTools() {
     $("#toolbox-list").append('<li class="' + key + '"><a onclick="toolboxFlyout(\'' + key + '\');" href="#" class="active vtip" title="Show ' + key + ' blocks."><img src="/images/tools/' + key.toLowerCase() + '.png" /> </a></li>');
   });
   vtip();
-  $("#toolbox-list img").height(gridSize);
-  $("#toolbox-list a").width(gridSize);
+
+  if(currToolboxSize != gridSize) {
+    $("#toolbox-list img").height(currToolboxSize);
+    $("#toolbox-list a").width(currToolboxSize);
+  } else {
+    $("#toolbox-list img").height(gridSize);
+    $("#toolbox-list a").width(gridSize);
+  }
 
 }
 
@@ -834,16 +847,19 @@ function sizeToolbox() {
 }
 
 function toggleToolboxLock() {
-  
   if(lockToolboxSize) {
     $(".lockToolbox").attr("src", "/images/icons/lock_open.png");
     $(".lockToolbox").attr("title", "Toolbox size is unlocked.  Click to lock.");
+    $(".lockToolbox").css("background-color", "transparent");
     lockToolboxSize = false;
+    setCookie("lockToolboxSize", "", -1);
   } else {
     $(".lockToolbox").attr("src", "/images/icons/lock.png");
     $(".lockToolbox").attr("title", "Toolbox size is locked.  Click to unlock.");
+    $(".lockToolbox").css("background-color", "orangered");
     lockToolboxSize = true;
     currToolboxSize = gridSize;
+    setCookie("lockToolboxSize", currToolboxSize, 365);
   }
 }
 
