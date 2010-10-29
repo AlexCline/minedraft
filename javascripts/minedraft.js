@@ -1,5 +1,5 @@
 var hostname = "minedraft.net";
-var gridSizeMinMax = [16, 48];
+var gridSizeMinMax = [16, 64];
 var gridSize = 32;
 
 var blocks = { 
@@ -246,10 +246,23 @@ function init() {
   //toolcanvas.onmouseup = myUp;
   canvas.ondblclick = myDblClick;
   window.onresize = sizeCanvas;
-  
+  document.onkeypress = myKeyPress;
+
   // add custom initialization here:
   initTools();
   decodeObjects();
+}
+
+function myKeyPress(e) {
+  var key = (e) ? e.which : e.keyCode;
+  switch(String.fromCharCode(key)) {
+    case "-":
+      zoom('out');
+      break;
+    case "=":
+      zoom('in');
+      break;
+  }
 }
 
 function sizeCanvas() {
@@ -856,7 +869,6 @@ function initTools() {
     $("#toolbox-list img").height(gridSize);
     $("#toolbox-list a").width(gridSize);
   }
-
 }
 
 function drawTools() {
