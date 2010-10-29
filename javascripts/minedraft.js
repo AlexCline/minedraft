@@ -1,5 +1,5 @@
 var hostname = "minedraft.net";
-var gridSizeMinMax = [16, 64];
+var gridSizeMinMax = [16, 48];
 var gridSize = 32;
 
 var blocks = { 
@@ -51,14 +51,17 @@ var blocks = {
   "red-mushroom": [192, 16, 16, 16],
   "brown-mushroom": [208, 16, 16, 16],
   "rail-curve": [0, 112, 16, 16],
-  "rail-straight": [0, 128, 16, 16]
+  "rail-straight": [0, 128, 16, 16],
+  "cactus": [80, 64, 16, 16],
+  "cactus-side": [96, 64, 16, 16],
+  "reeds": [144, 64, 16, 16]
 };
 
 var toolCats = {
   "Ore": [ "coal-ore", "iron-ore", "gold-ore", "redstone-ore", "diamond-ore" ],
   "Natural": [ "dirt", "stone", "sand", "gravel", "clay", "stump", "wool", "obsidian", "bedrock" ],
   "Crafted": [ "wood", "cobblestone", "mossy-cobblestone", "glass", "brick", "iron", "gold", "diamond" ],
-  "Ground": [ "grassy-dirt", "grass", "snowy-dirt", "snow", "tilled", "tilled-wet" ],
+  "Ground": [ "grassy-dirt", "grass", "snowy-dirt", "snow", "tilled", "tilled-wet", "cactus", "cactus-side", "reeds" ],
   "Fluids": [ "water", "ice", "lava" ],
   "Tracks": [ "rail-straight", "rail-curve" ],
   "Redstone": [ "redstone-torch-on", "redstone-torch-off", "redstone-line-on", "redstone-line-off", "redstone-cross-on", "redstone-cross-off" ],
@@ -141,6 +144,8 @@ var mySel;
 // The currently selected tool.
 var activeTool;
 var oldActiveTool;
+var lockToolboxSize = false;
+var currToolboxSize = gridSize;
 
 // The selection color and width. Right now we have a red selection with a small width
 var mySelColor = 'orangered';
@@ -805,22 +810,41 @@ function drawTools() {
 function sizeToolbox() {
   //toolcanvas.setAttribute("height", tools.length * (gridSize + 3) - 2);
   //toolcanvas.setAttribute("width", gridSize);
-  
-  if (tools.length >= 12) {
-    toolcanvas.setAttribute("height", 13 * (gridSize + 3) - 2);
-    toolcanvas.setAttribute("width", Math.ceil(tools.length / 13) * (gridSize + 3) - 3);
+
+    if (tools.length >= 12) {
+      toolcanvas.setAttribute("height", 13 * (gridSize + 3) - 2);
+      toolcanvas.setAttribute("width", Math.ceil(tools.length / 13) * (gridSize + 3) - 3);
+    } else {
+      toolcanvas.setAttribute("height", tools.length * (gridSize + 3) - 2);
+      toolcanvas.setAttribute("width", gridSize);
+    }
+    ghosttoolcanvas.height = toolcanvas.height;
+    ghosttoolcanvas.width = toolcanvas.width;
+
+  if(!lockToolboxSize) {  
+    currToolboxSize = gridSize;
+    $("#toolbox-list img").height(gridSize);
+    $("#toolbox-list a").width(gridSize);
+    $("#toolbox-wrapper").css("right", -(Math.ceil(tools.length / 13) * (gridSize + 3)) - 12);
   } else {
-    toolcanvas.setAttribute("height", tools.length * (gridSize + 3) - 2);
-    toolcanvas.setAttribute("width", gridSize);
+    $("#toolbox-wrapper").css("right", -(Math.ceil(tools.length / 13) * (gridSize + 3)) - 12);  
   }
-  ghosttoolcanvas.height = toolcanvas.height;
-  ghosttoolcanvas.width = toolcanvas.width;
-
-  $("#toolbox-list img").height(gridSize);
-  $("#toolbox-list a").width(gridSize);
-  $("#toolbox-wrapper").css("right", -(Math.ceil(tools.length / 13) * (gridSize + 3)) - 12);
-
   drawTools();
+
+}
+
+function toggleToolboxLock() {
+  
+  if(lockToolboxSize) {
+    $(".lockToolbox").attr("src", "/images/icons/lock_open.png");
+    $(".lockToolbox").attr("title", "Toolbox size is unlocked.  Click to lock.");
+    lockToolboxSize = false;
+  } else {
+    $(".lockToolbox").attr("src", "/images/icons/lock.png");
+    $(".lockToolbox").attr("title", "Toolbox size is locked.  Click to unlock.");
+    lockToolboxSize = true;
+    currToolboxSize = gridSize;
+  }
 }
 
 function drawDebug() {
