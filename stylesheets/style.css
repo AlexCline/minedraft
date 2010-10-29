@@ -262,7 +262,7 @@ canvas {
   margin-left: 1em;
 }
 
-img#terrain {
+img#terrain, img#metatools {
   display: none;
 }
 
@@ -284,4 +284,10 @@ img#terrain {
 #browser li img {
   vertical-align: middle;
   margin: .5em;
+}
+
+.flyout-close {
+  position: absolute;
+  right: -8px;
+  top: -8px;
 }
