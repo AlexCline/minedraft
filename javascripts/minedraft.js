@@ -262,7 +262,41 @@ function myKeyPress(e) {
     case "=":
       zoom('in');
       break;
+    case "w":
+      moveCanvas('up');
+      break;
+    case "a":
+      moveCanvas('left');
+      break;
+    case "s":
+      moveCanvas('down');
+      break;
+    case "d":
+      moveCanvas('right');
+      break;
   }
+}
+
+function moveCanvas(dir) {
+  switch(dir) {
+    case "left":
+      for(var i = 0; i < objects.length - 1; i++)
+        objects[i].x -= gridSize;
+    break;
+    case "right":
+      for(var i = 0; i < objects.length - 1; i++)
+        objects[i].x += gridSize;
+    break;
+    case "up":
+      for(var i = 0; i < objects.length - 1; i++)
+        objects[i].y -= gridSize;
+    break;
+    case "down":
+      for(var i = 0; i < objects.length - 1; i++)
+        objects[i].y += gridSize;
+    break;
+  }
+  invalidate();
 }
 
 function sizeCanvas() {
