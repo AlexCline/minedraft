@@ -54,7 +54,10 @@ var blocks = {
   "rail-straight": [0, 128, 16, 16],
   "cactus": [80, 64, 16, 16],
   "cactus-side": [96, 64, 16, 16],
-  "reeds": [144, 64, 16, 16]
+  "reeds": [144, 64, 16, 16],
+  "metatools": {
+    "eraser": [0, 0, 16, 16]
+  }
 };
 
 var toolCats = {
@@ -109,6 +112,14 @@ function addTool(name, rotate, orientation) {
   tool.n = name;
   tool.r = rotate;
   tool.o = orientation;
+  tools.push(tool);
+  invalidate();
+}
+
+function addMetaTool(name) {
+  var tool = new Obj;
+  tool.n = name;
+  tool.m = true;
   tools.push(tool);
   invalidate();
 }
@@ -318,12 +329,16 @@ function drawObject(context, object, fill) {
   
   context.fillRect(object.x, object.y, object.w, object.h);
 
+  if(object.m == true) {
+    drawMetaTool(context, object);
+    return;
+  }
+
   if (context != gctx || context != gtctx) {
     //drawBlock(object);
     n = object.n;
     b = blocks[object.n];
 
-    //alert(b);
     var img = document.getElementById("terrain");
     if(object.r != 0) {
       var destX = destY = 0;
@@ -363,6 +378,12 @@ function drawObject(context, object, fill) {
       context.drawImage(img, b[0], b[1], b[2], b[3], object.x, object.y, gridSize + 1, gridSize + 1);
     }
   }
+}
+
+function drawMetaTool(context, o) {
+  img = document.getElementById("metatools");
+  b = blocks.metatools[o.n];
+  context.drawImage(img, b[0], b[1], b[2], b[3], o.x, o.y, gridSize + 1, gridSize + 1);
 }
 
 function eraseObjects(){
@@ -440,6 +461,11 @@ function myDown(e){
   getMouse(e);
   clear(gctx);
 
+  if(e.shiftKey) {
+    scrollCanvas(e);
+    return;
+  }
+
   if(activeTool) {
     // Remove the current tool
     objects.splice(objects.length - 1);
@@ -458,8 +484,6 @@ function myDown(e){
     // Add a new tool
     drawCurrentTool();
   }
-
-  scrollCanvas(e);
 
   // havent returned means we have selected nothing
   //mySel = null;
@@ -745,16 +769,6 @@ function drawGrid() {
 }
 
 var offset = 0;
-// Draw the toolbar
-/*function initTools() {
-  $.each(blocks, function(index, value) {
-    addTool(index, 0);
-  });
-
-
-  sizeToolbox();
-  drawTools();
-}*/
 
 function toolboxFlyout(cat) {
   tools = [];
@@ -773,6 +787,9 @@ function toolboxFlyout(cat) {
   }
   if(cat == "Tracks")
     addRotatedTracks();
+  if(cat == "Tools")
+    addMetaTools();
+
   sizeToolbox();
   //$("#toolbox-wrapper").css("right", -gridSize - 14);
   $("#toolbox-list li a").removeClass("active");
@@ -785,6 +802,10 @@ function addRotatedTracks() {
   addTool('rail-curve', 180, blockOrientations.vert);
   addTool('rail-curve', 90, blockOrientations.horiz);
   addTool('rail-straight', 90);
+}
+
+function addMetaTools() {
+  addMetaTool('eraser', 0);
 }
 
 function initTools() {
