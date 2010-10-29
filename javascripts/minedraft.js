@@ -20,6 +20,7 @@ var blocks = {
   "tilled": [112, 80, 16, 16],
   "tilled-wet": [96, 80, 16, 16],
   "stump": [80, 16, 16, 16],
+  "bark": [64, 32, 16, 16],
   "gold-ore": [0, 32, 16, 16],
   "iron-ore": [16, 32, 16, 16],
   "coal-ore": [32, 32, 16, 16],
@@ -62,9 +63,9 @@ var blocks = {
 
 var toolCats = {
   "Ore": [ "coal-ore", "iron-ore", "gold-ore", "redstone-ore", "diamond-ore" ],
-  "Natural": [ "dirt", "stone", "sand", "gravel", "clay", "stump", "wool", "obsidian", "bedrock" ],
-  "Crafted": [ "wood", "cobblestone", "mossy-cobblestone", "glass", "brick", "iron", "gold", "diamond" ],
-  "Ground": [ "grassy-dirt", "grass", "snowy-dirt", "snow", "tilled", "tilled-wet", "cactus", "cactus-side", "reeds" ],
+  "Natural": [ "dirt", "stone", "sand", "gravel", "clay", "stump", "bark", "wool", "obsidian", "bedrock" ],
+  "Crafted": [ "wood", "cobblestone", "glass", "brick", "iron", "gold", "diamond" ],
+  "Ground": [ "grassy-dirt", "grass", "snowy-dirt", "snow", "tilled", "tilled-wet", "mossy-cobblestone", "cactus", "cactus-side", "reeds" ],
   "Fluids": [ "water", "ice", "lava" ],
   "Tracks": [ "rail-straight", "rail-curve" ],
   "Redstone": [ "redstone-torch-on", "redstone-torch-off", "redstone-line-on", "redstone-line-off", "redstone-cross-on", "redstone-cross-off" ],
@@ -555,7 +556,14 @@ function checkObjectClicked() {
     
     // if the mouse pixel exists, select and break
     if (imageData.data[3] > 0) {
-      mySel = objects[i];
+      /*var tmp = objects.splice(i, 1);
+      objects.push(tmp);
+      mySel = objects[objects.length - 1];*/
+      var tmp = objects[i];
+      objects.splice(i, 1);
+      objects.push(tmp);
+      mySel = objects[objects.length - 1];
+      //mySel = objects[i];
       offsetx = mx - mySel.x;
       offsety = my - mySel.y;
       mySel.x = mx - offsetx;
@@ -583,7 +591,7 @@ function checkToolClicked() {
     var imageData = gtctx.getImageData(mx, my, 1, 1);
     if(imageData.data[3] > 0) {
       if(activeTool)
-        objects.splice(objects.length - 1, 1);
+        objects.pop(); //objects.splice(objects.length - 1, 1);
       t = tools[i];
       //addObj(t.x, t.y, t.f, t.n, t.r, t.o);
       addObj(mx - (t.w / 2), my - (t.h / 2), t.f, t.n, t.r, t.o);
