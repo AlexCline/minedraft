@@ -1078,8 +1078,6 @@ function supports_canvas() {
 
 function toggleMaterials(){
   $("#materials").toggleFade();
-  if($("#materials-list").text() != "")
-    return;
   var results = [];
   var str = "<ul>";
 
@@ -1092,7 +1090,7 @@ function toggleMaterials(){
   }
 
   for (var j in results) {
-    str += "<li>" + j.replace(/-/gi, " ") + ": " + results[j];
+    str += "<li>" + j.replace(/-/gi, " ").capitalize() + ": " + results[j];
     if(results[j] > 64) {
       str += " [" + Math.floor(results[j] / 64);
       str += Math.floor(results[j] / 64) == 1 ? " stack" : " stacks";
@@ -1104,7 +1102,7 @@ function toggleMaterials(){
   }
 
   str += "</ul>";  
-  $("#materials-list").append(str);
+  $("#materials-list").html(str);
 }
 
 function objectsSort(a, b) {
@@ -1113,4 +1111,8 @@ function objectsSort(a, b) {
   if(a.n < b.n)
     return -1;
   return 0;
+}
+
+String.prototype.capitalize = function () {
+  return this.charAt(0).toUpperCase() + this.slice(1);
 }
