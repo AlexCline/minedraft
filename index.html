@@ -58,6 +58,7 @@
       </div>
       <img src="/images/icons/page_white_delete.png" onclick="eraseObjects();" alt="Erase" title="Erase all objects." class="vtip action erase" />
       <img src="/images/icons/lock_open.png" onclick="toggleToolboxLock();" alt="Lock Toolbox Size" title="Toolbox size is unlocked. Click to lock." class="vtip action lockToolbox" />
+      <img src="/images/icons/page_white_text.png" onclick="toggleMaterials();" alt="Show the required materials." title="Click to show the required materials for this draft." class="vtip action show-materials" />
     </div>
     <div id="menu" class="overlay">
       <ul>
@@ -95,7 +96,13 @@
       <label for="reddit-link">Reddit: </label><input name="reddit" id="reddit-link" />
       <label for="bbcode-link">BBCode: </label><input name="bbcode" id="bbcode-link" />
     </div>
-
+    <div id="materials" class="overlay">
+      <div class="close">
+        <img src="/images/icons/cancel.png" onclick="toggleMaterials();" alt="Close Materials List" />
+      </div>
+      <h1>Materials List</h1>
+      <div id="materials-list"></div>
+    </div>
     <div id="feedback" class="overlay">
       <div class="close">
         <img src="/images/icons/cancel.png" onclick="$('#feedback').toggleFade();" alt="Close Help" />

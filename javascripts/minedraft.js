@@ -1075,3 +1075,42 @@ function getCookie(c_name) {
 function supports_canvas() {
   return !!document.createElement('canvas').getContext;
 }
+
+function toggleMaterials(){
+  $("#materials").toggleFade();
+  if($("#materials-list").text() != "")
+    return;
+  var results = [];
+  var str = "<ul>";
+
+  for (var i = 0; i < objects.length; i++) {
+    var key = objects[i].n;
+    if(!results[key])
+      results[key] = 1;
+    else
+      results[key] += 1;
+  }
+
+  for (var j in results) {
+    str += "<li>" + j.replace(/-/gi, " ") + ": " + results[j];
+    if(results[j] > 64) {
+      str += " [" + Math.floor(results[j] / 64);
+      str += Math.floor(results[j] / 64) == 1 ? " stack" : " stacks";
+      if(results[j] % 64 != 0)
+        str += " +" + results[j] % 64 + " blocks";
+      str += "]";
+    }
+    str += "</li>";
+  }
+
+  str += "</ul>";  
+  $("#materials-list").append(str);
+}
+
+function objectsSort(a, b) {
+  if(a.n > b.n)
+    return 1;
+  if(a.n < b.n)
+    return -1;
+  return 0;
+}
