@@ -379,13 +379,13 @@ function drawObject(context, object, fill) {
   
   context.fillRect(object.x, object.y, object.w, object.h);
 
-  if(object.m == true) {
-    drawMetaTool(context, object);
-    return;
-  }
-
   if (context != gctx || context != gtctx) {
     //drawBlock(object);
+    if(object.m == true) {
+      drawMetaTool(context, object);
+      return;
+    }
+    
     n = object.n;
     b = blocks[object.n];
 
@@ -431,7 +431,7 @@ function drawObject(context, object, fill) {
 }
 
 function drawMetaTool(context, o) {
-  img = document.getElementById("metatools");
+  img = document.getElementById("extras");
   b = blocks.metatools[o.n];
   context.drawImage(img, b[0], b[1], b[2], b[3], o.x, o.y, gridSize + 1, gridSize + 1);
 }
@@ -504,10 +504,10 @@ function myMove(e){
     msy = my;
     invalidate();
   }
-  if (isDragDraw) {
+  if (isDragDraw && activeTool.m == undefined || isDragDraw && !activeTool.m) {
+    // Else we're just clicking and dragging the empty canvas.
     getMouse(e);
     var lastX, lastY, diffX, diffY;
-    // Else we're just clicking and dragging the empty canvas.
     if(objects.length > 0) {
       lastObj = objects[objects.length - 2];
       lastX = lastObj.x;
@@ -521,6 +521,8 @@ function myMove(e){
       alignObj();
       drawCurrentTool();
     }
+  }else if(isDragDraw && activeTool.m) {
+      useEraser(e);
   }
 }
 
@@ -535,6 +537,12 @@ function myDown(e){
   }
 
   if(activeTool) {
+    if(activeTool.m) {
+      metaToolClicked(e);
+      isDragDraw = true;
+      canvas.onmousemove = myMove;
+      return;
+    }
     // Remove the current tool
     objects.splice(objects.length - 1);
 
@@ -554,6 +562,53 @@ function myDown(e){
   
   isDragDraw = true;
   canvas.onmousemove = myMove;
+
+  // havent returned means we have selected nothing
+  //mySel = null;
+  // clear the ghost canvas for next time
+  clear(gctx);
+  // invalidate because we might need the selection border to disappear
+  invalidate();
+}
+
+function metaToolClicked(e) {
+  if(activeTool.n == 'eraser')
+    useEraser(e);
+}
+
+function useEraser(e) {
+  getMouse(e);
+  clear(gctx);
+
+  // Remove the current tool.
+  //objects.splice(objects.length - 1, 1);
+  objects.pop();
+  // Check to see if we've selected an object.
+  var l = objects.length;
+  for (var i = l-1; i >= 0; i--) {
+    // draw shape onto ghost context
+    drawObject(gctx, objects[i], 'black');
+
+    // get image data at the mouse x,y pixel
+    var imageData = gctx.getImageData(mx, my, 1, 1);
+    var index = (mx + my * imageData.width) * 4;
+
+    // if the mouse pixel exists, select and break
+    if (imageData.data[3] > 0) {
+      objects.splice(i, 1);
+      invalidate();
+      clear(gctx);
+      // add the Tool back
+      addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.f, activeTool.n, activeTool.r, activeTool.o);
+      objects[objects.length - 1].m = true;
+      mySel = objects[objects.length - 1];
+      return true;
+    }
+  }
+
+  addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.f,  activeTool.n, activeTool.r, activeTool.o);
+  objects[objects.length - 1].m = true;
+  mySel = objects[objects.length - 1];
 
   // havent returned means we have selected nothing
   //mySel = null;
@@ -640,7 +695,6 @@ function checkToolClicked() {
       if(activeTool)
         objects.pop(); //objects.splice(objects.length - 1, 1);
       t = tools[i];
-      //addObj(t.x, t.y, t.f, t.n, t.r, t.o);
       addObj(mx - (t.w / 2), my - (t.h / 2), t.f, t.n, t.r, t.o);
       mySel = objects[objects.length - 1];
       activeTool = objects[objects.length - 1];
@@ -648,6 +702,10 @@ function checkToolClicked() {
       offsety = my - mySel.y;
       mySel.x = mx - offsetx;
       mySel.y = my - offsety;
+      if(t.m) {
+        mySel.m = true;
+        activeTool.m = true;
+      }      
       isDrag = true;
       canvas.onmousemove = myMove;
       invalidate();
@@ -773,6 +831,8 @@ function myDblClick(e) {
   }
 
   addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.f, activeTool.n, activeTool.r, activeTool.o);
+  if(activeTool.m)
+    objects[objects.length - 1].m = true;
   mySel = objects[objects.length - 1];    
 
   // havent returned means we have selected nothing
