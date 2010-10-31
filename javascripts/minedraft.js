@@ -56,8 +56,9 @@ var blocks = {
   "cactus": [80, 64, 16, 16],
   "cactus-side": [96, 64, 16, 16],
   "reeds": [144, 64, 16, 16],
-  "metatools": {
-    "eraser": [0, 0, 16, 16]
+  "extras": {
+    "eraser": [0, 0, 16, 16],
+    "cart": [16, 0, 16, 16]
   }
 };
 
@@ -105,6 +106,11 @@ function addObj(x, y, fill, name, rotate, orientation) {
     obj.o = orientation;
   objects.push(obj);
   invalidate();
+}
+
+function addExtraObj(x, y, fill, name, rotate, orientation) {
+  addObj(x, y, fill, name, rotate, orientation);
+  objects[objects.length - 1].e = true;
 }
 
 // Create a new Object and create a tool out of it.  The default values for objects are good enough for tools.
@@ -432,7 +438,7 @@ function drawObject(context, object, fill) {
 
 function drawMetaTool(context, o) {
   img = document.getElementById("extras");
-  b = blocks.metatools[o.n];
+  b = blocks.extras[o.n];
   context.drawImage(img, b[0], b[1], b[2], b[3], o.x, o.y, gridSize + 1, gridSize + 1);
 }
 
@@ -504,6 +510,8 @@ function myMove(e){
     msy = my;
     invalidate();
   }
+  if (activeTool == undefined || activeTool == null)
+    return;
   if (isDragDraw && activeTool.m == undefined || isDragDraw && !activeTool.m) {
     // Else we're just clicking and dragging the empty canvas.
     getMouse(e);
@@ -805,6 +813,8 @@ function setCursor() {
 function myDblClick(e) {
   getMouse(e);
   clear(gctx);
+  if(activeTool == undefined || activeTool == null)
+    return;
 
   // Remove the current tool.
   objects.splice(objects.length - 1, 1);
