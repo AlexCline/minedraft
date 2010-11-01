@@ -123,7 +123,7 @@ function addTool(name, rotate, orientation) {
   invalidate();
 }
 
-function addMetaTool(name) {
+function addExtraTool(name) {
   var tool = new Obj;
   tool.n = name;
   tool.m = true;
@@ -956,7 +956,7 @@ function addRotatedTracks() {
 }
 
 function addMetaTools() {
-  addMetaTool('eraser', 0);
+  addExtraTool('eraser', 0);
 }
 
 function initTools() {
