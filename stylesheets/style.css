@@ -285,3 +285,8 @@ img#terrain {
   vertical-align: middle;
   margin: .5em;
 }
+
+.link-note {
+  clear: both;
+  padding: 1em 1em 0 1em;
+}
