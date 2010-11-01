@@ -10,7 +10,7 @@ var blocks = {
   "snow": [32, 64, 16, 16],
   "snowy-dirt": [64, 64, 16, 16],
   "wood": [64, 0, 16, 16],
-  "step": [80, 0, 16, 8],
+  "step": [80, 8, 16, 8],
   "cobblestone": [0, 16, 16, 16],
   "mossy-cobblestone": [64, 32, 16, 16],
   "bedrock": [16, 16, 16, 16],
@@ -56,6 +56,7 @@ var blocks = {
   "cactus": [80, 64, 16, 16],
   "cactus-side": [96, 64, 16, 16],
   "reeds": [144, 64, 16, 16],
+  "door-wood": [16, 80, 16, 32],
   "extras": {
     "eraser": [0, 0, 16, 16],
     "cart": [16, 0, 16, 16]
@@ -70,7 +71,7 @@ var toolCats = {
   "Fluids": [ "water", "ice", "lava" ],
   "Tracks": [ "rail-straight", "rail-curve" ],
   "Redstone": [ "redstone-torch-on", "redstone-torch-off", "redstone-line-on", "redstone-line-off", "redstone-cross-on", "redstone-cross-off" ],
-  "Misc": [ "ladder", "step", "toolbox", "sponge", "red-flower", "yellow-flower", "red-mushroom", "brown-mushroom"],
+  "Misc": [ "ladder", "step", "toolbox", "sponge", "red-flower", "yellow-flower", "red-mushroom", "brown-mushroom", "door-wood"],
   "All": [],
   "Tools": []
 };
@@ -94,10 +95,12 @@ function Obj() {
 }
 
 //Initialize a new Box, add it, and invalidate the canvas
-function addObj(x, y, fill, name, rotate, orientation) {
+function addObj(x, y, h, w, fill, name, rotate, orientation) {
   var obj = new Obj;
   obj.x = x;
   obj.y = y;
+  obj.h = h;
+  obj.w = w;
   obj.f = fill;
   obj.n = name;
   if(rotate !== undefined)
@@ -108,8 +111,8 @@ function addObj(x, y, fill, name, rotate, orientation) {
   invalidate();
 }
 
-function addExtraObj(x, y, fill, name, rotate, orientation) {
-  addObj(x, y, fill, name, rotate, orientation);
+function addExtraObj(x, y, h, w, fill, name, rotate, orientation) {
+  addObj(x, y, h, w, fill, name, rotate, orientation);
   objects[objects.length - 1].e = true;
 }
 
@@ -427,11 +430,13 @@ function drawObject(context, object, fill) {
       }
 
       context.rotate((360 - object.r) * (Math.PI / 180));
-      //alert(objects);
+
       context.drawImage(img, b[0], b[1], b[2], b[3], 0, 0, gridSize + 1, gridSize + 1);
       context.restore();
     } else {
-      context.drawImage(img, b[0], b[1], b[2], b[3], object.x, object.y, gridSize + 1, gridSize + 1);
+      newH = (b[2] / 16) * gridSize;
+      newW = (b[3] / 16) * gridSize;
+      context.drawImage(img, b[0], b[1], b[2], b[3], object.x, object.y, newH, newW); //gridSize + 1, gridSize + 1);
     }
   }
 }
@@ -607,14 +612,14 @@ function useEraser(e) {
       invalidate();
       clear(gctx);
       // add the Tool back
-      addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.f, activeTool.n, activeTool.r, activeTool.o);
+      addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.h, activeTool.w, activeTool.f, activeTool.n, activeTool.r, activeTool.o);
       objects[objects.length - 1].m = true;
       mySel = objects[objects.length - 1];
       return true;
     }
   }
 
-  addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.f,  activeTool.n, activeTool.r, activeTool.o);
+  addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.h, activeTool.w, activeTool.f, activeTool.n, activeTool.r, activeTool.o);
   objects[objects.length - 1].m = true;
   mySel = objects[objects.length - 1];
 
@@ -634,7 +639,7 @@ function scrollCanvas(e) {
 }
 
 function drawCurrentTool() {
-  addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.f, activeTool.n, activeTool.r, activeTool.o);
+  addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.h, activeTool.w, activeTool.f, activeTool.n, activeTool.r, activeTool.o);
   mySel = objects[objects.length - 1];  
 }
 
@@ -703,7 +708,7 @@ function checkToolClicked() {
       if(activeTool)
         objects.pop(); //objects.splice(objects.length - 1, 1);
       t = tools[i];
-      addObj(mx - (t.w / 2), my - (t.h / 2), t.f, t.n, t.r, t.o);
+      addObj(mx - (t.w / 2), my - (t.h / 2), t.h, t.w, t.f, t.n, t.r, t.o);
       mySel = objects[objects.length - 1];
       activeTool = objects[objects.length - 1];
       offsetx = mx - mySel.x;
@@ -778,7 +783,7 @@ function myUp(){
     activeTool = oldActiveTool;
     oldActiveTool = null;
     setCursor();
-    addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.f, activeTool.n, activeTool.r, activeTool.o);
+    addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.h, activeTool.w, activeTool.f, activeTool.n, activeTool.r, activeTool.o);
     mySel = objects[objects.length - 1];
   }
   if(isScroll) {
@@ -834,13 +839,13 @@ function myDblClick(e) {
       invalidate();
       clear(gctx);
       // add the Tool back
-      addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.f, activeTool.n, activeTool.r, activeTool.o);
+      addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.h, activeTool.w, activeTool.f, activeTool.n, activeTool.r, activeTool.o);
       mySel = objects[objects.length - 1];    
       return true;
     }
   }
 
-  addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.f, activeTool.n, activeTool.r, activeTool.o);
+  addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.h, activeTool.w, activeTool.f, activeTool.n, activeTool.r, activeTool.o);
   if(activeTool.m)
     objects[objects.length - 1].m = true;
   mySel = objects[objects.length - 1];    
@@ -1090,6 +1095,8 @@ function encodeObjects() {
     tmp = [];
     tmp.push(value.x);
     tmp.push(value.y);
+    tmp.push(value.h);
+    tmp.push(value.w);
     tmp.push(value.n);
     if(value.r != 0 || value.o != blockOrientations.none) {
       tmp.push(value.r);
@@ -1111,9 +1118,11 @@ function decodeObjects() {
     
       $.each(tmp, function(i, v) {
         if(v.length == 3)
-          addObj(v[0], v[1], 't', v[2], 0, blockOrientations.none);
-        else
-          addObj(v[0], v[1], 't', v[2], v[3], v[4])
+          addObj(v[0], v[1], 16, 16, 't', v[2], 0, blockOrientations.none);
+        else if(v.length == 5)
+          addObj(v[0], v[1], v[2], v[3], 't', v[4], 0, blockOrientations.none);
+        else if(v.length == 7)
+          addObj(v[0], v[1], v[2], v[3], 't', v[4], v[5], v[6])
       });
     } catch(err) {
       $("body").append('<div id="parseError" class="overlay"><div class="close"><img src="/images/icons/cancel.png" onclick="$(\'#parseError\').toggleFade();" alt="Close Help" /></div><h1>Error</h1><p>Sorry, there was a problem parsing the URL you specified.  It may have been munged at some point and the MineDraft it pointed to can\'t be found.</p></div>');
