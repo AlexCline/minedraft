@@ -1020,44 +1020,16 @@ function calcToolDimensions() {
 }
 
 function drawTools() {
-  /* var toolY = 0; //-gridSize;
-  var toolX = -gridSize - 2;
-  for(i = 0; i < tools.length; i++) {
-    if(i % 12 == 0) {
-      toolY = 0;
-      toolX += (gridSize + 3);
-    } else {
-      toolY += (gridSize + 3);
-      toolX = toolX;
-    }
-    tools[i].y = toolY;
-    tools[i].x = toolX;
-  }*/
-
-  /* var toolY = 0;
   var toolX = 0;
-  for(i = 1; i <= tools.length; i++) {
-    tools[i-1].x = toolX;
-    tools[i-1].y = toolY;
-    toolY += tools[i-1].h + 2;
-    toolX += 0;
-    if(i % 12 == 0) {
-      toolX += tools[i-1].w + 2;
-      toolY = 0;
-    }
-  }*/
-
-  var toolX = -gridSize - 3;
   var toolY = 0;
 
   for(i = 0; i < tools.length; i++) {
-    if(i % 12 == 0){
-      tools[i].y = 0;
+    tools[i].y = toolY;
+    tools[i].x = toolX;
+    toolY += tools[i].h + 3;
+    if(toolY > ((gridSize + 3) * 11)) {
       toolX += gridSize + 3;
-      tools[i].x = toolX;
-    } else {
-      tools[i].y = tools[i-1].y + tools[i-1].h + 3;
-      tools[i].x = toolX;
+      toolY = 0;
     }
   }
 }
