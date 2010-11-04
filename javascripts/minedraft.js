@@ -10,11 +10,14 @@ var blocks = {
   "snow": [32, 64, 16, 16],
   "snowy-dirt": [64, 64, 16, 16],
   "wood": [64, 0, 16, 16],
-  "step": [80, 8, 16, 8],
+//  "step": [80, 8, 16, 8],
+  "step-top": [96, 0, 16, 16],
   "cobblestone": [0, 16, 16, 16],
   "mossy-cobblestone": [64, 32, 16, 16],
+  "hellstone": [112, 96, 16, 16],
   "bedrock": [16, 16, 16, 16],
   "sand": [32, 16, 16, 16],
+  "slow-sand": [128, 96, 16, 16],
   "clay": [128, 64, 16, 16],
   "gravel": [48, 16, 16, 16],
   "tilled": [112, 80, 16, 16],
@@ -26,6 +29,7 @@ var blocks = {
   "coal-ore": [32, 32, 16, 16],
   "diamond-ore": [32, 48, 16, 16],
   "redstone-ore": [48, 48, 16, 16],
+  "lightstone-ore": [144, 96, 16, 16],
   "wool": [0, 64, 16, 16],
   "brick": [112, 0, 16, 16],
   "glass": [16, 48, 16, 16],
@@ -34,6 +38,7 @@ var blocks = {
   "gold": [112, 16, 16, 16],
   "diamond": [128, 16, 16, 16],
   "toolbox": [176, 32, 16, 16],
+  "forge": [192, 32, 16, 16],
   "sponge": [0, 48, 16, 16],
   "tnt": [128, 0, 16, 16],
   "lava": [208, 224, 16, 16],
@@ -56,7 +61,12 @@ var blocks = {
   "cactus": [80, 64, 16, 16],
   "cactus-side": [96, 64, 16, 16],
   "reeds": [144, 64, 16, 16],
+  "wheat": [240, 80, 16, 16],
   "door-wood": [16, 80, 16, 32],
+  "door-iron": [32, 80, 16, 32],
+  "bookcase": [48, 32, 16, 16],
+  "jack-o-lantern-on": [128, 112, 16, 16],
+  "jack-o-lantern-off": [112, 112, 16, 16],
   "extras": {
     "eraser": [0, 0, 16, 16],
     "cart": [16, 0, 16, 16]
@@ -64,14 +74,14 @@ var blocks = {
 };
 
 var toolCats = {
-  "Ore": [ "coal-ore", "iron-ore", "gold-ore", "redstone-ore", "diamond-ore" ],
-  "Natural": [ "dirt", "stone", "sand", "gravel", "clay", "stump", "bark", "wool", "obsidian", "bedrock" ],
+  "Ore": [ "coal-ore", "iron-ore", "gold-ore", "redstone-ore", "diamond-ore", "lightstone-ore" ],
+  "Natural": [ "dirt", "stone", "sand", "slow-sand", "gravel", "clay", "stump", "bark", "wool", "obsidian", "hellstone", "bedrock" ],
   "Crafted": [ "wood", "cobblestone", "glass", "brick", "iron", "gold", "diamond" ],
-  "Ground": [ "grassy-dirt", "grass", "snowy-dirt", "snow", "tilled", "tilled-wet", "mossy-cobblestone", "cactus", "cactus-side", "reeds" ],
+  "Ground": [ "grassy-dirt", "grass", "snowy-dirt", "snow", "tilled", "tilled-wet", "mossy-cobblestone", "cactus", "cactus-side", "reeds", "wheat" ],
   "Fluids": [ "water", "ice", "lava" ],
   "Tracks": [ "rail-straight", "rail-curve" ],
   "Redstone": [ "redstone-torch-on", "redstone-torch-off", "redstone-line-on", "redstone-line-off", "redstone-cross-on", "redstone-cross-off" ],
-  "Misc": [ "ladder", "step", "toolbox", "sponge", "red-flower", "yellow-flower", "red-mushroom", "brown-mushroom", "door-wood"],
+  "Misc": [ "ladder", "step-top", "step-top", "toolbox", "forge", "sponge", "red-flower", "yellow-flower", "red-mushroom", "brown-mushroom", "jack-o-lantern-on", "jack-o-lantern-off", "door-wood", "door-iron", "bookcase"],
   "All": [],
   "Tools": []
 };
@@ -117,11 +127,15 @@ function addExtraObj(x, y, h, w, fill, name, rotate, orientation) {
 }
 
 // Create a new Object and create a tool out of it.  The default values for objects are good enough for tools.
-function addTool(name, rotate, orientation) {
+function addTool(name, rotate, orientation, h, w) {
   var tool = new Obj;
   tool.n = name;
   tool.r = rotate;
   tool.o = orientation;
+  if(h !== undefined && w !== undefined) {
+    tool.h = h;
+    tool.w = w;
+  }
   tools.push(tool);
   invalidate();
 }
@@ -352,9 +366,9 @@ function draw() {
     for (var i = 0; i < l; i++) {
       drawObject(tctx, tools[i], tools[i].f);
       tctx.beginPath();
-      tctx.moveTo(tools[i].x, tools[i].y + gridSize + 2);
-      tctx.lineTo(tools[i].x + gridSize + 2, tools[i].y + gridSize + 2);
-      tctx.lineTo(tools[i].x + gridSize + 2, tools[i].y - 1);
+      tctx.moveTo(tools[i].x, tools[i].y + tools[i].h + 2);
+      tctx.lineTo(tools[i].x + tools[i].w + 2, tools[i].y + tools[i].h + 2);
+      tctx.lineTo(tools[i].x + tools[i].w + 2, tools[i].y - 1);
       tctx.stroke();
     }
     
@@ -744,6 +758,7 @@ function zoom(dir) {
     gridSize -= 16;
   }
   invalidate();
+  drawTools();
   sizeToolbox();
   resizeObjects(dir, oldSize);
   setCookie("gridSize", gridSize, 365);
@@ -945,7 +960,9 @@ function toolboxFlyout(cat) {
     addRotatedTracks();
   if(cat == "Tools")
     addMetaTools();
-
+  else
+    calcToolDimensions();
+  
   sizeToolbox();
   //$("#toolbox-wrapper").css("right", -gridSize - 14);
   $("#toolbox-list li a").removeClass("active");
@@ -954,10 +971,10 @@ function toolboxFlyout(cat) {
 }
 
 function addRotatedTracks() {
-  addTool('rail-curve', 90);
-  addTool('rail-curve', 180, blockOrientations.vert);
-  addTool('rail-curve', 90, blockOrientations.horiz);
-  addTool('rail-straight', 90);
+  addTool('rail-curve', 90, 16, 16);
+  addTool('rail-curve', 180, blockOrientations.vert, 16, 16);
+  addTool('rail-curve', 90, blockOrientations.horiz, 16, 16);
+  addTool('rail-straight', 90, 16, 16);
 }
 
 function addMetaTools() {
@@ -980,11 +997,19 @@ function initTools() {
   }
 }
 
-function drawTools() {
-  var toolY = 0; //-gridSize;
-  var toolX = -gridSize - 3;
+function calcToolDimensions() {
+  var ratio = gridSize / 16;
   for(i = 0; i < tools.length; i++) {
-    if(i % 13 == 0) {
+    tools[i].w = blocks[tools[i].n][2] * ratio;
+    tools[i].h = blocks[tools[i].n][3] * ratio;
+  }
+}
+
+function drawTools() {
+  /* var toolY = 0; //-gridSize;
+  var toolX = -gridSize - 2;
+  for(i = 0; i < tools.length; i++) {
+    if(i % 12 == 0) {
       toolY = 0;
       toolX += (gridSize + 3);
     } else {
@@ -993,6 +1018,33 @@ function drawTools() {
     }
     tools[i].y = toolY;
     tools[i].x = toolX;
+  }*/
+
+  /* var toolY = 0;
+  var toolX = 0;
+  for(i = 1; i <= tools.length; i++) {
+    tools[i-1].x = toolX;
+    tools[i-1].y = toolY;
+    toolY += tools[i-1].h + 2;
+    toolX += 0;
+    if(i % 12 == 0) {
+      toolX += tools[i-1].w + 2;
+      toolY = 0;
+    }
+  }*/
+
+  var toolX = -gridSize - 3;
+  var toolY = 0;
+
+  for(i = 0; i < tools.length; i++) {
+    if(i % 12 == 0){
+      tools[i].y = 0;
+      toolX += gridSize + 3;
+      tools[i].x = toolX;
+    } else {
+      tools[i].y = tools[i-1].y + tools[i-1].h + 3;
+      tools[i].x = toolX;
+    }
   }
 }
 
@@ -1001,8 +1053,8 @@ function sizeToolbox() {
   //toolcanvas.setAttribute("width", gridSize);
 
     if (tools.length >= 12) {
-      toolcanvas.setAttribute("height", 13 * (gridSize + 3) - 2);
-      toolcanvas.setAttribute("width", Math.ceil(tools.length / 13) * (gridSize + 3) - 3);
+      toolcanvas.setAttribute("height", 12 * (gridSize + 3) - 2);
+      toolcanvas.setAttribute("width", Math.ceil(tools.length / 12) * (gridSize + 3) - 3);
     } else {
       toolcanvas.setAttribute("height", tools.length * (gridSize + 3) - 2);
       toolcanvas.setAttribute("width", gridSize);
@@ -1014,9 +1066,9 @@ function sizeToolbox() {
     currToolboxSize = gridSize;
     $("#toolbox-list img").height(gridSize);
     $("#toolbox-list a").width(gridSize);
-    $("#toolbox-wrapper").css("right", -(Math.ceil(tools.length / 13) * (gridSize + 3)) - 12);
+    $("#toolbox-wrapper").css("right", -(Math.ceil(tools.length / 12) * (gridSize + 3)) - 12);
   } else {
-    $("#toolbox-wrapper").css("right", -(Math.ceil(tools.length / 13) * (gridSize + 3)) - 12);  
+    $("#toolbox-wrapper").css("right", -(Math.ceil(tools.length / 12) * (gridSize + 3)) - 12);  
   }
   drawTools();
 
