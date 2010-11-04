@@ -10,21 +10,26 @@ var blocks = {
   "snow": [32, 64, 16, 16],
   "snowy-dirt": [64, 64, 16, 16],
   "wood": [64, 0, 16, 16],
-  "step": [80, 0, 16, 8],
+//  "step": [80, 8, 16, 8],
+  "step-top": [96, 0, 16, 16],
   "cobblestone": [0, 16, 16, 16],
   "mossy-cobblestone": [64, 32, 16, 16],
+  "hellstone": [112, 96, 16, 16],
   "bedrock": [16, 16, 16, 16],
   "sand": [32, 16, 16, 16],
+  "slow-sand": [128, 96, 16, 16],
   "clay": [128, 64, 16, 16],
   "gravel": [48, 16, 16, 16],
   "tilled": [112, 80, 16, 16],
   "tilled-wet": [96, 80, 16, 16],
   "stump": [80, 16, 16, 16],
+  "bark": [64, 32, 16, 16],
   "gold-ore": [0, 32, 16, 16],
   "iron-ore": [16, 32, 16, 16],
   "coal-ore": [32, 32, 16, 16],
   "diamond-ore": [32, 48, 16, 16],
   "redstone-ore": [48, 48, 16, 16],
+  "lightstone-ore": [144, 96, 16, 16],
   "wool": [0, 64, 16, 16],
   "brick": [112, 0, 16, 16],
   "glass": [16, 48, 16, 16],
@@ -33,6 +38,7 @@ var blocks = {
   "gold": [112, 16, 16, 16],
   "diamond": [128, 16, 16, 16],
   "toolbox": [176, 32, 16, 16],
+  "forge": [192, 32, 16, 16],
   "sponge": [0, 48, 16, 16],
   "tnt": [128, 0, 16, 16],
   "lava": [208, 224, 16, 16],
@@ -51,19 +57,33 @@ var blocks = {
   "red-mushroom": [192, 16, 16, 16],
   "brown-mushroom": [208, 16, 16, 16],
   "rail-curve": [0, 112, 16, 16],
-  "rail-straight": [0, 128, 16, 16]
+  "rail-straight": [0, 128, 16, 16],
+  "cactus": [80, 64, 16, 16],
+  "cactus-side": [96, 64, 16, 16],
+  "reeds": [144, 64, 16, 16],
+  "wheat": [240, 80, 16, 16],
+  "door-wood": [16, 80, 16, 32],
+  "door-iron": [32, 80, 16, 32],
+  "bookcase": [48, 32, 16, 16],
+  "jack-o-lantern-on": [128, 112, 16, 16],
+  "jack-o-lantern-off": [112, 112, 16, 16],
+  "extras": {
+    "eraser": [0, 0, 16, 16],
+    "cart": [16, 0, 16, 16]
+  }
 };
 
 var toolCats = {
-  "Ore": [ "coal-ore", "iron-ore", "gold-ore", "redstone-ore", "diamond-ore" ],
-  "Natural": [ "dirt", "stone", "sand", "gravel", "clay", "stump", "wool", "obsidian", "bedrock" ],
-  "Crafted": [ "wood", "cobblestone", "mossy-cobblestone", "glass", "brick", "iron", "gold", "diamond" ],
-  "Ground": [ "grassy-dirt", "grass", "snowy-dirt", "snow", "tilled", "tilled-wet" ],
+  "Ore": [ "coal-ore", "iron-ore", "gold-ore", "redstone-ore", "diamond-ore", "lightstone-ore" ],
+  "Natural": [ "dirt", "stone", "sand", "slow-sand", "gravel", "clay", "stump", "bark", "wool", "obsidian", "hellstone", "bedrock" ],
+  "Crafted": [ "wood", "cobblestone", "glass", "brick", "iron", "gold", "diamond" ],
+  "Ground": [ "grassy-dirt", "grass", "snowy-dirt", "snow", "tilled", "tilled-wet", "mossy-cobblestone", "cactus", "cactus-side", "reeds", "wheat" ],
   "Fluids": [ "water", "ice", "lava" ],
   "Tracks": [ "rail-straight", "rail-curve" ],
   "Redstone": [ "redstone-torch-on", "redstone-torch-off", "redstone-line-on", "redstone-line-off", "redstone-cross-on", "redstone-cross-off" ],
-  "Misc": [ "ladder", "step", "toolbox", "sponge", "red-flower", "yellow-flower", "red-mushroom", "brown-mushroom"],
-  "All": []
+  "Misc": [ "ladder", "step-top", "step-top", "toolbox", "forge", "sponge", "red-flower", "yellow-flower", "red-mushroom", "brown-mushroom", "jack-o-lantern-on", "jack-o-lantern-off", "door-wood", "door-iron", "bookcase"],
+  "All": [],
+  "Tools": []
 };
 
 var blockOrientations = {
@@ -85,10 +105,12 @@ function Obj() {
 }
 
 //Initialize a new Box, add it, and invalidate the canvas
-function addObj(x, y, fill, name, rotate, orientation) {
+function addObj(x, y, h, w, fill, name, rotate, orientation) {
   var obj = new Obj;
   obj.x = x;
   obj.y = y;
+  obj.h = h;
+  obj.w = w;
   obj.f = fill;
   obj.n = name;
   if(rotate !== undefined)
@@ -99,12 +121,29 @@ function addObj(x, y, fill, name, rotate, orientation) {
   invalidate();
 }
 
+function addExtraObj(x, y, h, w, fill, name, rotate, orientation) {
+  addObj(x, y, h, w, fill, name, rotate, orientation);
+  objects[objects.length - 1].e = true;
+}
+
 // Create a new Object and create a tool out of it.  The default values for objects are good enough for tools.
-function addTool(name, rotate, orientation) {
+function addTool(name, rotate, orientation, h, w) {
   var tool = new Obj;
   tool.n = name;
   tool.r = rotate;
   tool.o = orientation;
+  if(h !== undefined && w !== undefined) {
+    tool.h = h;
+    tool.w = w;
+  }
+  tools.push(tool);
+  invalidate();
+}
+
+function addExtraTool(name) {
+  var tool = new Obj;
+  tool.n = name;
+  tool.m = true;
   tools.push(tool);
   invalidate();
 }
@@ -126,6 +165,7 @@ var INTERVAL = 20;  // how often, in milliseconds, we check to see if a redraw i
 
 var isDrag = false;
 var isScroll = false;
+var isDragDraw = false;
 var mx, my; // mouse coordinates
 var msx, msy; // mouse coordinates for old scroll position.
 
@@ -137,10 +177,13 @@ var canvasValid = false;
 // The node (if any) being selected.
 // If in the future we want to select multiple objects, this will get turned into an array
 var mySel; 
+var lastObj;
 
 // The currently selected tool.
 var activeTool;
 var oldActiveTool;
+var lockToolboxSize = false;
+var currToolboxSize = gridSize;
 
 // The selection color and width. Right now we have a red selection with a small width
 var mySelColor = 'orangered';
@@ -173,6 +216,12 @@ function init() {
   cookieGridSize = getCookie("gridSize");
   if(cookieGridSize != null && cookieGridSize != "")
     gridSize = parseFloat(cookieGridSize);
+  cookieLockToolbox = getCookie("lockToolboxSize");
+  if(cookieLockToolbox != null && cookieLockToolbox != "") {
+    lockToolboxSize = false; // Set this to false so it'll be set to true when we call toggleToolboxLock
+    toggleToolboxLock();
+    currToolboxSize = parseFloat(cookieLockToolbox);
+  }
 
   canvas = document.getElementById('minedraft');
   sizeCanvas();
@@ -220,10 +269,57 @@ function init() {
   //toolcanvas.onmouseup = myUp;
   canvas.ondblclick = myDblClick;
   window.onresize = sizeCanvas;
-  
+  document.onkeypress = myKeyPress;
+
   // add custom initialization here:
   initTools();
   decodeObjects();
+}
+
+function myKeyPress(e) {
+  var key = (e) ? e.which : e.keyCode;
+  switch(String.fromCharCode(key)) {
+    case "-":
+      zoom('out');
+      break;
+    case "=":
+      zoom('in');
+      break;
+    case "w":
+      moveCanvas('up');
+      break;
+    case "a":
+      moveCanvas('left');
+      break;
+    case "s":
+      moveCanvas('down');
+      break;
+    case "d":
+      moveCanvas('right');
+      break;
+  }
+}
+
+function moveCanvas(dir) {
+  switch(dir) {
+    case "left":
+      for(var i = 0; i < objects.length - 1; i++)
+        objects[i].x -= gridSize;
+    break;
+    case "right":
+      for(var i = 0; i < objects.length - 1; i++)
+        objects[i].x += gridSize;
+    break;
+    case "up":
+      for(var i = 0; i < objects.length - 1; i++)
+        objects[i].y -= gridSize;
+    break;
+    case "down":
+      for(var i = 0; i < objects.length - 1; i++)
+        objects[i].y += gridSize;
+    break;
+  }
+  invalidate();
 }
 
 function sizeCanvas() {
@@ -270,9 +366,9 @@ function draw() {
     for (var i = 0; i < l; i++) {
       drawObject(tctx, tools[i], tools[i].f);
       tctx.beginPath();
-      tctx.moveTo(tools[i].x, tools[i].y + gridSize + 2);
-      tctx.lineTo(tools[i].x + gridSize + 2, tools[i].y + gridSize + 2);
-      tctx.lineTo(tools[i].x + gridSize + 2, tools[i].y - 1);
+      tctx.moveTo(tools[i].x, tools[i].y + tools[i].h + 2);
+      tctx.lineTo(tools[i].x + tools[i].w + 2, tools[i].y + tools[i].h + 2);
+      tctx.lineTo(tools[i].x + tools[i].w + 2, tools[i].y - 1);
       tctx.stroke();
     }
     
@@ -308,10 +404,14 @@ function drawObject(context, object, fill) {
 
   if (context != gctx || context != gtctx) {
     //drawBlock(object);
+    if(object.m == true) {
+      drawMetaTool(context, object);
+      return;
+    }
+    
     n = object.n;
     b = blocks[object.n];
 
-    //alert(b);
     var img = document.getElementById("terrain");
     if(object.r != 0) {
       var destX = destY = 0;
@@ -344,13 +444,21 @@ function drawObject(context, object, fill) {
       }
 
       context.rotate((360 - object.r) * (Math.PI / 180));
-      //alert(objects);
+
       context.drawImage(img, b[0], b[1], b[2], b[3], 0, 0, gridSize + 1, gridSize + 1);
       context.restore();
     } else {
-      context.drawImage(img, b[0], b[1], b[2], b[3], object.x, object.y, gridSize + 1, gridSize + 1);
+      newH = (b[2] / 16) * gridSize;
+      newW = (b[3] / 16) * gridSize;
+      context.drawImage(img, b[0], b[1], b[2], b[3], object.x, object.y, newH, newW); //gridSize + 1, gridSize + 1);
     }
   }
+}
+
+function drawMetaTool(context, o) {
+  img = document.getElementById("extras");
+  b = blocks.extras[o.n];
+  context.drawImage(img, b[0], b[1], b[2], b[3], o.x, o.y, gridSize + 1, gridSize + 1);
 }
 
 function eraseObjects(){
@@ -421,6 +529,28 @@ function myMove(e){
     msy = my;
     invalidate();
   }
+  if (activeTool == undefined || activeTool == null)
+    return;
+  if (isDragDraw && activeTool.m == undefined || isDragDraw && !activeTool.m) {
+    // Else we're just clicking and dragging the empty canvas.
+    getMouse(e);
+    var lastX, lastY, diffX, diffY;
+    if(objects.length > 0) {
+      lastObj = objects[objects.length - 2];
+      lastX = lastObj.x;
+      lastY = lastObj.y;
+    } else
+      lastX = lastY = 0;
+
+    diffX = mx - lastX; //lastX - mx;
+    diffY = my - lastY; //lastY - my;
+    if(diffX >= gridSize || diffX < 0 || diffY >= gridSize || diffY < 0){ 
+      alignObj();
+      drawCurrentTool();
+    }
+  }else if(isDragDraw && activeTool.m) {
+      useEraser(e);
+  }
 }
 
 // Happens when the mouse is clicked in the canvas
@@ -428,7 +558,18 @@ function myDown(e){
   getMouse(e);
   clear(gctx);
 
+  if(e.shiftKey) {
+    scrollCanvas(e);
+    return;
+  }
+
   if(activeTool) {
+    if(activeTool.m) {
+      metaToolClicked(e);
+      isDragDraw = true;
+      canvas.onmousemove = myMove;
+      return;
+    }
     // Remove the current tool
     objects.splice(objects.length - 1);
 
@@ -441,13 +582,60 @@ function myDown(e){
     // Add a block to the canvas and set it to the current object, then align it.
     drawCurrentTool();
     alignObj();
-    //mySel = null;
 
     // Add a new tool
     drawCurrentTool();
   }
+  
+  isDragDraw = true;
+  canvas.onmousemove = myMove;
 
-  scrollCanvas(e);
+  // havent returned means we have selected nothing
+  //mySel = null;
+  // clear the ghost canvas for next time
+  clear(gctx);
+  // invalidate because we might need the selection border to disappear
+  invalidate();
+}
+
+function metaToolClicked(e) {
+  if(activeTool.n == 'eraser')
+    useEraser(e);
+}
+
+function useEraser(e) {
+  getMouse(e);
+  clear(gctx);
+
+  // Remove the current tool.
+  //objects.splice(objects.length - 1, 1);
+  objects.pop();
+  // Check to see if we've selected an object.
+  var l = objects.length;
+  for (var i = l-1; i >= 0; i--) {
+    // draw shape onto ghost context
+    drawObject(gctx, objects[i], 'black');
+
+    // get image data at the mouse x,y pixel
+    var imageData = gctx.getImageData(mx, my, 1, 1);
+    var index = (mx + my * imageData.width) * 4;
+
+    // if the mouse pixel exists, select and break
+    if (imageData.data[3] > 0) {
+      objects.splice(i, 1);
+      invalidate();
+      clear(gctx);
+      // add the Tool back
+      addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.h, activeTool.w, activeTool.f, activeTool.n, activeTool.r, activeTool.o);
+      objects[objects.length - 1].m = true;
+      mySel = objects[objects.length - 1];
+      return true;
+    }
+  }
+
+  addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.h, activeTool.w, activeTool.f, activeTool.n, activeTool.r, activeTool.o);
+  objects[objects.length - 1].m = true;
+  mySel = objects[objects.length - 1];
 
   // havent returned means we have selected nothing
   //mySel = null;
@@ -465,7 +653,7 @@ function scrollCanvas(e) {
 }
 
 function drawCurrentTool() {
-  addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.f, activeTool.n, activeTool.r, activeTool.o);
+  addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.h, activeTool.w, activeTool.f, activeTool.n, activeTool.r, activeTool.o);
   mySel = objects[objects.length - 1];  
 }
 
@@ -497,7 +685,14 @@ function checkObjectClicked() {
     
     // if the mouse pixel exists, select and break
     if (imageData.data[3] > 0) {
-      mySel = objects[i];
+      /*var tmp = objects.splice(i, 1);
+      objects.push(tmp);
+      mySel = objects[objects.length - 1];*/
+      var tmp = objects[i];
+      objects.splice(i, 1);
+      objects.push(tmp);
+      mySel = objects[objects.length - 1];
+      //mySel = objects[i];
       offsetx = mx - mySel.x;
       offsety = my - mySel.y;
       mySel.x = mx - offsetx;
@@ -525,16 +720,19 @@ function checkToolClicked() {
     var imageData = gtctx.getImageData(mx, my, 1, 1);
     if(imageData.data[3] > 0) {
       if(activeTool)
-        objects.splice(objects.length - 1, 1);
+        objects.pop(); //objects.splice(objects.length - 1, 1);
       t = tools[i];
-      //addObj(t.x, t.y, t.f, t.n, t.r, t.o);
-      addObj(mx - (t.w / 2), my - (t.h / 2), t.f, t.n, t.r, t.o);
+      addObj(mx - (t.w / 2), my - (t.h / 2), t.h, t.w, t.f, t.n, t.r, t.o);
       mySel = objects[objects.length - 1];
       activeTool = objects[objects.length - 1];
       offsetx = mx - mySel.x;
       offsety = my - mySel.y;
       mySel.x = mx - offsetx;
       mySel.y = my - offsety;
+      if(t.m) {
+        mySel.m = true;
+        activeTool.m = true;
+      }      
       isDrag = true;
       canvas.onmousemove = myMove;
       invalidate();
@@ -560,6 +758,7 @@ function zoom(dir) {
     gridSize -= 16;
   }
   invalidate();
+  drawTools();
   sizeToolbox();
   resizeObjects(dir, oldSize);
   setCookie("gridSize", gridSize, 365);
@@ -599,7 +798,7 @@ function myUp(){
     activeTool = oldActiveTool;
     oldActiveTool = null;
     setCursor();
-    addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.f, activeTool.n, activeTool.r, activeTool.o);
+    addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.h, activeTool.w, activeTool.f, activeTool.n, activeTool.r, activeTool.o);
     mySel = objects[objects.length - 1];
   }
   if(isScroll) {
@@ -611,6 +810,10 @@ function myUp(){
     mySel = tmpSel;
     isScroll = false;
   }
+  if(isDragDraw) {
+    isDragDraw = false;
+  }
+
 }
 
 function mouseHasMoved() {
@@ -630,6 +833,8 @@ function setCursor() {
 function myDblClick(e) {
   getMouse(e);
   clear(gctx);
+  if(activeTool == undefined || activeTool == null)
+    return;
 
   // Remove the current tool.
   objects.splice(objects.length - 1, 1);
@@ -649,13 +854,15 @@ function myDblClick(e) {
       invalidate();
       clear(gctx);
       // add the Tool back
-      addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.f, activeTool.n, activeTool.r, activeTool.o);
+      addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.h, activeTool.w, activeTool.f, activeTool.n, activeTool.r, activeTool.o);
       mySel = objects[objects.length - 1];    
       return true;
     }
   }
 
-  addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.f, activeTool.n, activeTool.r, activeTool.o);
+  addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.h, activeTool.w, activeTool.f, activeTool.n, activeTool.r, activeTool.o);
+  if(activeTool.m)
+    objects[objects.length - 1].m = true;
   mySel = objects[objects.length - 1];    
 
   // havent returned means we have selected nothing
@@ -733,16 +940,6 @@ function drawGrid() {
 }
 
 var offset = 0;
-// Draw the toolbar
-/*function initTools() {
-  $.each(blocks, function(index, value) {
-    addTool(index, 0);
-  });
-
-
-  sizeToolbox();
-  drawTools();
-}*/
 
 function toolboxFlyout(cat) {
   tools = [];
@@ -761,6 +958,11 @@ function toolboxFlyout(cat) {
   }
   if(cat == "Tracks")
     addRotatedTracks();
+  if(cat == "Tools")
+    addMetaTools();
+  else
+    calcToolDimensions();
+  
   sizeToolbox();
   //$("#toolbox-wrapper").css("right", -gridSize - 14);
   $("#toolbox-list li a").removeClass("active");
@@ -769,10 +971,14 @@ function toolboxFlyout(cat) {
 }
 
 function addRotatedTracks() {
-  addTool('rail-curve', 90);
-  addTool('rail-curve', 180, blockOrientations.vert);
-  addTool('rail-curve', 90, blockOrientations.horiz);
-  addTool('rail-straight', 90);
+  addTool('rail-curve', 90, 16, 16);
+  addTool('rail-curve', 180, blockOrientations.vert, 16, 16);
+  addTool('rail-curve', 90, blockOrientations.horiz, 16, 16);
+  addTool('rail-straight', 90, 16, 16);
+}
+
+function addMetaTools() {
+  addExtraTool('eraser', 0);
 }
 
 function initTools() {
@@ -781,16 +987,29 @@ function initTools() {
     $("#toolbox-list").append('<li class="' + key + '"><a onclick="toolboxFlyout(\'' + key + '\');" href="#" class="active vtip" title="Show ' + key + ' blocks."><img src="/images/tools/' + key.toLowerCase() + '.png" /> </a></li>');
   });
   vtip();
-  $("#toolbox-list img").height(gridSize);
-  $("#toolbox-list a").width(gridSize);
 
+  if(currToolboxSize != gridSize) {
+    $("#toolbox-list img").height(currToolboxSize);
+    $("#toolbox-list a").width(currToolboxSize);
+  } else {
+    $("#toolbox-list img").height(gridSize);
+    $("#toolbox-list a").width(gridSize);
+  }
+}
+
+function calcToolDimensions() {
+  var ratio = gridSize / 16;
+  for(i = 0; i < tools.length; i++) {
+    tools[i].w = blocks[tools[i].n][2] * ratio;
+    tools[i].h = blocks[tools[i].n][3] * ratio;
+  }
 }
 
 function drawTools() {
-  var toolY = 0; //-gridSize;
-  var toolX = -gridSize - 3;
+  /* var toolY = 0; //-gridSize;
+  var toolX = -gridSize - 2;
   for(i = 0; i < tools.length; i++) {
-    if(i % 13 == 0) {
+    if(i % 12 == 0) {
       toolY = 0;
       toolX += (gridSize + 3);
     } else {
@@ -799,28 +1018,77 @@ function drawTools() {
     }
     tools[i].y = toolY;
     tools[i].x = toolX;
+  }*/
+
+  /* var toolY = 0;
+  var toolX = 0;
+  for(i = 1; i <= tools.length; i++) {
+    tools[i-1].x = toolX;
+    tools[i-1].y = toolY;
+    toolY += tools[i-1].h + 2;
+    toolX += 0;
+    if(i % 12 == 0) {
+      toolX += tools[i-1].w + 2;
+      toolY = 0;
+    }
+  }*/
+
+  var toolX = -gridSize - 3;
+  var toolY = 0;
+
+  for(i = 0; i < tools.length; i++) {
+    if(i % 12 == 0){
+      tools[i].y = 0;
+      toolX += gridSize + 3;
+      tools[i].x = toolX;
+    } else {
+      tools[i].y = tools[i-1].y + tools[i-1].h + 3;
+      tools[i].x = toolX;
+    }
   }
 }
 
 function sizeToolbox() {
   //toolcanvas.setAttribute("height", tools.length * (gridSize + 3) - 2);
   //toolcanvas.setAttribute("width", gridSize);
-  
-  if (tools.length >= 12) {
-    toolcanvas.setAttribute("height", 13 * (gridSize + 3) - 2);
-    toolcanvas.setAttribute("width", Math.ceil(tools.length / 13) * (gridSize + 3) - 3);
+
+    if (tools.length >= 12) {
+      toolcanvas.setAttribute("height", 12 * (gridSize + 3) - 2);
+      toolcanvas.setAttribute("width", Math.ceil(tools.length / 12) * (gridSize + 3) - 3);
+    } else {
+      toolcanvas.setAttribute("height", tools.length * (gridSize + 3) - 2);
+      toolcanvas.setAttribute("width", gridSize);
+    }
+    ghosttoolcanvas.height = toolcanvas.height;
+    ghosttoolcanvas.width = toolcanvas.width;
+
+  if(!lockToolboxSize) {  
+    currToolboxSize = gridSize;
+    $("#toolbox-list img").height(gridSize);
+    $("#toolbox-list a").width(gridSize);
+    $("#toolbox-wrapper").css("right", -(Math.ceil(tools.length / 12) * (gridSize + 3)) - 12);
   } else {
-    toolcanvas.setAttribute("height", tools.length * (gridSize + 3) - 2);
-    toolcanvas.setAttribute("width", gridSize);
+    $("#toolbox-wrapper").css("right", -(Math.ceil(tools.length / 12) * (gridSize + 3)) - 12);  
   }
-  ghosttoolcanvas.height = toolcanvas.height;
-  ghosttoolcanvas.width = toolcanvas.width;
-
-  $("#toolbox-list img").height(gridSize);
-  $("#toolbox-list a").width(gridSize);
-  $("#toolbox-wrapper").css("right", -(Math.ceil(tools.length / 13) * (gridSize + 3)) - 12);
-
   drawTools();
+
+}
+
+function toggleToolboxLock() {
+  if(lockToolboxSize) {
+    $(".lockToolbox").attr("src", "/images/icons/lock_open.png");
+    $(".lockToolbox").attr("title", "Toolbox size is unlocked.  Click to lock.");
+    $(".lockToolbox").css("background-color", "transparent");
+    lockToolboxSize = false;
+    setCookie("lockToolboxSize", "", -1);
+  } else {
+    $(".lockToolbox").attr("src", "/images/icons/lock.png");
+    $(".lockToolbox").attr("title", "Toolbox size is locked.  Click to unlock.");
+    $(".lockToolbox").css("background-color", "orangered");
+    lockToolboxSize = true;
+    currToolboxSize = gridSize;
+    setCookie("lockToolboxSize", currToolboxSize, 365);
+  }
 }
 
 function drawDebug() {
@@ -879,6 +1147,8 @@ function encodeObjects() {
     tmp = [];
     tmp.push(value.x);
     tmp.push(value.y);
+    tmp.push(value.h);
+    tmp.push(value.w);
     tmp.push(value.n);
     if(value.r != 0 || value.o != blockOrientations.none) {
       tmp.push(value.r);
@@ -900,9 +1170,11 @@ function decodeObjects() {
     
       $.each(tmp, function(i, v) {
         if(v.length == 3)
-          addObj(v[0], v[1], 't', v[2], 0, blockOrientations.none);
-        else
-          addObj(v[0], v[1], 't', v[2], v[3], v[4])
+          addObj(v[0], v[1], 16, 16, 't', v[2], 0, blockOrientations.none);
+        else if(v.length == 5)
+          addObj(v[0], v[1], v[2], v[3], 't', v[4], 0, blockOrientations.none);
+        else if(v.length == 7)
+          addObj(v[0], v[1], v[2], v[3], 't', v[4], v[5], v[6])
       });
     } catch(err) {
       $("body").append('<div id="parseError" class="overlay"><div class="close"><img src="/images/icons/cancel.png" onclick="$(\'#parseError\').toggleFade();" alt="Close Help" /></div><h1>Error</h1><p>Sorry, there was a problem parsing the URL you specified.  It may have been munged at some point and the MineDraft it pointed to can\'t be found.</p></div>');
@@ -933,4 +1205,45 @@ function getCookie(c_name) {
 
 function supports_canvas() {
   return !!document.createElement('canvas').getContext;
+}
+
+function toggleMaterials(){
+  $("#materials").toggleFade();
+  var results = [];
+  var str = "<ul>";
+
+  for (var i = 0; i < objects.length; i++) {
+    var key = objects[i].n;
+    if(!results[key])
+      results[key] = 1;
+    else
+      results[key] += 1;
+  }
+
+  for (var j in results) {
+    str += "<li>" + j.replace(/-/gi, " ").capitalize() + ": " + results[j];
+    if(results[j] > 64) {
+      str += " [" + Math.floor(results[j] / 64);
+      str += Math.floor(results[j] / 64) == 1 ? " stack" : " stacks";
+      if(results[j] % 64 != 0)
+        str += " +" + results[j] % 64 + " blocks";
+      str += "]";
+    }
+    str += "</li>";
+  }
+
+  str += "</ul>";  
+  $("#materials-list").html(str);
+}
+
+function objectsSort(a, b) {
+  if(a.n > b.n)
+    return 1;
+  if(a.n < b.n)
+    return -1;
+  return 0;
+}
+
+String.prototype.capitalize = function () {
+  return this.charAt(0).toUpperCase() + this.slice(1);
 }

@@ -5,17 +5,17 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     <title>MineDraft.net</title>
 
-    <link rel="stylesheet" href="stylesheets/style.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="stylesheets/vtip.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/stylesheets/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/stylesheets/vtip.css" type="text/css" media="screen" />
 
-    <script type="text/javascript" src="javascripts/jquery-1.4.3.min.js"></script>
-    <script type="text/javascript" src="javascripts/jquery.guid.js"></script>
-    <script type="text/javascript" src="javascripts/jquery.url.min.js"></script>
-    <script type="text/javascript" src="javascripts/jquery.togglefade.min.js"></script>   
-    <script type="text/javascript" src="javascripts/vtip-min.js"></script>
-    <script type="text/javascript" src="javascripts/json2.js"></script>
-    <script type="text/javascript" src="javascripts/base64.js"></script>    
-    <script type="text/javascript" src="javascripts/minedraft.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery-1.4.3.min.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery.guid.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery.url.min.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery.togglefade.min.js"></script>   
+    <script type="text/javascript" src="/javascripts/vtip-min.js"></script>
+    <script type="text/javascript" src="/javascripts/json2.js"></script>
+    <script type="text/javascript" src="/javascripts/base64.js"></script>    
+    <script type="text/javascript" src="/javascripts/minedraft.js"></script>
 
     <!--[if lt IE 9]>
       <script type="text/javascript" src="/javascripts/html5.js"></script>
@@ -47,6 +47,7 @@
     <div id="tools" class="overlay">
       <ul id="toolbox-list"></ul>
       <div id="toolbox-wrapper" class="overlay">
+        <img src="/images/icons/cancel.png" alt="Close toolbox flyout" class="flyout-close" onclick="$('#toolbox-wrapper').hide();$('#toolbox-list li a').removeClass('active');"/>
         <canvas id="toolbox" height="1" width="1">Toolbox</canvas>
       </div>
       <div style="clear: both;"></div>
@@ -57,6 +58,8 @@
         <img src="/images/icons/control_remove.png" onclick="zoom('out');" alt="Zoom Out" title="Zoom Out" class="vtip action" />
       </div>
       <img src="/images/icons/page_white_delete.png" onclick="eraseObjects();" alt="Erase" title="Erase all objects." class="vtip action erase" />
+      <img src="/images/icons/lock_open.png" onclick="toggleToolboxLock();" alt="Lock Toolbox Size" title="Toolbox size is unlocked. Click to lock." class="vtip action lockToolbox" />
+      <img src="/images/icons/page_white_text.png" onclick="toggleMaterials();" alt="Show the required materials." title="Click to show the required materials for this draft." class="vtip action show-materials" />
     </div>
     <div id="menu" class="overlay">
       <ul>
@@ -81,7 +84,7 @@
       </ol>
       <p><em>Double-Click an object in the grid to delete it.</em></p>
       <p><em>Click and drag objects to move them around.</em></p>
-      <p><em>Click and drag an empty space in the grid to scroll around.</em></p>
+      <p><em>While holding [shift], click and drag in the grid to scroll around.</em></p>
     </div>
     <div id="links" class="overlay">
       <div class="close">
@@ -95,7 +98,13 @@
       <label for="bbcode-link">BBCode: </label><input name="bbcode" id="bbcode-link" />
       <p class="link-note"><em>Note: Some complex drafts may not be linkable at the moment.  I'm working on a new linking system that will resolve that.</em></p>
     </div>
-
+    <div id="materials" class="overlay">
+      <div class="close">
+        <img src="/images/icons/cancel.png" onclick="$('#materials').hide();" alt="Close Materials List" />
+      </div>
+      <h1>Materials List</h1>
+      <div id="materials-list"></div>
+    </div>
     <div id="feedback" class="overlay">
       <div class="close">
         <img src="/images/icons/cancel.png" onclick="$('#feedback').toggleFade();" alt="Close Help" />
@@ -133,10 +142,12 @@
     </div>
 
     <img src="/images/terrain.png" id="terrain" />
+    <img src="/images/extras.png" id="extras" />
+
     <script type="text/javascript" src="javascripts/jquery.js"></script>
 
     <div id="google" class="overlay">
-      <script type="text/javascript">
+      <!--script type="text/javascript">
         google_ad_client = "pub-8011900212776107";
         /* MineDraft.net */
         google_ad_slot = "4095360530";
@@ -155,7 +166,7 @@
           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
         })();
-      </script>
+      </script-->
     </div>
     <script type="text/javascript">
       if(!supports_canvas()) {
