@@ -10,7 +10,7 @@ var blocks = {
   "snow": [32, 64, 16, 16],
   "snowy-dirt": [64, 64, 16, 16],
   "wood": [64, 0, 16, 16],
-//  "step": [80, 8, 16, 8],
+  "step": [80, 8, 16, 16],
   "step-top": [96, 0, 16, 16],
   "cobblestone": [0, 16, 16, 16],
   "mossy-cobblestone": [64, 32, 16, 16],
@@ -81,7 +81,7 @@ var toolCats = {
   "Fluids": [ "water", "ice", "lava" ],
   "Tracks": [ "rail-straight", "rail-curve" ],
   "Redstone": [ "redstone-torch-on", "redstone-torch-off", "redstone-line-on", "redstone-line-off", "redstone-cross-on", "redstone-cross-off" ],
-  "Misc": [ "ladder", "step-top", "step-top", "toolbox", "forge", "sponge", "red-flower", "yellow-flower", "red-mushroom", "brown-mushroom", "jack-o-lantern-on", "jack-o-lantern-off", "door-wood", "door-iron", "bookcase"],
+  "Misc": [ "ladder", "step", "step-top", "toolbox", "forge", "sponge", "red-flower", "yellow-flower", "red-mushroom", "brown-mushroom", "jack-o-lantern-on", "jack-o-lantern-off", "door-wood", "door-iron", "bookcase"],
   "All": [],
   "Tools": []
 };
@@ -1209,6 +1209,9 @@ function supports_canvas() {
 
 function toggleMaterials(){
   $("#materials").toggleFade();
+  if(objects.length == 0)
+    $("#materials-list").html("<p>Nothing needed yet....");
+
   var results = [];
   var str = "<ul>";
 
