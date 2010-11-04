@@ -10,7 +10,7 @@ var blocks = {
   "snow": [32, 64, 16, 16],
   "snowy-dirt": [64, 64, 16, 16],
   "wood": [64, 0, 16, 16],
-  "step": [80, 8, 16, 16],
+  "step": [80, 0, 16, 16],
   "step-top": [96, 0, 16, 16],
   "cobblestone": [0, 16, 16, 16],
   "mossy-cobblestone": [64, 32, 16, 16],
@@ -23,7 +23,7 @@ var blocks = {
   "tilled": [112, 80, 16, 16],
   "tilled-wet": [96, 80, 16, 16],
   "stump": [80, 16, 16, 16],
-  "bark": [64, 32, 16, 16],
+  "bark": [64, 16, 16, 16],
   "gold-ore": [0, 32, 16, 16],
   "iron-ore": [16, 32, 16, 16],
   "coal-ore": [32, 32, 16, 16],
@@ -37,8 +37,11 @@ var blocks = {
   "iron": [96, 16, 16, 16],
   "gold": [112, 16, 16, 16],
   "diamond": [128, 16, 16, 16],
-  "toolbox": [176, 32, 16, 16],
+  "toolbox": [192, 48, 16, 16],
+  "toolbox-top": [176, 32, 16, 16],
   "forge": [192, 32, 16, 16],
+  "chest": [176, 16, 16, 16],
+  "spawner": [16, 64, 16, 16],
   "sponge": [0, 48, 16, 16],
   "tnt": [128, 0, 16, 16],
   "lava": [208, 224, 16, 16],
@@ -62,9 +65,12 @@ var blocks = {
   "cactus-side": [96, 64, 16, 16],
   "reeds": [144, 64, 16, 16],
   "wheat": [240, 80, 16, 16],
+  "shrubbery": [240, 0, 16, 16],
   "door-wood": [16, 80, 16, 32],
   "door-iron": [32, 80, 16, 32],
   "bookcase": [48, 32, 16, 16],
+  "jukebox-top": [176, 64, 16, 16],
+  "jukebox-side": [160, 64, 16, 16],
   "jack-o-lantern-on": [128, 112, 16, 16],
   "jack-o-lantern-off": [112, 112, 16, 16],
   "extras": {
@@ -77,11 +83,11 @@ var toolCats = {
   "Ore": [ "coal-ore", "iron-ore", "gold-ore", "redstone-ore", "diamond-ore", "lightstone-ore" ],
   "Natural": [ "dirt", "stone", "sand", "slow-sand", "gravel", "clay", "stump", "bark", "wool", "obsidian", "hellstone", "bedrock" ],
   "Crafted": [ "wood", "cobblestone", "glass", "brick", "iron", "gold", "diamond" ],
-  "Ground": [ "grassy-dirt", "grass", "snowy-dirt", "snow", "tilled", "tilled-wet", "mossy-cobblestone", "cactus", "cactus-side", "reeds", "wheat" ],
+  "Ground": [ "grassy-dirt", "grass", "snowy-dirt", "snow", "tilled", "tilled-wet", "mossy-cobblestone", "cactus", "cactus-side", "reeds", "wheat", "shrubbery" ],
   "Fluids": [ "water", "ice", "lava" ],
   "Tracks": [ "rail-straight", "rail-curve" ],
   "Redstone": [ "redstone-torch-on", "redstone-torch-off", "redstone-line-on", "redstone-line-off", "redstone-cross-on", "redstone-cross-off" ],
-  "Misc": [ "ladder", "step", "step-top", "toolbox", "forge", "sponge", "red-flower", "yellow-flower", "red-mushroom", "brown-mushroom", "jack-o-lantern-on", "jack-o-lantern-off", "door-wood", "door-iron", "bookcase"],
+  "Misc": [ "ladder", "step", "step-top", "toolbox", "toolbox-top", "forge", "chest", "sponge", "red-flower", "yellow-flower", "red-mushroom", "brown-mushroom", "jack-o-lantern-on", "jack-o-lantern-off", "door-wood", "door-iron", "bookcase", "spawner", "jukebox-top", "jukebox-side"],
   "All": [],
   "Tools": []
 };
@@ -270,10 +276,18 @@ function init() {
   canvas.ondblclick = myDblClick;
   window.onresize = sizeCanvas;
   document.onkeypress = myKeyPress;
+  document.onmousewheel = myMouseWheel;
 
   // add custom initialization here:
   initTools();
   decodeObjects();
+}
+
+function myMouseWheel(e) {
+  if(e.wheelDelta > -200)
+    zoom('out');
+  if(e.wheelDelta < 200)
+    zoom('in');
 }
 
 function myKeyPress(e) {
@@ -1209,8 +1223,10 @@ function supports_canvas() {
 
 function toggleMaterials(){
   $("#materials").toggleFade();
-  if(objects.length == 0)
-    $("#materials-list").html("<p>Nothing needed yet....");
+  if(objects.length == 0) {
+    $("#materials-list").html("<p>Nothing needed yet....</p>");
+    return;
+  }
 
   var results = [];
   var str = "<ul>";

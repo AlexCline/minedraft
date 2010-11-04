@@ -296,3 +296,14 @@ img#terrain, img#metatools {
   right: -8px;
   top: -8px;
 }
+
+#tips {
+  list-style: disc;
+  margin-left: 2em;
+  margin-top: 2em;
+}
+
+#tips li {
+  font-style: italic;
+  margin-left: 1em;
+}
