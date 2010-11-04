@@ -71,6 +71,8 @@ var blocks = {
   "bookcase": [48, 32, 16, 16],
   "jukebox-top": [176, 64, 16, 16],
   "jukebox-side": [160, 64, 16, 16],
+  "pumpkin": [96, 112, 16, 16],
+  "pumpkin-top": [96, 96, 16, 16],
   "jack-o-lantern-on": [128, 112, 16, 16],
   "jack-o-lantern-off": [112, 112, 16, 16],
   "extras": {
@@ -82,12 +84,12 @@ var blocks = {
 var toolCats = {
   "Ore": [ "coal-ore", "iron-ore", "gold-ore", "redstone-ore", "diamond-ore", "lightstone-ore" ],
   "Natural": [ "dirt", "stone", "sand", "slow-sand", "gravel", "clay", "stump", "bark", "wool", "obsidian", "hellstone", "bedrock" ],
-  "Crafted": [ "wood", "cobblestone", "glass", "brick", "iron", "gold", "diamond" ],
+  "Crafted": [ "wood", "cobblestone", "glass", "brick", "iron", "gold", "diamond", "step", "step-top" ],
   "Ground": [ "grassy-dirt", "grass", "snowy-dirt", "snow", "tilled", "tilled-wet", "mossy-cobblestone", "cactus", "cactus-side", "reeds", "wheat", "shrubbery" ],
   "Fluids": [ "water", "ice", "lava" ],
   "Tracks": [ "rail-straight", "rail-curve" ],
   "Redstone": [ "redstone-torch-on", "redstone-torch-off", "redstone-line-on", "redstone-line-off", "redstone-cross-on", "redstone-cross-off" ],
-  "Misc": [ "ladder", "step", "step-top", "toolbox", "toolbox-top", "forge", "chest", "sponge", "red-flower", "yellow-flower", "red-mushroom", "brown-mushroom", "jack-o-lantern-on", "jack-o-lantern-off", "door-wood", "door-iron", "bookcase", "spawner", "jukebox-top", "jukebox-side"],
+  "Misc": [ "ladder", "toolbox", "toolbox-top", "forge", "chest", "sponge", "red-flower", "yellow-flower", "red-mushroom", "brown-mushroom", "jack-o-lantern-on", "jack-o-lantern-off", "pumpkin", "pumpkin-top", "door-wood", "door-iron", "bookcase", "spawner", "jukebox-top", "jukebox-side"],
   "All": [],
   "Tools": []
 };
