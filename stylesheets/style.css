@@ -272,6 +272,11 @@ img#terrain, img#metatools {
   z-index: 200;
 }
 
+#about img.logo {
+  -mox-box-shadow: 3px 3px 3px #777;
+  -webkit-box-shadow: 3px 3px 3px #777;
+}
+
 .mojang {
   padding-top: 1em;
   color: #777;
