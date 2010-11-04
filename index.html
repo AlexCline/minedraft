@@ -65,8 +65,28 @@
       <ul>
         <li><img src="/images/icons/house.png" alt="MineDraft.net" class="action home" onclick="window.location('http://minedraft.net');" /> <a href="http://minedraft.net">MineDraft.net</a></li>
         <li><img src="/images/icons/world_link.png" alt="Create Link" title="Link to this Minedraft." class="vtip action link" onclick="createLinks()" /> <a href="#" onclick="createLinks();">Link to this Minedraft</a></li>
-        <li class="last"><img src="/images/icons/help.png" alt="Help" class="help" onclick="toggleHelp();" /> <a href="#" onclick="toggleHelp();">Help</a></li>
+        <li><img src="/images/icons/help.png" alt="Help" class="help" onclick="toggleHelp();" /> <a href="#" onclick="toggleHelp();">Help</a></li>
+        <li class="last"><img src="/images/icons/new.png" alt="News" class="news" onclick="#('#news').toggleFade();" /> <a href="#" onclick="$('#news').toggleFade();">News</a></li>
       </ul>
+    </div>
+    <div id="news" class="overlay">
+      <div class="close">
+        <img src="/images/icons/cancel.png" onclick="$('#news').toggleFade();" alt="Close News" />
+      </div>
+      <h1>News</h1>
+      <div>
+        <h2>Updates!</h2>
+        <em>Nov. 5, 2010</em>
+        <p>There has been a lot of great feedback about the site since its launch.  I've tried to keep track of all of the suggestions and feature requests and I've started completing some of the 'low-hanging fruit'.  Here's a quick run-down of the newest stuff:</p>
+        <ul>
+          <li>Lots of new block types</li>
+          <li>Updated blocks for the Halloween update</li>
+          <li>Added an eraser tool</li>
+          <li>Keyboard navigation (WASD for moving around, -/+ for zooming, shift-click for scrolling, etc...)</li>
+          <li>Clicking and dragging to drop multiple blocks</li>
+        </ul>
+        <p>There are a lot more updates coming.  They're just a bit more complicated to implement.  Keep the suggestions coming though!</p>
+      </div>
     </div>
     <div id="help" class="overlay">
       <div class="close">
