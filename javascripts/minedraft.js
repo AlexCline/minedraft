@@ -305,13 +305,13 @@ function myKeyPress(e) {
       moveCanvas('up');
       break;
     case "a":
-      moveCanvas('left');
+      moveCanvas('right');
       break;
     case "s":
       moveCanvas('down');
       break;
     case "d":
-      moveCanvas('right');
+      moveCanvas('left');
       break;
   }
 }
