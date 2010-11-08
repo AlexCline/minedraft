@@ -91,7 +91,7 @@ var toolCats = {
   "Redstone": [ "redstone-torch-on", "redstone-torch-off", "redstone-line-on", "redstone-line-off", "redstone-cross-on", "redstone-cross-off" ],
   "Misc": [ "ladder", "toolbox", "toolbox-top", "forge", "chest", "sponge", "red-flower", "yellow-flower", "red-mushroom", "brown-mushroom", "jack-o-lantern-on", "jack-o-lantern-off", "pumpkin", "pumpkin-top", "door-wood", "door-iron", "bookcase", "spawner", "jukebox-top", "jukebox-side"],
   "All": [],
-  "Tools": []
+  "Extra": []
 };
 
 var blockOrientations = {
@@ -305,15 +305,19 @@ function myKeyPress(e) {
       zoom('in');
       break;
     case "w":
+    case "W":
       moveCanvas('up');
       break;
     case "a":
+    case "A":
       moveCanvas('right');
       break;
     case "s":
+    case "S":
       moveCanvas('down');
       break;
     case "d":
+    case "D":
       moveCanvas('left');
       break;
   }
@@ -1009,7 +1013,7 @@ function toolboxFlyout(cat) {
   }
   if(cat == "Tracks")
     addRotatedTracks();
-  if(cat == "Tools")
+  if(cat == "Extra")
     addMetaTools();
   else
     calcToolDimensions();
