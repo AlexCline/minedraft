@@ -958,6 +958,12 @@ function drawGrid() {
 var offset = 0;
 
 function toolboxFlyout(cat) {
+  if($("#toolbox-wrapper").is(":visible")) {
+    $("#toolbox-list li."+cat+" a").removeClass("active");
+    $("#toolbox-wrapper").hide();
+    return;
+  }
+
   tools = [];
   if(cat == "All"){
     $.each(toolCats, function(k, v) {
