@@ -91,6 +91,21 @@ a:hover {
   border-left-style: none;
 }
 
+#toolbox-info {
+  position: absolute;
+  white-space: nowrap;
+  left: 0px;
+  top: 3px;
+  padding: 5px 10px;
+  color: #111;
+  display: none;
+  -moz-border-top-right-radius: 5px;
+  border-top-right-radius: 5px;
+  -moz-border-bottom-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-left-style: none;
+}
+
 #tools canvas {
   border: 2px solid #eee;
   float: right;

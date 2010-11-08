@@ -192,6 +192,7 @@ var activeTool;
 var oldActiveTool;
 var lockToolboxSize = false;
 var currToolboxSize = gridSize;
+var toolboxInfo;
 
 // The selection color and width. Right now we have a red selection with a small width
 var mySelColor = 'orangered';
@@ -273,9 +274,11 @@ function init() {
   // double click is for making new boxes
   canvas.onmousedown = myDown;
   canvas.onmouseup = myUp;
-  toolcanvas.onmousedown = myToolboxDown;
-  //toolcanvas.onmouseup = myUp;
   canvas.ondblclick = myDblClick;
+  toolcanvas.onmousedown = myToolboxDown;
+  toolcanvas.onmousemove = myToolboxMouseMove;
+  toolcanvas.onmouseover = myToolboxMouseOver;
+  toolcanvas.onmouseout = myToolboxMouseOut;
   window.onresize = sizeCanvas;
   document.onkeypress = myKeyPress;
   document.onmousewheel = myMouseWheel;
@@ -935,7 +938,34 @@ function getMouseInToolbox(e) {
   offsetY += toolboxStyleBorderTop;
 
   mx = e.pageX - offsetX;
-  my = e.pageY - offsetY
+  my = e.pageY - offsetY;
+}
+
+function myToolboxMouseOver(e) {
+  toolboxInfo = $("#toolbox-info").html();
+}
+
+function myToolboxMouseMove(e) {
+  //getMouse(e);
+  getMouseInToolbox(e);
+  l = tools.length;
+
+  for(var i = 0; i < l; i++) {
+    drawObject(gtctx, tools[i], 'black');
+
+    var imageData = gtctx.getImageData(mx, my, 1, 1);
+    if(imageData.data[3] > 0) {
+      $("#toolbox-info").html(tools[i].n.replace(/-/gi, " ").capitalize());
+      clear(gtctx);
+      return true;     
+    }
+  }
+  $("#toolbox-info").html(toolboxInfo);
+  return false;
+}
+
+function myToolboxMouseOut(e) {
+  $("#toolbox-info").html(toolboxInfo);
 }
 
 function drawGrid() {
@@ -959,8 +989,7 @@ var offset = 0;
 
 function toolboxFlyout(cat) {
   if($("#toolbox-wrapper").is(":visible") && $("#toolbox-list li."+cat+" a").is(".active")) {
-    $("#toolbox-list li."+cat+" a").removeClass("active");
-    $("#toolbox-wrapper").hide();
+    closeFlyout();
     return;
   }
 
@@ -990,6 +1019,14 @@ function toolboxFlyout(cat) {
   $("#toolbox-list li a").removeClass("active");
   $("#toolbox-list li."+cat+" a").addClass("active");
   $("#toolbox-wrapper").show();
+  $("#toolbox-info").html("Showing "+ cat +" Tools")
+  $("#toolbox-info").show();
+}
+
+function closeFlyout() {
+  $('#toolbox-wrapper').hide();
+  $('#toolbox-info').hide();
+  $('#toolbox-list li a').removeClass('active');
 }
 
 function addRotatedTracks() {
@@ -1061,11 +1098,14 @@ function sizeToolbox() {
     $("#toolbox-list img").height(gridSize);
     $("#toolbox-list a").width(gridSize);
     $("#toolbox-wrapper").css("right", -(Math.ceil(tools.length / 12) * (gridSize + 3)) - 12);
+    $("#toolbox-info").css("top", $("#toolbox-wrapper").height() + 20);
+    $("#toolbox-info").css("left", gridSize + 18);
   } else {
     $("#toolbox-wrapper").css("right", -(Math.ceil(tools.length / 12) * (gridSize + 3)) - 12);  
+    $("#toolbox-info").css("top", $("#toolbox-wrapper").height() + 20);
+    $("#toolbox-info").css("left", gridSize + 18);
   }
   drawTools();
-
 }
 
 function toggleToolboxLock() {
@@ -1243,6 +1283,15 @@ function objectsSort(a, b) {
   return 0;
 }
 
+//String.prototype.capitalize = function () {
+//  return this.charAt(0).toUpperCase() + this.slice(1);
+//}
+
 String.prototype.capitalize = function () {
-  return this.charAt(0).toUpperCase() + this.slice(1);
+  newVal = '';
+  val = this.split(' ');
+  for(var c=0; c < val.length; c++) {
+    newVal += val[c].substring(0,1).toUpperCase() + val[c].substring(1,val[c].length) + ' ';
+  }
+  return newVal;
 }
