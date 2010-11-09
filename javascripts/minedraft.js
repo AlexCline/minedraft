@@ -1,5 +1,5 @@
 var hostname = "minedraft.net";
-var gridSizeMinMax = [16, 64];
+var gridSizeMinMax = [16, 128];
 var gridSize = 32;
 
 var blocks = { 
