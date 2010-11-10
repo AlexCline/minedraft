@@ -1,111 +1,121 @@
-var hostname = "minedraft.net";
+var hostname = 'minedraft.net';
 var gridSizeMinMax = [16, 128];
 var gridSize = 32;
 
-var blocks = { 
-  "grass": [0, 0, 16, 16],
-  "grassy-dirt": [48, 0, 16, 16],
-  "dirt": [32, 0, 16, 16],
-  "stone": [16, 0, 16, 16],
-  "snow": [32, 64, 16, 16],
-  "snowy-dirt": [64, 64, 16, 16],
-  "wood": [64, 0, 16, 16],
-  "double-step": [80, 0, 16, 16],
-  "step-top": [96, 0, 16, 16],
-  "cobblestone": [0, 16, 16, 16],
-  "mossy-cobblestone": [64, 32, 16, 16],
-  "hellstone": [112, 96, 16, 16],
-  "bedrock": [16, 16, 16, 16],
-  "sand": [32, 16, 16, 16],
-  "slow-sand": [128, 96, 16, 16],
-  "clay": [128, 64, 16, 16],
-  "gravel": [48, 16, 16, 16],
-  "tilled": [112, 80, 16, 16],
-  "tilled-wet": [96, 80, 16, 16],
-  "stump": [80, 16, 16, 16],
-  "bark": [64, 16, 16, 16],
-  "gold-ore": [0, 32, 16, 16],
-  "iron-ore": [16, 32, 16, 16],
-  "coal-ore": [32, 32, 16, 16],
-  "diamond-ore": [32, 48, 16, 16],
-  "redstone-ore": [48, 48, 16, 16],
-  "lightstone-ore": [144, 96, 16, 16],
-  "wool": [0, 64, 16, 16],
-  "brick": [112, 0, 16, 16],
-  "glass": [16, 48, 16, 16],
-  "obsidian": [80, 32, 16, 16],
-  "iron": [96, 16, 16, 16],
-  "gold": [112, 16, 16, 16],
-  "diamond": [128, 16, 16, 16],
-  "toolbox": [192, 48, 16, 16],
-  "toolbox-top": [176, 32, 16, 16],
-  "forge": [192, 32, 16, 16],
-  "chest": [176, 16, 16, 16],
-  "spawner": [16, 64, 16, 16],
-  "sponge": [0, 48, 16, 16],
-  "tnt": [128, 0, 16, 16],
-  "lava": [208, 224, 16, 16],
-  "water": [208, 192, 16, 16],
-  "ice": [48, 64, 16, 16],
-  "torch": [0, 80, 16, 16],
-  "redstone-torch-on": [48, 96, 16, 16],
-  "redstone-torch-off": [48, 112, 16, 16],
-  "redstone-line-on": [80, 96, 16, 16],
-  "redstone-line-off": [80, 80, 16, 16],
-  "redstone-cross-on": [64, 96, 16, 16],
-  "redstone-cross-off": [64, 80, 16, 16],
-  "ladder": [48, 80, 16, 16],
-  "red-flower": [192, 0, 16, 16],
-  "yellow-flower": [208, 0, 16, 16],
-  "red-mushroom": [192, 16, 16, 16],
-  "brown-mushroom": [208, 16, 16, 16],
-  "rail-curve": [0, 112, 16, 16],
-  "rail-straight": [0, 128, 16, 16],
-  "cactus": [80, 64, 16, 16],
-  "cactus-side": [96, 64, 16, 16],
-  "reeds": [144, 64, 16, 16],
-  "wheat": [240, 80, 16, 16],
-  "shrubbery": [240, 0, 16, 16],
-  "door-wood": [16, 80, 16, 32],
-  "door-iron": [32, 80, 16, 32],
-  "bookcase": [48, 32, 16, 16],
-  "jukebox-top": [176, 64, 16, 16],
-  "jukebox-side": [160, 64, 16, 16],
-  "pumpkin": [96, 112, 16, 16],
-  "pumpkin-top": [96, 96, 16, 16],
-  "jack-o-lantern-on": [128, 112, 16, 16],
-  "jack-o-lantern-off": [112, 112, 16, 16],
-  "extras": {
-    "eraser": [0, 0, 16, 16],
-    "cart": [16, 0, 16, 16],
-    "step": [32, 0, 16, 16],
-    "stair-side": [48, 0, 16, 16],
-    "creeper": [0, 16, 16, 32],
-    "pig": [16, 16, 16, 16],
-    "chicken": [16, 32, 16, 16],
-    "sheep": [32, 16, 16, 32],
-    "cow": [48, 16, 16, 32]
+var blocks = {
+  'grass': [0, 0, 16, 16],
+  'grassy-dirt': [48, 0, 16, 16],
+  'dirt': [32, 0, 16, 16],
+  'stone': [16, 0, 16, 16],
+  'snow': [32, 64, 16, 16],
+  'snowy-dirt': [64, 64, 16, 16],
+  'wood': [64, 0, 16, 16],
+  'double-step': [80, 0, 16, 16],
+  'step-top': [96, 0, 16, 16],
+  'cobblestone': [0, 16, 16, 16],
+  'mossy-cobblestone': [64, 32, 16, 16],
+  'hellstone': [112, 96, 16, 16],
+  'bedrock': [16, 16, 16, 16],
+  'sand': [32, 16, 16, 16],
+  'slow-sand': [128, 96, 16, 16],
+  'clay': [128, 64, 16, 16],
+  'gravel': [48, 16, 16, 16],
+  'tilled': [112, 80, 16, 16],
+  'tilled-wet': [96, 80, 16, 16],
+  'stump': [80, 16, 16, 16],
+  'bark': [64, 16, 16, 16],
+  'gold-ore': [0, 32, 16, 16],
+  'iron-ore': [16, 32, 16, 16],
+  'coal-ore': [32, 32, 16, 16],
+  'diamond-ore': [32, 48, 16, 16],
+  'redstone-ore': [48, 48, 16, 16],
+  'lightstone-ore': [144, 96, 16, 16],
+  'wool': [0, 64, 16, 16],
+  'brick': [112, 0, 16, 16],
+  'glass': [16, 48, 16, 16],
+  'obsidian': [80, 32, 16, 16],
+  'iron': [96, 16, 16, 16],
+  'gold': [112, 16, 16, 16],
+  'diamond': [128, 16, 16, 16],
+  'toolbox': [192, 48, 16, 16],
+  'toolbox-top': [176, 32, 16, 16],
+  'forge': [192, 32, 16, 16],
+  'chest': [176, 16, 16, 16],
+  'spawner': [16, 64, 16, 16],
+  'sponge': [0, 48, 16, 16],
+  'tnt': [128, 0, 16, 16],
+  'lava': [208, 224, 16, 16],
+  'water': [208, 192, 16, 16],
+  'ice': [48, 64, 16, 16],
+  'torch': [0, 80, 16, 16],
+  'redstone-torch-on': [48, 96, 16, 16],
+  'redstone-torch-off': [48, 112, 16, 16],
+  'redstone-line-on': [80, 96, 16, 16],
+  'redstone-line-off': [80, 80, 16, 16],
+  'redstone-cross-on': [64, 96, 16, 16],
+  'redstone-cross-off': [64, 80, 16, 16],
+  'ladder': [48, 80, 16, 16],
+  'red-flower': [192, 0, 16, 16],
+  'yellow-flower': [208, 0, 16, 16],
+  'red-mushroom': [192, 16, 16, 16],
+  'brown-mushroom': [208, 16, 16, 16],
+  'rail-curve': [0, 112, 16, 16],
+  'rail-straight': [0, 128, 16, 16],
+  'cactus': [80, 64, 16, 16],
+  'cactus-side': [96, 64, 16, 16],
+  'reeds': [144, 64, 16, 16],
+  'wheat': [240, 80, 16, 16],
+  'shrubbery': [240, 0, 16, 16],
+  'door-wood': [16, 80, 16, 32],
+  'door-iron': [32, 80, 16, 32],
+  'bookcase': [48, 32, 16, 16],
+  'jukebox-top': [176, 64, 16, 16],
+  'jukebox-side': [160, 64, 16, 16],
+  'pumpkin': [96, 112, 16, 16],
+  'pumpkin-top': [96, 96, 16, 16],
+  'jack-o-lantern-on': [128, 112, 16, 16],
+  'jack-o-lantern-off': [112, 112, 16, 16],
+  'extras': {
+    'eraser': [0, 0, 16, 16],
+    'cart': [16, 0, 16, 16],
+    'step': [32, 0, 16, 16],
+    'stair-side': [48, 0, 16, 16],
+    'creeper': [0, 16, 16, 32],
+    'pig': [16, 16, 16, 16],
+    'chicken': [16, 32, 16, 16],
+    'sheep': [32, 16, 16, 32],
+    'cow': [48, 16, 16, 32]
   }
 };
 
 var toolCats = {
-  "Ore": [ "coal-ore", "iron-ore", "gold-ore", "redstone-ore", "diamond-ore", "lightstone-ore" ],
-  "Natural": [ "dirt", "stone", "sand", "slow-sand", "gravel", "clay", "stump", "bark", "wool", "obsidian", "hellstone", "bedrock" ],
-  "Crafted": [ "wood", "cobblestone", "glass", "brick", "iron", "gold", "diamond", "*step", "double-step", "step-top", "*stair-side" ],
-  "Ground": [ "grassy-dirt", "grass", "snowy-dirt", "snow", "tilled", "tilled-wet", "mossy-cobblestone", "cactus", "cactus-side", "reeds", "wheat", "shrubbery" ],
-  "Fluid": [ "water", "ice", "lava" ],
-  "Minecart": [ "*cart", "rail-straight", "rail-curve" ],
-  "Redstone": [ "redstone-torch-on", "redstone-torch-off", "redstone-line-on", "redstone-line-off", "redstone-cross-on", "redstone-cross-off" ],
-  "Misc": [ "ladder", "toolbox", "toolbox-top", "forge", "chest", "sponge", "red-flower", "yellow-flower", "red-mushroom", "brown-mushroom", "jack-o-lantern-on", "jack-o-lantern-off", "pumpkin", "pumpkin-top", "door-wood", "door-iron", "bookcase", "spawner", "jukebox-top", "jukebox-side"],
-  "Mob": [ "*creeper", "*pig", "*chicken", "*sheep", "*cow" ],
-  "All": [],
-  "Extra": []
+  'Ore': ['coal-ore', 'iron-ore', 'gold-ore', 'redstone-ore', 'diamond-ore',
+    'lightstone-ore'],
+  'Natural': ['dirt', 'stone', 'sand', 'slow-sand', 'gravel', 'clay',
+    'stump', 'bark', 'wool', 'obsidian', 'hellstone', 'bedrock'],
+  'Crafted': ['wood', 'cobblestone', 'glass', 'brick', 'iron', 'gold',
+    'diamond', '*step', 'double-step', 'step-top', '*stair-side'],
+  'Ground': ['grassy-dirt', 'grass', 'snowy-dirt', 'snow', 'tilled',
+    'tilled-wet', 'mossy-cobblestone', 'cactus', 'cactus-side', 'reeds',
+    'wheat', 'shrubbery'],
+  'Fluid': ['water', 'ice', 'lava'],
+  'Minecart': ['*cart', 'rail-straight', 'rail-curve'],
+  'Redstone': ['redstone-torch-on', 'redstone-torch-off', 'redstone-line-on',
+    'redstone-line-off', 'redstone-cross-on', 'redstone-cross-off'],
+  'Misc': ['ladder', 'toolbox', 'toolbox-top', 'forge', 'chest', 'sponge',
+    'red-flower', 'yellow-flower', 'red-mushroom', 'brown-mushroom',
+    'jack-o-lantern-on', 'jack-o-lantern-off', 'pumpkin', 'pumpkin-top',
+    'door-wood', 'door-iron', 'bookcase', 'spawner', 'jukebox-top',
+    'jukebox-side'],
+  'Mob': ['*creeper', '*pig', '*chicken', '*sheep', '*cow'],
+  'All': [],
+  'Extra': []
 };
 
 var blockOrientations = {
-  "none": 0,
-  "vert": 1,
-  "horiz": 2
+  'none': 0,
+  'vert': 1,
+  'horiz': 2
 };
 
 // Object to hold data for all drawn items
@@ -129,9 +139,9 @@ function addObj(x, y, h, w, fill, name, rotate, orientation) {
   obj.w = w;
   obj.f = fill;
   obj.n = name;
-  if(rotate !== undefined)
+  if (rotate !== undefined)
     obj.r = rotate;
-  if(orientation !== undefined)
+  if (orientation !== undefined)
     obj.o = orientation;
   objects.push(obj);
   invalidate();
@@ -142,13 +152,14 @@ function addExtraObj(x, y, h, w, fill, name, rotate, orientation) {
   objects[objects.length - 1].e = true;
 }
 
-// Create a new Object and create a tool out of it.  The default values for objects are good enough for tools.
+// Create a new Object and create a tool out of it.
+// The default values for objects are good enough for tools.
 function addTool(name, rotate, orientation, h, w) {
   var tool = new Obj;
   tool.n = name;
   tool.r = rotate;
   tool.o = orientation;
-  if(h !== undefined && w !== undefined) {
+  if (h !== undefined && w !== undefined) {
     tool.h = h;
     tool.w = w;
   }
@@ -165,7 +176,7 @@ function addExtraTool(name) {
 }
 
 // holds all our live objects
-var objects = []; 
+var objects = [];
 // Holds the items in the toolbar
 var tools = [];
 
@@ -177,7 +188,8 @@ var HEIGHT;
 var WIDTH;
 var VHEIGHT; // Viewport height and width
 var VWIDTH;
-var INTERVAL = 20;  // how often, in milliseconds, we check to see if a redraw is needed
+// how often, in milliseconds, we check to see if a redraw is needed
+var INTERVAL = 20;
 
 var isDrag = false;
 var isScroll = false;
@@ -191,8 +203,9 @@ var msx, msy; // mouse coordinates for old scroll position.
 var canvasValid = false;
 
 // The node (if any) being selected.
-// If in the future we want to select multiple objects, this will get turned into an array
-var mySel; 
+// If in the future we want to select multiple objects,
+// this will get turned into an array
+var mySel;
 var lastObj;
 
 // The currently selected tool.
@@ -202,7 +215,8 @@ var lockToolboxSize = false;
 var currToolboxSize = gridSize;
 var toolboxInfo;
 
-// The selection color and width. Right now we have a red selection with a small width
+// The selection color and width. Right now we have a red selection with
+// a small width
 var mySelColor = 'orangered';
 var mySelWidth = 2;
 
@@ -222,20 +236,22 @@ var offsetx, offsety;
 
 // Padding and border style widths for mouse offsets
 var stylePaddingLeft, stylePaddingTop, styleBorderLeft, styleBorderTop;
-var toolboxStylePaddingLeft, toolboxStylePaddingTop, toolboxStyleBorderLeft, toolboxStyleBorderTop;
+var toolboxStylePaddingLeft, toolboxStylePaddingTop;
+var toolboxStyleBorderLeft, toolboxStyleBorderTop;
 
 // initialize our canvas, add a ghost canvas, set draw loop
 // then add everything we want to intially exist on the canvas
 function init() {
-  if(!supports_canvas())
+  if (!supports_canvas())
     return;
 
-  cookieGridSize = getCookie("gridSize");
-  if(cookieGridSize != null && cookieGridSize != "")
+  cookieGridSize = getCookie('gridSize');
+  if (cookieGridSize != null && cookieGridSize != '')
     gridSize = parseFloat(cookieGridSize);
-  cookieLockToolbox = getCookie("lockToolboxSize");
-  if(cookieLockToolbox != null && cookieLockToolbox != "") {
-    lockToolboxSize = false; // Set this to false so it'll be set to true when we call toggleToolboxLock
+  cookieLockToolbox = getCookie('lockToolboxSize');
+  if (cookieLockToolbox != null && cookieLockToolbox != '') {
+    // Set this to false so it'll be set to true when we call toggleToolboxLock
+    lockToolboxSize = false;
     toggleToolboxLock();
     currToolboxSize = parseFloat(cookieLockToolbox);
   }
@@ -255,29 +271,38 @@ function init() {
   //ghosttoolcanvas.height = toolcanvas.height;
   //ghosttoolcanvas.width = toolcanvas.width;
   gtctx = ghosttoolcanvas.getContext('2d');
-    
-  //fixes a problem where double clicking causes text to get selected on the canvas
-  canvas.onselectstart = function () { return false; }
-  
+
+  // fixes a problem where double clicking causes text to get selected
+  // on the canvas
+  canvas.onselectstart = function() { return false; }
+
   // fixes mouse co-ordinate problems when there's a border or padding
   // see getMouse for more detail
   if (document.defaultView && document.defaultView.getComputedStyle) {
-    stylePaddingLeft = parseInt(document.defaultView.getComputedStyle(canvas, null)['paddingLeft'], 10)      || 0;
-    stylePaddingTop  = parseInt(document.defaultView.getComputedStyle(canvas, null)['paddingTop'], 10)       || 0;
-    styleBorderLeft  = parseInt(document.defaultView.getComputedStyle(canvas, null)['borderLeftWidth'], 10)  || 0;
-    styleBorderTop   = parseInt(document.defaultView.getComputedStyle(canvas, null)['borderTopWidth'], 10)   || 0;
+    stylePaddingLeft = parseInt(document.defaultView.getComputedStyle(canvas,
+      null)['paddingLeft'], 10) || 0;
+    stylePaddingTop = parseInt(document.defaultView.getComputedStyle(canvas,
+      null)['paddingTop'], 10) || 0;
+    styleBorderLeft = parseInt(document.defaultView.getComputedStyle(canvas,
+      null)['borderLeftWidth'], 10) || 0;
+    styleBorderTop = parseInt(document.defaultView.getComputedStyle(canvas,
+      null)['borderTopWidth'], 10) || 0;
   }
 
   if (document.defaultView && document.defaultView.getComputedStyle) {
-    toolboxStylePaddingLeft = parseInt(document.defaultView.getComputedStyle(toolcanvas, null)['paddingLeft'], 10)      || 0;
-    toolboxStylePaddingTop  = parseInt(document.defaultView.getComputedStyle(toolcanvas, null)['paddingTop'], 10)       || 0;
-    toolboxStyleBorderLeft  = parseInt(document.defaultView.getComputedStyle(toolcanvas, null)['borderLeftWidth'], 10)  || 0;
-    toolboxStyleBorderTop   = parseInt(document.defaultView.getComputedStyle(toolcanvas, null)['borderTopWidth'], 10)   || 0;
+    toolboxStylePaddingLeft = parseInt(document.defaultView.getComputedStyle(
+      toolcanvas, null)['paddingLeft'], 10) || 0;
+    toolboxStylePaddingTop = parseInt(document.defaultView.getComputedStyle(
+      toolcanvas, null)['paddingTop'], 10) || 0;
+    toolboxStyleBorderLeft = parseInt(document.defaultView.getComputedStyle(
+      toolcanvas, null)['borderLeftWidth'], 10) || 0;
+    toolboxStyleBorderTop = parseInt(document.defaultView.getComputedStyle(
+      toolcanvas, null)['borderTopWidth'], 10) || 0;
   }
-  
+
   // make draw() fire every INTERVAL milliseconds
   setInterval(draw, INTERVAL);
-  
+
   // set our events. Up and down are for dragging,
   // double click is for making new boxes
   canvas.onmousedown = myDown;
@@ -297,56 +322,56 @@ function init() {
 }
 
 function myMouseWheel(e) {
-  if(e.wheelDelta > -200)
+  if (e.wheelDelta > -200)
     zoom('out');
-  if(e.wheelDelta < 200)
+  if (e.wheelDelta < 200)
     zoom('in');
 }
 
 function myKeyPress(e) {
   var key = (e) ? e.which : e.keyCode;
-  switch(String.fromCharCode(key)) {
-    case "-":
+  switch (String.fromCharCode(key)) {
+    case '-':
       zoom('out');
       break;
-    case "=":
+    case '=':
       zoom('in');
       break;
-    case "w":
-    case "W":
+    case 'w':
+    case 'W':
       moveCanvas('up');
       break;
-    case "a":
-    case "A":
+    case 'a':
+    case 'A':
       moveCanvas('right');
       break;
-    case "s":
-    case "S":
+    case 's':
+    case 'S':
       moveCanvas('down');
       break;
-    case "d":
-    case "D":
+    case 'd':
+    case 'D':
       moveCanvas('left');
       break;
   }
 }
 
 function moveCanvas(dir) {
-  switch(dir) {
-    case "left":
-      for(var i = 0; i < objects.length - 1; i++)
+  switch (dir) {
+    case 'left':
+      for (var i = 0; i < objects.length - 1; i++)
         objects[i].x -= gridSize;
     break;
-    case "right":
-      for(var i = 0; i < objects.length - 1; i++)
+    case 'right':
+      for (var i = 0; i < objects.length - 1; i++)
         objects[i].x += gridSize;
     break;
-    case "up":
-      for(var i = 0; i < objects.length - 1; i++)
+    case 'up':
+      for (var i = 0; i < objects.length - 1; i++)
         objects[i].y -= gridSize;
     break;
-    case "down":
-      for(var i = 0; i < objects.length - 1; i++)
+    case 'down':
+      for (var i = 0; i < objects.length - 1; i++)
         objects[i].y += gridSize;
     break;
   }
@@ -358,12 +383,12 @@ function sizeCanvas() {
   VWIDTH = window.innerWidth;
 
   if (VHEIGHT != HEIGHT || VWIDTH != WIDTH) {
-    canvas.setAttribute("height", VHEIGHT);
-    canvas.setAttribute("width", VWIDTH);
+    canvas.setAttribute('height', VHEIGHT);
+    canvas.setAttribute('width', VWIDTH);
 
     HEIGHT = canvas.height;
     WIDTH = canvas.width;
-    
+
     invalidate();
   }
 }
@@ -381,7 +406,7 @@ function draw() {
     clear(ctx);
     clear(tctx);
 
-    
+
     // Add stuff you want drawn in the background all the time here
     drawGrid();
 
@@ -392,7 +417,7 @@ function draw() {
     }
 
     var l = tools.length;
-    tctx.strokeStyle = "#eee";
+    tctx.strokeStyle = '#eee';
     tctx.lineWidth = 2;
     for (var i = 0; i < l; i++) {
       drawObject(tctx, tools[i], tools[i].f);
@@ -402,15 +427,15 @@ function draw() {
       tctx.lineTo(tools[i].x + tools[i].w + 2, tools[i].y - 1);
       tctx.stroke();
     }
-    
+
     // draw selection
     // right now this is just a stroke along the edge of the selected box
     if (mySel != null) {
       ctx.strokeStyle = mySelColor;
       ctx.lineWidth = mySelWidth;
-      ctx.strokeRect(mySel.x,mySel.y,mySel.w,mySel.h);
+      ctx.strokeRect(mySel.x, mySel.y, mySel.w, mySel.h);
     }
-    
+
     // Add stuff you want drawn on top all the time here
     // drawDebug();
 
@@ -422,58 +447,58 @@ function draw() {
 // draw() will call this with the normal canvas
 // myDown will call this with the ghost canvas
 function drawObject(context, object, fill) {
-  if(fill == 't')
+  if (fill == 't')
     context.fillStyle = 'transparent';
   else
     context.fillStyle = fill;
-  
+
   // We can skip the drawing of elements that have moved off the screen:
-  if (object.x > WIDTH || object.y > HEIGHT) return; 
+  if (object.x > WIDTH || object.y > HEIGHT) return;
   if (object.x + object.w < 0 || object.y + object.h < 0) return;
-  
+
   context.fillRect(object.x, object.y, object.w, object.h);
 
   if (context != gctx || context != gtctx) {
     //drawBlock(object);
-    if(object.m == true) {
+    if (object.m == true) {
       drawMetaTool(context, object);
       return;
     }
-    
+
     n = object.n;
     //b = blocks[object.n];
     b = lookupBlock(object.n);
 
     var img = null;
-    if(object.n.charAt(0) == "*")
-      img = document.getElementById("extras");
+    if (object.n.charAt(0) == '*')
+      img = document.getElementById('extras');
     else
-      img = document.getElementById("terrain");
+      img = document.getElementById('terrain');
 
-    if(object.r != 0) {
+    if (object.r != 0) {
       var destX = destY = 0;
       var scaleX = scaleY = 1;
       context.save();
 
-      if(object.r == 90) {
+      if (object.r == 90) {
         destX = object.x + 0;
         destY = object.y + object.h + 1;
-      } else if(object.r == 180) {
+      } else if (object.r == 180) {
         destX = object.x + object.w + 1;
         destY = object.y + object.h + 1;
-      } else if(object.r == 270) {
+      } else if (object.r == 270) {
         destX = object.x + object.w + 1;
         destY = object.y + 0;
       }
 
       context.translate(destX, destY);
-      
-      if(object.o != blockOrientations.none) {
-        if(object.o == blockOrientations.horiz) {
+
+      if (object.o != blockOrientations.none) {
+        if (object.o == blockOrientations.horiz) {
           scaleX = -1;
           context.translate(object.w + 1, 0);
-        }  
-        else if(object.o == blockOrientations.vert) {
+        }
+        else if (object.o == blockOrientations.vert) {
           scaleY = -1;
           context.translate(0, -object.h + 1);
         }
@@ -482,25 +507,28 @@ function drawObject(context, object, fill) {
 
       context.rotate((360 - object.r) * (Math.PI / 180));
 
-      context.drawImage(img, b[0], b[1], b[2], b[3], 0, 0, gridSize + 1, gridSize + 1);
+      context.drawImage(img, b[0], b[1], b[2], b[3], 0, 0,
+      gridSize + 1, gridSize + 1);
       context.restore();
     } else {
       newH = (b[2] / 16) * gridSize;
       newW = (b[3] / 16) * gridSize;
-      context.drawImage(img, b[0], b[1], b[2], b[3], object.x, object.y, newH, newW); //gridSize + 1, gridSize + 1);
+      context.drawImage(img, b[0], b[1], b[2], b[3], object.x, object.y,
+      newH, newW);
     }
   }
 }
 
 function drawMetaTool(context, o) {
-  img = document.getElementById("extras");
+  img = document.getElementById('extras');
   b = blocks.extras[o.n];
-  context.drawImage(img, b[0], b[1], b[2], b[3], o.x, o.y, gridSize + 1, gridSize + 1);
+  context.drawImage(img, b[0], b[1], b[2], b[3], o.x, o.y,
+        gridSize + 1, gridSize + 1);
 }
 
-function eraseObjects(){
-  if(confirm("Delete all the blocks?") && objects.length > 0) {
-    if(activeTool) {
+function eraseObjects() {
+  if (confirm('Delete all the blocks?') && objects.length > 0) {
+    if (activeTool) {
       var tool = objects.pop();
       objects = [];
       objects.push(tool);
@@ -512,7 +540,7 @@ function eraseObjects(){
 }
 
 function clearTool() {
-  if(activeTool) {
+  if (activeTool) {
     objects.splice(objects.length - 1, 1);
     activeTool = null;
     mySel = null;
@@ -523,41 +551,41 @@ function clearTool() {
 
 // Snap the box to the closest grid
 function alignObj() {
-  if(mySel == null)
+  if (mySel == null)
     return;
 
   offX = mySel.x % gridSize;
   offY = mySel.y % gridSize;
 
-  if(offX != 0 || offY != 0) {
-    if(offX <= gridSize / 2)
+  if (offX != 0 || offY != 0) {
+    if (offX <= gridSize / 2)
       mySel.x -= offX;
-    if(offX > gridSize / 2)
+    if (offX > gridSize / 2)
       mySel.x += gridSize - offX;
 
-    if(offY <= gridSize / 2)
+    if (offY <= gridSize / 2)
       mySel.y -= offY;
-    if(offY > gridSize / 2)
+    if (offY > gridSize / 2)
       mySel.y += gridSize - offY;
   }
   invalidate();
 }
 
 // Happens when the mouse is moving inside the canvas
-function myMove(e){
-  if (isDrag){
+function myMove(e) {
+  if (isDrag) {
     getMouse(e);
-    
+
     mySel.x = mx - offsetx;
-    mySel.y = my - offsety;   
-    
+    mySel.y = my - offsety;
+
     // something is changing position so we better invalidate the canvas!
     invalidate();
   }
   if (isScroll) {
     getMouse(e);
-    
-    for(var i = 0; i < objects.length; i++) {
+
+    for (var i = 0; i < objects.length; i++) {
       objects[i].x += (mx - msx);
       objects[i].y += (my - msy);
     }
@@ -572,7 +600,7 @@ function myMove(e){
     // Else we're just clicking and dragging the empty canvas.
     getMouse(e);
     var lastX, lastY, diffX, diffY;
-    if(objects.length > 0) {
+    if (objects.length > 0) {
       lastObj = objects[objects.length - 2];
       lastX = lastObj.x;
       lastY = lastObj.y;
@@ -581,27 +609,27 @@ function myMove(e){
 
     diffX = mx - lastX; //lastX - mx;
     diffY = my - lastY; //lastY - my;
-    if(diffX >= gridSize || diffX < 0 || diffY >= gridSize || diffY < 0){ 
+    if (diffX >= gridSize || diffX < 0 || diffY >= gridSize || diffY < 0) {
       alignObj();
       drawCurrentTool();
     }
-  }else if(isDragDraw && activeTool.m) {
+  }else if (isDragDraw && activeTool.m) {
       useEraser(e);
   }
 }
 
 // Happens when the mouse is clicked in the canvas
-function myDown(e){
+function myDown(e) {
   getMouse(e);
   clear(gctx);
 
-  if(e.shiftKey) {
+  if (e.shiftKey) {
     scrollCanvas(e);
     return;
   }
 
-  if(activeTool) {
-    if(activeTool.m) {
+  if (activeTool) {
+    if (activeTool.m) {
       metaToolClicked(e);
       isDragDraw = true;
       canvas.onmousemove = myMove;
@@ -612,18 +640,19 @@ function myDown(e){
 
     // Check if we've selected a block on the canvas,
     // if so, add a new tool and return.
-    if(checkObjectClicked()) {
+    if (checkObjectClicked()) {
       return;
     }
-    
-    // Add a block to the canvas and set it to the current object, then align it.
+
+    // Add a block to the canvas and set it to the current object,
+    // then align it.
     drawCurrentTool();
     alignObj();
 
     // Add a new tool
     drawCurrentTool();
   }
-  
+
   isDragDraw = true;
   canvas.onmousemove = myMove;
 
@@ -636,7 +665,7 @@ function myDown(e){
 }
 
 function metaToolClicked(e) {
-  if(activeTool.n == 'eraser')
+  if (activeTool.n == 'eraser')
     useEraser(e);
 }
 
@@ -649,7 +678,7 @@ function useEraser(e) {
   objects.pop();
   // Check to see if we've selected an object.
   var l = objects.length;
-  for (var i = l-1; i >= 0; i--) {
+  for (var i = l - 1; i >= 0; i--) {
     // draw shape onto ghost context
     drawObject(gctx, objects[i], 'black');
 
@@ -663,14 +692,16 @@ function useEraser(e) {
       invalidate();
       clear(gctx);
       // add the Tool back
-      addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.h, activeTool.w, activeTool.f, activeTool.n, activeTool.r, activeTool.o);
+      addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.h,
+  activeTool.w, activeTool.f, activeTool.n, activeTool.r, activeTool.o);
       objects[objects.length - 1].m = true;
       mySel = objects[objects.length - 1];
       return true;
     }
   }
 
-  addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.h, activeTool.w, activeTool.f, activeTool.n, activeTool.r, activeTool.o);
+  addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.h,
+    activeTool.w, activeTool.f, activeTool.n, activeTool.r, activeTool.o);
   objects[objects.length - 1].m = true;
   mySel = objects[objects.length - 1];
 
@@ -690,15 +721,16 @@ function scrollCanvas(e) {
 }
 
 function drawCurrentTool() {
-  addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.h, activeTool.w, activeTool.f, activeTool.n, activeTool.r, activeTool.o);
-  mySel = objects[objects.length - 1];  
+  addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.h,
+    activeTool.w, activeTool.f, activeTool.n, activeTool.r, activeTool.o);
+  mySel = objects[objects.length - 1];
 }
 
-function myToolboxDown(e){
+function myToolboxDown(e) {
   getMouseInToolbox(e);
   clear(gtctx);
 
-  if(checkToolClicked())
+  if (checkToolClicked())
     return;
 
   // havent returned means we have selected nothing
@@ -712,14 +744,14 @@ function myToolboxDown(e){
 function checkObjectClicked() {
   // Check to see if we've selected an object.
   var l = objects.length;
-  for (var i = l-1; i >= 0; i--) {
+  for (var i = l - 1; i >= 0; i--) {
     // draw shape onto ghost context
     drawObject(gctx, objects[i], 'black');
-    
+
     // get image data at the mouse x,y pixel
     var imageData = gctx.getImageData(mx, my, 1, 1);
     var index = (mx + my * imageData.width) * 4;
-    
+
     // if the mouse pixel exists, select and break
     if (imageData.data[3] > 0) {
       /*var tmp = objects.splice(i, 1);
@@ -742,7 +774,7 @@ function checkObjectClicked() {
       invalidate();
       clear(gctx);
       return true;
-    } 
+    }
   }
   return false;
 }
@@ -751,12 +783,12 @@ function checkToolClicked() {
   // Check to see if we're selecting a tool
   l = tools.length;
 
-  for(var i = 0; i < l; i++) {
+  for (var i = 0; i < l; i++) {
     drawObject(gtctx, tools[i], 'black');
 
     var imageData = gtctx.getImageData(mx, my, 1, 1);
-    if(imageData.data[3] > 0) {
-      if(activeTool)
+    if (imageData.data[3] > 0) {
+      if (activeTool)
         objects.pop(); //objects.splice(objects.length - 1, 1);
       t = tools[i];
       addObj(mx - (t.w / 2), my - (t.h / 2), t.h, t.w, t.f, t.n, t.r, t.o);
@@ -766,10 +798,10 @@ function checkToolClicked() {
       offsety = my - mySel.y;
       mySel.x = mx - offsetx;
       mySel.y = my - offsety;
-      if(t.m) {
+      if (t.m) {
         mySel.m = true;
         activeTool.m = true;
-      }      
+      }
       isDrag = true;
       canvas.onmousemove = myMove;
       invalidate();
@@ -785,12 +817,12 @@ function zoom(dir) {
   var max = gridSizeMinMax[1];
   var oldSize = gridSize;
 
-  if(dir == "in") {
-    if(gridSize >= max)
+  if (dir == 'in') {
+    if (gridSize >= max)
       return;
     gridSize += 16;
-  }else if(dir == "out") {
-    if(gridSize <= min)
+  }else if (dir == 'out') {
+    if (gridSize <= min)
       return;
     gridSize -= 16;
   }
@@ -798,16 +830,16 @@ function zoom(dir) {
   drawTools();
   sizeToolbox();
   resizeObjects(dir, oldSize);
-  setCookie("gridSize", gridSize, 365);
+  setCookie('gridSize', gridSize, 365);
 }
 
 function resizeObjects(dir, oldSize) {
-  for(var i = 0; i < objects.length; i++) {
+  for (var i = 0; i < objects.length; i++) {
     objects[i].h = gridSize;
     objects[i].w = gridSize;
     mySel = objects[i];
 
-    // Get the object's old ratio to apply to the new position.    
+    // Get the object's old ratio to apply to the new position.
     xRatio = objects[i].x / oldSize;
     yRatio = objects[i].y / oldSize;
 
@@ -815,7 +847,7 @@ function resizeObjects(dir, oldSize) {
     objects[i].y = gridSize * yRatio;
 
   }
-  for(var j = 0; j < tools.length; j++) {
+  for (var j = 0; j < tools.length; j++) {
     tools[j].h = gridSize;
     tools[j].w = gridSize;
 
@@ -827,40 +859,41 @@ function resizeObjects(dir, oldSize) {
   }
 }
 
-function myUp(){
-  if(activeTool == null && oldActiveTool != null) {
+function myUp() {
+  if (activeTool == null && oldActiveTool != null) {
     //isDrag = false;
     //canvas.onmousemove = null;
     alignObj();
     activeTool = oldActiveTool;
     oldActiveTool = null;
     setCursor();
-    addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.h, activeTool.w, activeTool.f, activeTool.n, activeTool.r, activeTool.o);
+    addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.h,
+      activeTool.w, activeTool.f, activeTool.n, activeTool.r, activeTool.o);
     mySel = objects[objects.length - 1];
   }
-  if(isScroll) {
+  if (isScroll) {
     var tmpSel = mySel;
-    for(var i = 0; i < objects.length; i++) {
+    for (var i = 0; i < objects.length; i++) {
       mySel = objects[i];
       alignObj();
     }
     mySel = tmpSel;
     isScroll = false;
   }
-  if(isDragDraw) {
+  if (isDragDraw) {
     isDragDraw = false;
   }
 
 }
 
 function mouseHasMoved() {
-  if(Math.abs(msx - mx) > 5 || Math.abs(msy - my) > 5)
+  if (Math.abs(msx - mx) > 5 || Math.abs(msy - my) > 5)
     return true;
 }
 
 
 function setCursor() {
-  if(oldActiveTool)
+  if (oldActiveTool)
     document.body.style.cursor = 'move';
   else
     document.body.style.cursor = 'default';
@@ -870,14 +903,14 @@ function setCursor() {
 function myDblClick(e) {
   getMouse(e);
   clear(gctx);
-  if(activeTool == undefined || activeTool == null)
+  if (activeTool == undefined || activeTool == null)
     return;
 
   // Remove the current tool.
   objects.splice(objects.length - 1, 1);
   // Check to see if we've selected an object.
   var l = objects.length;
-  for (var i = l-1; i >= 0; i--) {
+  for (var i = l - 1; i >= 0; i--) {
     // draw shape onto ghost context
     drawObject(gctx, objects[i], 'black');
 
@@ -891,24 +924,26 @@ function myDblClick(e) {
       invalidate();
       clear(gctx);
       // add the Tool back
-      addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.h, activeTool.w, activeTool.f, activeTool.n, activeTool.r, activeTool.o);
-      mySel = objects[objects.length - 1];    
+      addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.h,
+  activeTool.w, activeTool.f, activeTool.n, activeTool.r, activeTool.o);
+      mySel = objects[objects.length - 1];
       return true;
     }
   }
 
-  addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.h, activeTool.w, activeTool.f, activeTool.n, activeTool.r, activeTool.o);
-  if(activeTool.m)
+  addObj(mx - (activeTool.w / 2), my - (activeTool.h / 2), activeTool.h,
+    activeTool.w, activeTool.f, activeTool.n, activeTool.r, activeTool.o);
+  if (activeTool.m)
     objects[objects.length - 1].m = true;
-  mySel = objects[objects.length - 1];    
+  mySel = objects[objects.length - 1];
 
   // havent returned means we have selected nothing
   //mySel = null;
-  // clear the ghost canvas for next time  
+  // clear the ghost canvas for next time
   clear(gctx);
   // invalidate because we might need the selection border to disappear
   invalidate();
-  
+
 }
 
 function invalidate() {
@@ -935,7 +970,7 @@ function getMouse(e) {
       offsetY += styleBorderTop;
 
       mx = e.pageX - offsetX;
-      my = e.pageY - offsetY
+      my = e.pageY - offsetY;
 }
 
 function getMouseInToolbox(e) {
@@ -960,7 +995,7 @@ function getMouseInToolbox(e) {
 }
 
 function myToolboxMouseOver(e) {
-  toolboxInfo = $("#toolbox-info").html();
+  toolboxInfo = $('#toolbox-info').html();
 }
 
 function myToolboxMouseMove(e) {
@@ -968,22 +1003,23 @@ function myToolboxMouseMove(e) {
   getMouseInToolbox(e);
   l = tools.length;
 
-  for(var i = 0; i < l; i++) {
+  for (var i = 0; i < l; i++) {
     drawObject(gtctx, tools[i], 'black');
 
     var imageData = gtctx.getImageData(mx, my, 1, 1);
-    if(imageData.data[3] > 0) {
-      $("#toolbox-info").html(tools[i].n.replace(/(-|\*)/gi, " ").capitalize());
+    if (imageData.data[3] > 0) {
+      $('#toolbox-info').html(tools[i].n.replace(/(-|\*)/gi,
+             ' ').capitalize());
       clear(gtctx);
-      return true;     
+      return true;
     }
   }
-  $("#toolbox-info").html(toolboxInfo);
+  $('#toolbox-info').html(toolboxInfo);
   return false;
 }
 
 function myToolboxMouseOut(e) {
-  $("#toolbox-info").html(toolboxInfo);
+  $('#toolbox-info').html(toolboxInfo);
 }
 
 function drawGrid() {
@@ -1004,7 +1040,7 @@ function drawGrid() {
 }
 
 function lookupBlock(name) {
-  if(name.charAt(0) == "*") {
+  if (name.charAt(0) == '*') {
     return blocks.extras[name.slice(1)];
   } else {
     return blocks[name];
@@ -1012,20 +1048,21 @@ function lookupBlock(name) {
 }
 
 function toolboxFlyout(cat) {
-  if($("#toolbox-wrapper").is(":visible") && $("#toolbox-list li."+cat+" a").is(".active")) {
+  if ($('#toolbox-wrapper').is(':visible') && $('#toolbox-list li.' + cat +
+            ' a').is('.active')) {
     closeFlyout();
     return;
   }
 
   tools = [];
-  if(cat == "All"){
+  if (cat == 'All') {
     $.each(toolCats, function(k, v) {
       $.each(toolCats[k], function(i, v) {
         addTool(toolCats[k][i], 0);
-      })
-      if(k == "Minecart")
+      });
+      if (k == 'Minecart')
         addRotatedTracks();
-      if(k == "Crafted")
+      if (k == 'Crafted')
         addFlippedStair();
     });
   } else {
@@ -1033,22 +1070,22 @@ function toolboxFlyout(cat) {
       addTool(toolCats[cat][i], 0);
     });
   }
-  if(cat == "Minecart")
+  if (cat == 'Minecart')
     addRotatedTracks();
-  if(cat == "Crafted")
+  if (cat == 'Crafted')
     addFlippedStair();
-  if(cat == "Extra")
+  if (cat == 'Extra')
     addMetaTools();
   else
     calcToolDimensions();
-  
+
   sizeToolbox();
   //$("#toolbox-wrapper").css("right", -gridSize - 14);
-  $("#toolbox-list li a").removeClass("active");
-  $("#toolbox-list li."+cat+" a").addClass("active");
-  $("#toolbox-wrapper").show();
-  $("#toolbox-info").html("Showing "+ cat +" Tools")
-  $("#toolbox-info").show();
+  $('#toolbox-list li a').removeClass('active');
+  $('#toolbox-list li.' + cat + ' a').addClass('active');
+  $('#toolbox-wrapper').show();
+  $('#toolbox-info').html('Showing ' + cat + ' Tools');
+  $('#toolbox-info').show();
 }
 
 function closeFlyout() {
@@ -1073,24 +1110,28 @@ function addMetaTools() {
 }
 
 function initTools() {
-  var toolBox = "";
+  var toolBox = '';
   $.each(toolCats, function(key, value) {
-    $("#toolbox-list").append('<li class="' + key + '"><a onclick="toolboxFlyout(\'' + key + '\');" href="#" class="active vtip" title="Show ' + key + ' blocks."><img src="/images/tools/' + key.toLowerCase() + '.png" /> </a></li>');
+    $('#toolbox-list').append('<li class="' + key +
+      '"><a onclick="toolboxFlyout(\'' + key +
+      '\');" href="#" class="active vtip" title="Show ' + key +
+      ' blocks."><img src="/images/tools/' + key.toLowerCase() +
+      '.png" /> </a></li>');
   });
   vtip();
 
-  if(currToolboxSize != gridSize) {
-    $("#toolbox-list img").height(currToolboxSize);
-    $("#toolbox-list a").width(currToolboxSize);
+  if (currToolboxSize != gridSize) {
+    $('#toolbox-list img').height(currToolboxSize);
+    $('#toolbox-list a').width(currToolboxSize);
   } else {
-    $("#toolbox-list img").height(gridSize);
-    $("#toolbox-list a").width(gridSize);
+    $('#toolbox-list img').height(gridSize);
+    $('#toolbox-list a').width(gridSize);
   }
 }
 
 function calcToolDimensions() {
   var ratio = gridSize / 16;
-  for(i = 0; i < tools.length; i++) {
+  for (i = 0; i < tools.length; i++) {
     tools[i].w = lookupBlock(tools[i].n)[2] * ratio;
     tools[i].h = lookupBlock(tools[i].n)[3] * ratio;
   }
@@ -1100,11 +1141,11 @@ function drawTools() {
   var toolX = 0;
   var toolY = 0;
 
-  for(i = 0; i < tools.length; i++) {
+  for (i = 0; i < tools.length; i++) {
     tools[i].y = toolY;
     tools[i].x = toolX;
     toolY += tools[i].h + 3;
-    if(toolY > ((gridSize + 3) * 11)) {
+    if (toolY > ((gridSize + 3) * 11)) {
       toolX += gridSize + 3;
       toolY = 0;
     }
@@ -1120,55 +1161,59 @@ function sizeToolbox() {
   // Add all tools heights
   var maxToolsHeight = 0;
   var maxToolsWidth = 0;
-  for(var i = 0; i < tools.length; i++) {
-    if(tools[i].y > maxToolsHeight)
+  for (var i = 0; i < tools.length; i++) {
+    if (tools[i].y > maxToolsHeight)
       maxToolsHeight = tools[i].y + 3;
-    if(tools[i].x > maxToolsWidth)
+    if (tools[i].x > maxToolsWidth)
       maxToolsWidth = tools[i].x + 3;
   }
 
   //maxToolsHeight += tools[tools.length - 1].h;
-  maxToolsHeight = maxToolsHeight > ((gridSize + 3) * 11) ? (gridSize + 3) * 12 : maxToolsHeight + tools[tools.length - 1].h;
-  maxToolsWidth += maxToolsWidth > (gridSize + 3) ? tools[tools.length - 1].w : tools[tools.length - 1].w + 3;
-  
+  maxToolsHeight = maxToolsHeight > ((gridSize + 3) * 11) ?
+    (gridSize + 3) * 12 : maxToolsHeight + tools[tools.length - 1].h;
+  maxToolsWidth += maxToolsWidth > (gridSize + 3) ?
+    tools[tools.length - 1].w : tools[tools.length - 1].w + 3;
+
   if (tools.length >= 12) {
-    toolcanvas.setAttribute("height", maxToolsHeight - 2);
-    toolcanvas.setAttribute("width", maxToolsWidth - 2); 
+    toolcanvas.setAttribute('height', maxToolsHeight - 2);
+    toolcanvas.setAttribute('width', maxToolsWidth - 2);
   } else {
-    toolcanvas.setAttribute("height", maxToolsHeight - 2);
-    toolcanvas.setAttribute("width", gridSize + 1);
+    toolcanvas.setAttribute('height', maxToolsHeight - 2);
+    toolcanvas.setAttribute('width', gridSize + 1);
   }
   ghosttoolcanvas.height = toolcanvas.height;
   ghosttoolcanvas.width = toolcanvas.width;
 
-  if(!lockToolboxSize) {  
+  if (!lockToolboxSize) {
     currToolboxSize = gridSize;
-    $("#toolbox-list img").height(gridSize);
-    $("#toolbox-list a").width(gridSize);
-    $("#toolbox-wrapper").css("right", -maxToolsWidth - 13);
-    $("#toolbox-info").css("top", $("#toolbox-wrapper").height() + 20);
-    $("#toolbox-info").css("left", gridSize + 18);
+    $('#toolbox-list img').height(gridSize);
+    $('#toolbox-list a').width(gridSize);
+    $('#toolbox-wrapper').css('right', -maxToolsWidth - 13);
+    $('#toolbox-info').css('top', $('#toolbox-wrapper').height() + 20);
+    $('#toolbox-info').css('left', gridSize + 18);
   } else {
-    $("#toolbox-wrapper").css("right", -maxToolsWidth - 13);
-    $("#toolbox-info").css("top", $("#toolbox-wrapper").height() + 20);
-    $("#toolbox-info").css("left", gridSize + 18);
+    $('#toolbox-wrapper').css('right', -maxToolsWidth - 13);
+    $('#toolbox-info').css('top', $('#toolbox-wrapper').height() + 20);
+    $('#toolbox-info').css('left', gridSize + 18);
   }
 }
 
 function toggleToolboxLock() {
-  if(lockToolboxSize) {
-    $(".lockToolbox").attr("src", "/images/icons/lock_open.png");
-    $(".lockToolbox").attr("title", "Toolbox size is unlocked.  Click to lock.");
-    $(".lockToolbox").css("background-color", "transparent");
+  if (lockToolboxSize) {
+    $('.lockToolbox').attr('src', '/images/icons/lock_open.png');
+    $('.lockToolbox').attr('title', 'Toolbox size is unlocked.  ' +
+         'Click to lock.');
+    $('.lockToolbox').css('background-color', 'transparent');
     lockToolboxSize = false;
-    setCookie("lockToolboxSize", "", -1);
+    setCookie('lockToolboxSize', '', -1);
   } else {
-    $(".lockToolbox").attr("src", "/images/icons/lock.png");
-    $(".lockToolbox").attr("title", "Toolbox size is locked.  Click to unlock.");
-    $(".lockToolbox").css("background-color", "orangered");
+    $('.lockToolbox').attr('src', '/images/icons/lock.png');
+    $('.lockToolbox').attr('title', 'Toolbox size is locked.  ' +
+         'Click to unlock.');
+    $('.lockToolbox').css('background-color', 'orangered');
     lockToolboxSize = true;
     currToolboxSize = gridSize;
-    setCookie("lockToolboxSize", currToolboxSize, 365);
+    setCookie('lockToolboxSize', currToolboxSize, 365);
   }
 }
 
@@ -1176,53 +1221,54 @@ function drawDebug() {
   var bottom = HEIGHT - 100;
   var right = WIDTH - 50;
 
-  ctx.fillStyle = "orangered";
-  ctx.font = "10px sans-serif";
-  ctx.fillText("mx: " + mx, right, bottom);
-  ctx.fillText("my: " + my, right, bottom + 10);
+  ctx.fillStyle = 'orangered';
+  ctx.font = '10px sans-serif';
+  ctx.fillText('mx: ' + mx, right, bottom);
+  ctx.fillText('my: ' + my, right, bottom + 10);
 }
 
 function createLinks() {
   var bitlyUrl;
-  $("#bitly-link").css("background", "#fff url('/images/spinner.gif') no-repeat 10px center");
-  $("#links").fadeIn('slow');
+  $('#bitly-link').css('background',
+    "#fff url('/images/spinner.gif') no-repeat 10px center");
+  $('#links').fadeIn('slow');
   enc = encodeObjects();
   generateBitlyUrl(enc);
-  $("#full-link").val("http://"+hostname+"/?md=" + enc);
-  $("#bitly-link").val(bitlyUrl);
+  $('#full-link').val('http://' + hostname + '/?md=' + enc);
+  $('#bitly-link').val(bitlyUrl);
 }
 
 function generateBitlyUrl(enc) {
-  var url = "http://"+hostname+"/?md="+enc;
-  var bitlyUser = "minedraft";
-  var bitlyKey = "R_f2239290351ea78c03e76d513099b4dd";
+  var url = 'http://' + hostname + '/?md=' + enc;
+  var bitlyUser = 'minedraft';
+  var bitlyKey = 'R_f2239290351ea78c03e76d513099b4dd';
   var bitlyUrl;
 
   $.ajax({
-    url:"http://api.bit.ly/v3/shorten",
-    data:{longUrl:url, apiKey:bitlyKey, login:bitlyUser},
-    dataType:"jsonp",
-    success:function(v) {
+    url: 'http://api.bit.ly/v3/shorten',
+    data: {longUrl: url, apiKey: bitlyKey, login: bitlyUser},
+    dataType: 'jsonp',
+    success: function(v) {
       bitlyUrl = v.data.url;
-      $("#bitly-link").css("background-image", "none");
+      $('#bitly-link').css('background-image', 'none');
       $('#bitly-link').val(bitlyUrl);
-      $('#html-link').val('<a href="'+ bitlyUrl +'">My Minedraft</a>');
-      $('#reddit-link').val('[My Minedraft]('+ bitlyUrl +')');
-      $('#bbcode-link').val('[url='+ bitlyUrl +']My Minedraft[/url]');
+      $('#html-link').val('<a href="' + bitlyUrl + '">My Minedraft</a>');
+      $('#reddit-link').val('[My Minedraft](' + bitlyUrl + ')');
+      $('#bbcode-link').val('[url=' + bitlyUrl + ']My Minedraft[/url]');
     }
   });
 
-  return bitlyUrl + "::";
+  return bitlyUrl + '::';
 }
 
 function encodeObjects() {
   var toEncode, clean = [], tmp;
   // Encode all the objects except the current tool.
-  if(activeTool)
+  if (activeTool)
     objects.pop();
   toEncode = objects;
 
-  
+
   // Clean up the data a bit before we encode it.
   $.each(objects, function(key, value) {
     tmp = [];
@@ -1231,12 +1277,12 @@ function encodeObjects() {
     tmp.push(value.h);
     tmp.push(value.w);
     tmp.push(value.n);
-    if(value.r != 0 || value.o != blockOrientations.none) {
+    if (value.r != 0 || value.o != blockOrientations.none) {
       tmp.push(value.r);
       tmp.push(value.o);
     }
     clean.push(tmp);
-  });  
+  });
   //alert(JSON.stringify(clean));
   return Base64.encode(JSON.stringify(clean));
 }
@@ -1245,21 +1291,26 @@ function decodeObjects() {
   var mdParam = $.url.param('md');
   var tmp = [];
 
-  if(mdParam != ""){
-    try{
+  if (mdParam != '') {
+    try {
       tmp = JSON.parse(Base64.decode(mdParam));
-    
+
       $.each(tmp, function(i, v) {
-        if(v.length == 3)
+        if (v.length == 3)
           addObj(v[0], v[1], 16, 16, 't', v[2], 0, blockOrientations.none);
-        else if(v.length == 5)
+        else if (v.length == 5)
           addObj(v[0], v[1], v[2], v[3], 't', v[4], 0, blockOrientations.none);
-        else if(v.length == 7)
-          addObj(v[0], v[1], v[2], v[3], 't', v[4], v[5], v[6])
+        else if (v.length == 7)
+          addObj(v[0], v[1], v[2], v[3], 't', v[4], v[5], v[6]);
       });
-    } catch(err) {
-      $("body").append('<div id="parseError" class="overlay"><div class="close"><img src="/images/icons/cancel.png" onclick="$(\'#parseError\').toggleFade();" alt="Close Help" /></div><h1>Error</h1><p>Sorry, there was a problem parsing the URL you specified.  It may have been munged at some point and the MineDraft it pointed to can\'t be found.</p></div>');
-      $("#parseError").toggleFade();
+    } catch (err) {
+      $('body').append('<div id="parseError" class="overlay">' +
+        '<div class="close"><img src="/images/icons/cancel.png"' +
+        ' onclick="$(\'#parseError\').toggleFade();" alt="Close Help" />' +
+        '</div><h1>Error</h1><p>Sorry, there was a problem parsing the URL' +
+        ' you specified.  It may have been munged at some point and the' +
+        ' MineDraft it pointed to can\'t be found.</p></div>');
+      $('#parseError').toggleFade();
     }
   }
 }
@@ -1267,78 +1318,78 @@ function decodeObjects() {
 function setCookie(c_name, value, expires) {
   var date = new Date();
   date.setDate(date.getDate() + expires);
-  document.cookie = c_name + "=" + escape(value) + ((expires == null) ? "" : ";expires=" + date.toUTCString());
+  document.cookie = c_name + '=' + escape(value) + ((expires == null) ? '' :
+    ';expires=' + date.toUTCString());
 }
 
 function getCookie(c_name) {
   if (document.cookie.length > 0) {
-    c_start = document.cookie.indexOf(c_name + "=");
+    c_start = document.cookie.indexOf(c_name + '=');
     if (c_start != -1) {
       c_start += c_name.length + 1;
-      c_end = document.cookie.indexOf(";", c_start);
+      c_end = document.cookie.indexOf(';', c_start);
       if (c_end == -1)
         c_end = document.cookie.length;
-      return unescape(document.cookie.substring(c_start, c_end)); 
+      return unescape(document.cookie.substring(c_start, c_end));
     }
   }
-  return "";
+  return '';
 }
 
 function supports_canvas() {
   return !!document.createElement('canvas').getContext;
 }
 
-function toggleMaterials(){
-  $("#materials").toggleFade();
-  if(objects.length == 0) {
-    $("#materials-list").html("<p>Nothing needed yet....</p>");
+function toggleMaterials() {
+  $('#materials').toggleFade();
+  if (objects.length == 0) {
+    $('#materials-list').html('<p>Nothing needed yet....</p>');
     return;
   }
 
   var results = [];
-  var str = "<ul>";
+  var str = '<ul>';
 
   for (var i = 0; i < objects.length; i++) {
     var key = objects[i].n;
-    if(!results[key])
+    if (!results[key])
       results[key] = 1;
     else
       results[key] += 1;
   }
 
   for (var j in results) {
-    str += "<li>" + j.replace(/(-|\*)/gi, " ").capitalize() + ": " + results[j];
-    if(results[j] > 64) {
-      str += " [" + Math.floor(results[j] / 64);
-      str += Math.floor(results[j] / 64) == 1 ? " stack" : " stacks";
-      if(results[j] % 64 != 0)
-        str += " +" + results[j] % 64 + " blocks";
-      str += "]";
+    str += '<li>' + j.replace(/(-|\*)/gi, ' ').capitalize() + ': ' +
+      results[j];
+    if (results[j] > 64) {
+      str += ' [' + Math.floor(results[j] / 64);
+      str += Math.floor(results[j] / 64) == 1 ? ' stack' : ' stacks';
+      if (results[j] % 64 != 0)
+        str += ' +' + results[j] % 64 + ' blocks';
+      str += ']';
     }
-    str += "</li>";
+    str += '</li>';
   }
 
-  str += "</ul>";  
-  $("#materials-list").html(str);
+  str += '</ul>';
+  $('#materials-list').html(str);
 }
 
 function objectsSort(a, b) {
-  if(a.n > b.n)
+  if (a.n > b.n)
     return 1;
-  if(a.n < b.n)
+  if (a.n < b.n)
     return -1;
   return 0;
 }
 
-//String.prototype.capitalize = function () {
-//  return this.charAt(0).toUpperCase() + this.slice(1);
-//}
-
-String.prototype.capitalize = function () {
+function capitalize(str) {
   newVal = '';
-  val = this.split(' ');
-  for(var c=0; c < val.length; c++) {
-    newVal += val[c].substring(0,1).toUpperCase() + val[c].substring(1,val[c].length) + ' ';
+  val = str.split(' ');
+  for (var c = 0; c < val.length; c++) {
+    newVal += val[c].substring(0, 1).toUpperCase() + val[c].substring(1,
+        val[c].length) + ' ';
   }
   return newVal;
 }
+
