@@ -84,7 +84,11 @@ var blocks = {
     'pig': [16, 16, 16, 16],
     'chicken': [16, 32, 16, 16],
     'sheep': [32, 16, 16, 32],
-    'cow': [48, 16, 16, 32]
+    'cow': [48, 16, 16, 32],
+    'zombie': [0, 48, 16, 32],
+    'skeleton': [16, 48, 16, 32],
+    'pigman': [32, 48, 16, 32],
+    'human': [48, 48, 16, 32]
   }
 };
 
@@ -107,7 +111,8 @@ var toolCats = {
     'jack-o-lantern-on', 'jack-o-lantern-off', 'pumpkin', 'pumpkin-top',
     'door-wood', 'door-iron', 'bookcase', 'spawner', 'jukebox-top',
     'jukebox-side'],
-  'Mob': ['*creeper', '*pig', '*chicken', '*sheep', '*cow'],
+  'Mob': ['*human', '*creeper', '*pig', '*chicken', '*sheep', '*cow',
+	  '*zombie', '*skeleton', '*pigman'],
   'All': [],
   'Extra': []
 };
@@ -1008,8 +1013,8 @@ function myToolboxMouseMove(e) {
 
     var imageData = gtctx.getImageData(mx, my, 1, 1);
     if (imageData.data[3] > 0) {
-      $('#toolbox-info').html(tools[i].n.replace(/(-|\*)/gi,
-             ' ').capitalize());
+	$('#toolbox-info').html(capitalize(tools[i].n.replace(/(-|\*)/gi,
+							      ' ')));
       clear(gtctx);
       return true;
     }
@@ -1174,13 +1179,13 @@ function sizeToolbox() {
   maxToolsWidth += maxToolsWidth > (gridSize + 3) ?
     tools[tools.length - 1].w : tools[tools.length - 1].w + 3;
 
-  if (tools.length >= 12) {
+  //if (tools.length >= 12) {
     toolcanvas.setAttribute('height', maxToolsHeight - 2);
     toolcanvas.setAttribute('width', maxToolsWidth - 2);
-  } else {
+  /*} else {
     toolcanvas.setAttribute('height', maxToolsHeight - 2);
     toolcanvas.setAttribute('width', gridSize + 1);
-  }
+  }*/
   ghosttoolcanvas.height = toolcanvas.height;
   ghosttoolcanvas.width = toolcanvas.width;
 
