@@ -10,7 +10,7 @@ var blocks = {
   "snow": [32, 64, 16, 16],
   "snowy-dirt": [64, 64, 16, 16],
   "wood": [64, 0, 16, 16],
-  "step": [80, 0, 16, 16],
+  "double-step": [80, 0, 16, 16],
   "step-top": [96, 0, 16, 16],
   "cobblestone": [0, 16, 16, 16],
   "mossy-cobblestone": [64, 32, 16, 16],
@@ -77,19 +77,27 @@ var blocks = {
   "jack-o-lantern-off": [112, 112, 16, 16],
   "extras": {
     "eraser": [0, 0, 16, 16],
-    "cart": [16, 0, 16, 16]
+    "cart": [16, 0, 16, 16],
+    "step": [32, 0, 16, 16],
+    "stair-side": [48, 0, 16, 16],
+    "creeper": [0, 16, 16, 32],
+    "pig": [16, 16, 16, 16],
+    "chicken": [16, 32, 16, 16],
+    "sheep": [32, 16, 16, 32],
+    "cow": [48, 16, 16, 32]
   }
 };
 
 var toolCats = {
   "Ore": [ "coal-ore", "iron-ore", "gold-ore", "redstone-ore", "diamond-ore", "lightstone-ore" ],
   "Natural": [ "dirt", "stone", "sand", "slow-sand", "gravel", "clay", "stump", "bark", "wool", "obsidian", "hellstone", "bedrock" ],
-  "Crafted": [ "wood", "cobblestone", "glass", "brick", "iron", "gold", "diamond", "step", "step-top" ],
+  "Crafted": [ "wood", "cobblestone", "glass", "brick", "iron", "gold", "diamond", "*step", "double-step", "step-top", "*stair-side" ],
   "Ground": [ "grassy-dirt", "grass", "snowy-dirt", "snow", "tilled", "tilled-wet", "mossy-cobblestone", "cactus", "cactus-side", "reeds", "wheat", "shrubbery" ],
-  "Fluids": [ "water", "ice", "lava" ],
-  "Tracks": [ "rail-straight", "rail-curve" ],
+  "Fluid": [ "water", "ice", "lava" ],
+  "Minecart": [ "*cart", "rail-straight", "rail-curve" ],
   "Redstone": [ "redstone-torch-on", "redstone-torch-off", "redstone-line-on", "redstone-line-off", "redstone-cross-on", "redstone-cross-off" ],
   "Misc": [ "ladder", "toolbox", "toolbox-top", "forge", "chest", "sponge", "red-flower", "yellow-flower", "red-mushroom", "brown-mushroom", "jack-o-lantern-on", "jack-o-lantern-off", "pumpkin", "pumpkin-top", "door-wood", "door-iron", "bookcase", "spawner", "jukebox-top", "jukebox-side"],
+  "Mob": [ "*creeper", "*pig", "*chicken", "*sheep", "*cow" ],
   "All": [],
   "Extra": []
 };
@@ -433,9 +441,15 @@ function drawObject(context, object, fill) {
     }
     
     n = object.n;
-    b = blocks[object.n];
+    //b = blocks[object.n];
+    b = lookupBlock(object.n);
 
-    var img = document.getElementById("terrain");
+    var img = null;
+    if(object.n.charAt(0) == "*")
+      img = document.getElementById("extras");
+    else
+      img = document.getElementById("terrain");
+
     if(object.r != 0) {
       var destX = destY = 0;
       var scaleX = scaleY = 1;
@@ -443,12 +457,12 @@ function drawObject(context, object, fill) {
 
       if(object.r == 90) {
         destX = object.x + 0;
-        destY = object.y + object.h;
+        destY = object.y + object.h + 1;
       } else if(object.r == 180) {
-        destX = object.x + object.w;
-        destY = object.y + object.h;
+        destX = object.x + object.w + 1;
+        destY = object.y + object.h + 1;
       } else if(object.r == 270) {
-        destX = object.x + object.w;
+        destX = object.x + object.w + 1;
         destY = object.y + 0;
       }
 
@@ -457,11 +471,11 @@ function drawObject(context, object, fill) {
       if(object.o != blockOrientations.none) {
         if(object.o == blockOrientations.horiz) {
           scaleX = -1;
-          context.translate(object.w, 0);
+          context.translate(object.w + 1, 0);
         }  
         else if(object.o == blockOrientations.vert) {
           scaleY = -1;
-          context.translate(0, -object.h);
+          context.translate(0, -object.h + 1);
         }
         context.scale(scaleX, scaleY);
       }
@@ -959,7 +973,7 @@ function myToolboxMouseMove(e) {
 
     var imageData = gtctx.getImageData(mx, my, 1, 1);
     if(imageData.data[3] > 0) {
-      $("#toolbox-info").html(tools[i].n.replace(/-/gi, " ").capitalize());
+      $("#toolbox-info").html(tools[i].n.replace(/(-|\*)/gi, " ").capitalize());
       clear(gtctx);
       return true;     
     }
@@ -989,7 +1003,13 @@ function drawGrid() {
   ctx.stroke();
 }
 
-var offset = 0;
+function lookupBlock(name) {
+  if(name.charAt(0) == "*") {
+    return blocks.extras[name.slice(1)];
+  } else {
+    return blocks[name];
+  }
+}
 
 function toolboxFlyout(cat) {
   if($("#toolbox-wrapper").is(":visible") && $("#toolbox-list li."+cat+" a").is(".active")) {
@@ -1003,16 +1023,20 @@ function toolboxFlyout(cat) {
       $.each(toolCats[k], function(i, v) {
         addTool(toolCats[k][i], 0);
       })
-      if(k == "Tracks")
+      if(k == "Minecart")
         addRotatedTracks();
+      if(k == "Crafted")
+        addFlippedStair();
     });
   } else {
     $.each(toolCats[cat], function(i, v) {
       addTool(toolCats[cat][i], 0);
     });
   }
-  if(cat == "Tracks")
+  if(cat == "Minecart")
     addRotatedTracks();
+  if(cat == "Crafted")
+    addFlippedStair();
   if(cat == "Extra")
     addMetaTools();
   else
@@ -1040,6 +1064,10 @@ function addRotatedTracks() {
   addTool('rail-straight', 90, 16, 16);
 }
 
+function addFlippedStair() {
+  addTool('*stair-side', 180, blockOrientations.vert, 16, 16);
+}
+
 function addMetaTools() {
   addExtraTool('eraser', 0);
 }
@@ -1063,8 +1091,8 @@ function initTools() {
 function calcToolDimensions() {
   var ratio = gridSize / 16;
   for(i = 0; i < tools.length; i++) {
-    tools[i].w = blocks[tools[i].n][2] * ratio;
-    tools[i].h = blocks[tools[i].n][3] * ratio;
+    tools[i].w = lookupBlock(tools[i].n)[2] * ratio;
+    tools[i].h = lookupBlock(tools[i].n)[3] * ratio;
   }
 }
 
@@ -1087,29 +1115,44 @@ function sizeToolbox() {
   //toolcanvas.setAttribute("height", tools.length * (gridSize + 3) - 2);
   //toolcanvas.setAttribute("width", gridSize);
 
-    if (tools.length >= 12) {
-      toolcanvas.setAttribute("height", 12 * (gridSize + 3) - 2);
-      toolcanvas.setAttribute("width", Math.ceil(tools.length / 12) * (gridSize + 3) - 3);
-    } else {
-      toolcanvas.setAttribute("height", tools.length * (gridSize + 3) - 2);
-      toolcanvas.setAttribute("width", gridSize);
-    }
-    ghosttoolcanvas.height = toolcanvas.height;
-    ghosttoolcanvas.width = toolcanvas.width;
+  drawTools();
+
+  // Add all tools heights
+  var maxToolsHeight = 0;
+  var maxToolsWidth = 0;
+  for(var i = 0; i < tools.length; i++) {
+    if(tools[i].y > maxToolsHeight)
+      maxToolsHeight = tools[i].y + 3;
+    if(tools[i].x > maxToolsWidth)
+      maxToolsWidth = tools[i].x + 3;
+  }
+
+  //maxToolsHeight += tools[tools.length - 1].h;
+  maxToolsHeight = maxToolsHeight > ((gridSize + 3) * 11) ? (gridSize + 3) * 12 : maxToolsHeight + tools[tools.length - 1].h;
+  maxToolsWidth += tools[tools.length - 1].w;
+  
+  if (tools.length >= 12) {
+    toolcanvas.setAttribute("height", maxToolsHeight - 2);
+    toolcanvas.setAttribute("width", maxToolsWidth - 2); 
+  } else {
+    toolcanvas.setAttribute("height", maxToolsHeight - 2);
+    toolcanvas.setAttribute("width", gridSize);
+  }
+  ghosttoolcanvas.height = toolcanvas.height;
+  ghosttoolcanvas.width = toolcanvas.width;
 
   if(!lockToolboxSize) {  
     currToolboxSize = gridSize;
     $("#toolbox-list img").height(gridSize);
     $("#toolbox-list a").width(gridSize);
-    $("#toolbox-wrapper").css("right", -(Math.ceil(tools.length / 12) * (gridSize + 3)) - 12);
+    $("#toolbox-wrapper").css("right", -maxToolsWidth - 13);
     $("#toolbox-info").css("top", $("#toolbox-wrapper").height() + 20);
     $("#toolbox-info").css("left", gridSize + 18);
   } else {
-    $("#toolbox-wrapper").css("right", -(Math.ceil(tools.length / 12) * (gridSize + 3)) - 12);  
+    $("#toolbox-wrapper").css("right", -maxToolsWidth - 13);
     $("#toolbox-info").css("top", $("#toolbox-wrapper").height() + 20);
     $("#toolbox-info").css("left", gridSize + 18);
   }
-  drawTools();
 }
 
 function toggleToolboxLock() {
@@ -1264,7 +1307,7 @@ function toggleMaterials(){
   }
 
   for (var j in results) {
-    str += "<li>" + j.replace(/-/gi, " ").capitalize() + ": " + results[j];
+    str += "<li>" + j.replace(/(-|\*)/gi, " ").capitalize() + ": " + results[j];
     if(results[j] > 64) {
       str += " [" + Math.floor(results[j] / 64);
       str += Math.floor(results[j] / 64) == 1 ? " stack" : " stacks";
