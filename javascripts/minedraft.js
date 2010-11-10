@@ -1174,10 +1174,12 @@ function sizeToolbox() {
   }
 
   //maxToolsHeight += tools[tools.length - 1].h;
-  maxToolsHeight = maxToolsHeight > ((gridSize + 3) * 11) ?
-    (gridSize + 3) * 12 : maxToolsHeight + tools[tools.length - 1].h;
-  maxToolsWidth += maxToolsWidth > (gridSize + 3) ?
-    tools[tools.length - 1].w : tools[tools.length - 1].w + 3;
+  if(tools && tools.length > 0) {
+    maxToolsHeight = maxToolsHeight > ((gridSize + 3) * 11) ?
+      (gridSize + 3) * 12 : maxToolsHeight + tools[tools.length - 1].h;
+    maxToolsWidth += maxToolsWidth > (gridSize + 3) ?
+      tools[tools.length - 1].w : tools[tools.length - 1].w + 3;
+  }
 
   //if (tools.length >= 12) {
     toolcanvas.setAttribute('height', maxToolsHeight - 2);
