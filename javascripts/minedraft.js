@@ -1235,18 +1235,17 @@ function drawDebug() {
 }
 
 function createLinks() {
-  var bitlyUrl;
   $('#bitly-link').css('background',
     "#fff url('/images/spinner.gif') no-repeat 10px center");
   $('#links').fadeIn('slow');
-  enc = encodeObjects();
-  generateBitlyUrl(enc);
+  encodeObjects();
+  /*generateBitlyUrl(enc);
   $('#full-link').val('http://' + hostname + '/?md=' + enc);
-  $('#bitly-link').val(bitlyUrl);
+  $('#bitly-link').val(bitlyUrl);*/
 }
 
 function generateBitlyUrl(enc) {
-  var url = 'http://' + hostname + '/?md=' + enc;
+  var url = 'http://' + hostname + '/?id=' + enc;
   var bitlyUser = 'minedraft';
   var bitlyKey = 'R_f2239290351ea78c03e76d513099b4dd';
   var bitlyUrl;
@@ -1269,7 +1268,7 @@ function generateBitlyUrl(enc) {
 }
 
 function encodeObjects() {
-  var toEncode, clean = [], tmp;
+  var toEncode, clean = [], tmp, encoded, bitlyUrl;
   // Encode all the objects except the current tool.
   if (activeTool)
     objects.pop();
@@ -1290,14 +1289,58 @@ function encodeObjects() {
     }
     clean.push(tmp);
   });
-  //alert(JSON.stringify(clean));
-  return Base64.encode(JSON.stringify(clean));
+
+  encoded = encodeURIComponent(Base64.encode(JSON.stringify(clean)));
+  console.log(encoded);
+  $.ajax({
+    url: 'https://beta.minedraft.net/link/',
+    processData: false,
+    data: "objects=" + encoded,
+    type: 'POST',
+    success: function(data) {
+      generateBitlyUrl(data);
+      $('#full-link').val('http://' + hostname + '/?id=' + data);
+      $('#bitly-link').val(bitlyUrl);
+    },
+    dataType: 'application/json'
+  });
 }
 
 function decodeObjects() {
   var mdParam = $.url.param('md');
+  var idParam = $.url.param('id');
   var tmp = [];
 
+  if (idParam != '') {
+    tmp = $.ajax({
+      url: "https://beta.minedraft.net/link/" + idParam,
+      data: "",
+      success: function (data){
+	try {
+	  tmp = JSON.parse(Base64.decode(data));
+	  $.each(tmp, function(i, v) {
+            if (v.length == 3)
+              addObj(v[0], v[1], 16, 16, 't', v[2], 0, blockOrientations.none);
+            else if (v.length == 5)
+              addObj(v[0], v[1], v[2], v[3], 't', v[4], 0, blockOrientations.none);
+            else if (v.length == 7)
+              addObj(v[0], v[1], v[2], v[3], 't', v[4], v[5], v[6]);
+	  });
+	} catch(err) {
+	  $('body').append('<div id="parseError" class="overlay">' +
+            '<div class="close"><img src="/images/icons/cancel.png" ' +
+	    'onclick="$(\'#parseError\').toggleFade();" alt="Close Help" />' +
+	    '</div><h1>Error</h1><p>Sorry, there was a problem retrieving ' +
+            'the MineDraft you specified.  It may have been munged at some ' +
+            'point and the MineDraft it pointed to can\'t be found.' +
+            '</p></div>');
+	  $('#parseError').toggleFade();
+	}
+      },
+      dataType: "application/json"
+    });
+    return;
+  }
   if (mdParam != '') {
     try {
       tmp = JSON.parse(Base64.decode(mdParam));
