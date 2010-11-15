@@ -53,13 +53,10 @@ module Minedraft
     def validRequest(status)
       valid = true
       if(status["REQUEST_METHOD"] != "POST")
-        valid = false
+        valid = status["REQUEST_METHOD"]
       end
-      if(status["QUERY_STRING"] != "")
-        valid = false
-      end
-      if(status["HTTP_REFERER"] != "https://beta.minedraft.net/")
-        valid = false
+      if(!status["HTTP_REFERER"].include? "http://minedraft.net/")
+        valid = status["HTTP_REFERER"]
       end
       
       valid

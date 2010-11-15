@@ -1293,7 +1293,7 @@ function encodeObjects() {
   encoded = encodeURIComponent(Base64.encode(JSON.stringify(clean)));
   //console.log(encoded);
   $.ajax({
-    url: 'https://beta.minedraft.net/link/',
+    url: 'http://minedraft.net/link/',
     processData: false,
     data: "objects=" + encoded,
     type: 'POST',
@@ -1313,7 +1313,7 @@ function decodeObjects() {
 
   if (idParam != '') {
     tmp = $.ajax({
-      url: "https://beta.minedraft.net/link/" + idParam,
+      url: "http://minedraft.net/link/" + idParam,
       data: "",
       success: function (data){
 	try {
