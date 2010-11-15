@@ -1291,7 +1291,7 @@ function encodeObjects() {
   });
 
   encoded = encodeURIComponent(Base64.encode(JSON.stringify(clean)));
-  console.log(encoded);
+  //console.log(encoded);
   $.ajax({
     url: 'https://beta.minedraft.net/link/',
     processData: false,
