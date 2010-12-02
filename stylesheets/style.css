@@ -134,6 +134,20 @@ a:hover {
   margin: 10px auto;
 }
 
+#minibar {
+  top: -1px;
+  left: -1px;
+  padding: 5px 10px 0px;
+  text-align: center;
+  -moz-border-bottom-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  display: none;
+}
+
+#minibar > img {
+  margin: 5px auto;
+}
+
 #menu {
   top: -1px;
   right: 50px;

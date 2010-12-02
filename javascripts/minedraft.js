@@ -1428,8 +1428,15 @@ function toggleMaterials() {
   }
 
   str += '</ul>';
-
   $('#materials-list').html(str);
+}
+
+function toggleBars() {
+  $('#tools').toggle();
+  $('#menu').toggle();
+  $('#foot').toggle();
+  $('#google').toggle();
+  $('#minibar').toggle();
 }
 
 function objectsSort(a, b) {
