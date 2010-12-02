@@ -228,6 +228,7 @@ var canvasValid = false;
 // this will get turned into an array
 var mySel;
 var lastObj;
+var currCat;
 
 // The currently selected tool.
 var activeTool;
@@ -847,10 +848,13 @@ function zoom(dir) {
       return;
     gridSize -= 16;
   }
+
+  oldCat = currCat;
   invalidate();
-  drawTools();
-  sizeToolbox();
   resizeObjects(dir, oldSize);
+  closeFlyout();
+  toolboxFlyout(oldCat);
+
   setCookie('gridSize', gridSize, 365);
 }
 
@@ -1100,6 +1104,7 @@ function toolboxFlyout(cat) {
   else
     calcToolDimensions();
 
+  currCat = cat;
   sizeToolbox();
   //$("#toolbox-wrapper").css("right", -gridSize - 14);
   $('#toolbox-list li a').removeClass('active');
@@ -1113,6 +1118,7 @@ function closeFlyout() {
   $('#toolbox-wrapper').hide();
   $('#toolbox-info').hide();
   $('#toolbox-list li a').removeClass('active');
+  currCat = null;
 }
 
 function addRotatedTracks() {
