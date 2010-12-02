@@ -92,7 +92,16 @@ var blocks = {
     'zombie': [0, 48, 16, 32],
     'skeleton': [16, 48, 16, 32],
     'pigman': [32, 48, 16, 32],
-    'human': [48, 48, 16, 32]
+    'human': [48, 48, 16, 32],
+    'art0': [0, 112, 16, 16],
+    'art1': [16, 112, 16, 16],
+    'art2': [32, 112, 16, 16],
+    'art3': [48, 112, 16, 16],
+    'art4': [64, 112, 16, 16],
+    'art5': [80, 112, 16, 16],
+    'art6': [96, 112, 16, 16],
+    'art7': [0, 80, 16, 32],
+    'art8': [16, 80, 16, 32],
   }
 };
 
@@ -117,7 +126,9 @@ var toolCats = {
     'pumpkin-top', 'door-wood', 'door-iron', 'bookcase', 'spawner',
     'jukebox-top', 'jukebox-side', '*shading'],
   'Mob': ['*human', '*creeper', '*pig', '*chicken', '*sheep', '*cow',
-	  '*zombie', '*skeleton', '*pigman'],
+    '*zombie', '*skeleton', '*pigman'],
+  'Art': ['*art0', '*art1', '*art2', '*art3', '*art4', '*art5', '*art6', 
+    '*art7', '*art8', ],
   'All': [],
   'Extra': []
 };
