@@ -3,7 +3,7 @@ var gridSizeMinMax = [16, 128];
 var gridSize = 32;
 
 var blocks = {
-  'grass': [0, 0, 16, 16],
+  'unknown': [0, 0, 16, 16],
   'grassy-dirt': [48, 0, 16, 16],
   'dirt': [32, 0, 16, 16],
   'stone': [16, 0, 16, 16],
@@ -47,7 +47,8 @@ var blocks = {
   'lava': [208, 224, 16, 16],
   'water': [208, 192, 16, 16],
   'ice': [48, 64, 16, 16],
-  'torch': [0, 80, 16, 16],
+  'torch-on': [0, 80, 16, 16],
+  'torch-off': [0, 96, 16, 16],
   'redstone-torch-on': [48, 96, 16, 16],
   'redstone-torch-off': [48, 112, 16, 16],
   'redstone-line-on': [80, 96, 16, 16],
@@ -80,6 +81,8 @@ var blocks = {
     'cart': [16, 0, 16, 16],
     'step': [32, 0, 16, 16],
     'stair-side': [48, 0, 16, 16],
+    'wooden-stair-side': [64, 0, 16, 16],
+    'grass': [80, 0, 16, 16],
     'creeper': [0, 16, 16, 32],
     'pig': [16, 16, 16, 16],
     'chicken': [16, 32, 16, 16],
@@ -98,8 +101,9 @@ var toolCats = {
   'Natural': ['dirt', 'stone', 'sand', 'slow-sand', 'gravel', 'clay',
     'stump', 'bark', 'wool', 'obsidian', 'hellstone', 'bedrock'],
   'Crafted': ['wood', 'cobblestone', 'glass', 'brick', 'iron', 'gold',
-    'diamond', '*step', 'double-step', 'step-top', '*stair-side'],
-  'Ground': ['grassy-dirt', 'grass', 'snowy-dirt', 'snow', 'tilled',
+     'diamond', '*step', 'double-step', 'step-top', '*stair-side', 
+     '*wooden-stair-side'],
+  'Ground': ['grassy-dirt', '*grass', 'snowy-dirt', 'snow', 'tilled',
     'tilled-wet', 'mossy-cobblestone', 'cactus', 'cactus-side', 'reeds',
     'wheat', 'shrubbery'],
   'Fluid': ['water', 'ice', 'lava'],
@@ -107,10 +111,10 @@ var toolCats = {
   'Redstone': ['redstone-torch-on', 'redstone-torch-off', 'redstone-line-on',
     'redstone-line-off', 'redstone-cross-on', 'redstone-cross-off'],
   'Misc': ['ladder', 'toolbox', 'toolbox-top', 'forge', 'chest', 'sponge',
-    'red-flower', 'yellow-flower', 'red-mushroom', 'brown-mushroom',
-    'jack-o-lantern-on', 'jack-o-lantern-off', 'pumpkin', 'pumpkin-top',
-    'door-wood', 'door-iron', 'bookcase', 'spawner', 'jukebox-top',
-    'jukebox-side'],
+    'torch-on', 'torch-off', 'red-flower', 'yellow-flower', 'red-mushroom', 
+    'brown-mushroom', 'jack-o-lantern-on', 'jack-o-lantern-off', 'pumpkin',
+    'pumpkin-top', 'door-wood', 'door-iron', 'bookcase', 'spawner',
+    'jukebox-top', 'jukebox-side'],
   'Mob': ['*human', '*creeper', '*pig', '*chicken', '*sheep', '*cow',
 	  '*zombie', '*skeleton', '*pigman'],
   'All': [],
@@ -1108,6 +1112,7 @@ function addRotatedTracks() {
 
 function addFlippedStair() {
   addTool('*stair-side', 180, blockOrientations.vert, 16, 16);
+  addTool('*wooden-stair-side', 180, blockOrientations.vert, 16, 16);
 }
 
 function addMetaTools() {
@@ -1409,7 +1414,7 @@ function toggleMaterials() {
   }
 
   for (var j in results) {
-    str += '<li>' + j.replace(/(-|\*)/gi, ' ').capitalize() + ': ' +
+    str += '<li>' + capitalize(j.replace(/(-|\*)/gi, ' ')) + ': ' +
       results[j];
     if (results[j] > 64) {
       str += ' [' + Math.floor(results[j] / 64);
@@ -1422,6 +1427,7 @@ function toggleMaterials() {
   }
 
   str += '</ul>';
+
   $('#materials-list').html(str);
 }
 
