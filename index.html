@@ -80,8 +80,16 @@
       <h1>News</h1>
       <div>
         <h2>Link to large MineDrafts!</h2>
-        <em>Nov. 15, 2010</em>
-        <p>I've finally gotten around to implementing linking for more complicated minedrafts.  Use the feedback form at the bottom of the page if you encounter any problems using the new system.</p>
+        <em>Dec. 3, 2010</em>
+        <p>I've added the following features:</p>
+	<ul>
+	  <li>Fixed an issue with linked drafts where the preferred view of the linker was different than that of the viewer.  Blocks were misaligned in the grid.  Now, linked drafts will save the grid size at the time they're linked.</li>
+	  <li>Fixed an issue where the toolbox wasn't resized correctly when zooming in and out.</li>
+	  <li>Added art blocks to the toolbox.</li>
+	  <li>Added toolbar toggling.  You can toggle the visibility of all of the bars by clicking the Eye in the main toolbar.  To show the bars again, click the eye in the minibar.</li>
+	  <li>Added a shading block per request.  It's a jet black block with a 10% opacity.</li>
+	  <li>Added torches back to toolbox.  These were missing for some reason....</li>
+	</ul>
       </div>
     </div>
     <div id="help" class="overlay">
@@ -144,8 +152,8 @@
       <h1>Feedback</h1>
       <p>Use the widget below to give suggestions or ideas about the site.</p>
       <br />
-      <!--div id="writeSkribitHere"></div><script src="http://assets.skribit.com/javascripts/SkribitWidget.js?renderTo=writeSkribitHere&amp;blog=d1e541f355fe0f881349bd05b66f7d23&amp;cnt=5"></script><noscript>Sorry, but the <a href="http://skribit.com" title="Skribit - Cure Writer's Block">Skribit</a> widget only works on browsers with JavaScript support.  <a href="http://skribit.com/blogs/minedraft" title="Skribit Suggestions for MineDraft">View suggestions for this blog here.</a></noscript>
-      <br /-->
+      <div id="writeSkribitHere"></div><script src="http://assets.skribit.com/javascripts/SkribitWidget.js?renderTo=writeSkribitHere&amp;blog=d1e541f355fe0f881349bd05b66f7d23&amp;cnt=5"></script><noscript>Sorry, but the <a href="http://skribit.com" title="Skribit - Cure Writer's Block">Skribit</a> widget only works on browsers with JavaScript support.  <a href="http://skribit.com/blogs/minedraft" title="Skribit Suggestions for MineDraft">View suggestions for this blog here.</a></noscript>
+      <br />
       <p>Use this button to give a donation.  MineDraft is free but burritos are not.</p>
       <br />
       <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
@@ -179,7 +187,7 @@
     <script type="text/javascript" src="javascripts/jquery.js"></script>
 
     <div id="google" class="overlay">
-      <!--script type="text/javascript">
+      <script type="text/javascript">
         google_ad_client = "pub-8011900212776107";
         /* MineDraft.net */
         google_ad_slot = "4095360530";
@@ -198,7 +206,7 @@
           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
         })();
-      </script-->
+      </script>
     </div>
     <script type="text/javascript">
       if(!supports_canvas()) {
