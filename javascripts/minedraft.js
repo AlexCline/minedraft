@@ -228,7 +228,7 @@ var canvasValid = false;
 // this will get turned into an array
 var mySel;
 var lastObj;
-var currCat;
+var currCat = null;
 
 // The currently selected tool.
 var activeTool;
@@ -853,7 +853,8 @@ function zoom(dir) {
   invalidate();
   resizeObjects(dir, oldSize);
   closeFlyout();
-  toolboxFlyout(oldCat);
+  if(oldCat != null)
+    toolboxFlyout(oldCat);
 
   setCookie('gridSize', gridSize, 365);
 }
@@ -1316,9 +1317,9 @@ function encodeObjects() {
   encoded = encodeURIComponent(Base64.encode(JSON.stringify(clean)));
   //console.log(encoded);
   $.ajax({
-    url: 'http://minedraft.net/link/',
+    url: '/link/',
     processData: false,
-    data: "objects=" + encoded,
+    data: "objects=" + encoded + ":" + gridSize,
     type: 'POST',
     success: function(data) {
       generateBitlyUrl(data);
@@ -1336,18 +1337,30 @@ function decodeObjects() {
 
   if (idParam != '') {
     tmp = $.ajax({
-      url: "http://minedraft.net/link/" + idParam,
+      url: "/link/" + idParam,
       data: "",
+      timeout: 10000,
       success: function (data){
 	try {
+	  if(data.indexOf(':') != -1) {
+	    data = data.replace(/"/g, '');
+	    gridSize = parseFloat(data.substring(data.indexOf(':') + 1,
+                                  data.length));
+	    data = data.substring(0, data.indexOf(':'));
+	  }
+
 	  tmp = JSON.parse(Base64.decode(data));
 	  $.each(tmp, function(i, v) {
             if (v.length == 3)
-              addObj(v[0], v[1], 16, 16, 't', v[2], 0, blockOrientations.none);
+              addObj(v[0], v[1], 16, 16, 
+		     't', v[2], 0, blockOrientations.none);
             else if (v.length == 5)
-              addObj(v[0], v[1], v[2], v[3], 't', v[4], 0, blockOrientations.none);
+              addObj(v[0], v[1], v[2], v[3],
+		     't', v[4], 0, blockOrientations.none);
             else if (v.length == 7)
-              addObj(v[0], v[1], v[2], v[3], 't', v[4], v[5], v[6]);
+              addObj(v[0], v[1], v[2], v[3], 
+		     't', v[4], v[5], v[6]);
+
 	  });
 	} catch(err) {
 	  $('body').append('<div id="parseError" class="overlay">' +
