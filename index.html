@@ -150,9 +150,39 @@
         <img src="/images/icons/cancel.png" onclick="$('#feedback').toggleFade();" alt="Close Help" />
       </div>
       <h1>Feedback</h1>
-      <p>Use the widget below to give suggestions or ideas about the site.</p>
+      <p>Use the widget below to give suggestions or ideas about the site.  Send a new tweet, or view MineDraft's history to see all past feedback.</p>
       <br />
-      <div id="writeSkribitHere"></div><script src="http://assets.skribit.com/javascripts/SkribitWidget.js?renderTo=writeSkribitHere&amp;blog=d1e541f355fe0f881349bd05b66f7d23&amp;cnt=5"></script><noscript>Sorry, but the <a href="http://skribit.com" title="Skribit - Cure Writer's Block">Skribit</a> widget only works on browsers with JavaScript support.  <a href="http://skribit.com/blogs/minedraft" title="Skribit Suggestions for MineDraft">View suggestions for this blog here.</a></noscript>
+<script src="http://widgets.twimg.com/j/2/widget.js"></script>
+<script>
+new TWTR.Widget({
+  version: 2,
+  type: 'profile',
+  rpp: 5,
+  interval: 6000,
+  width: 'auto',
+  height: 300,
+  theme: {
+    shell: {
+      background: '#a3a3a3',
+      color: '#1a1a1a'
+    },
+    tweets: {
+      background: '#a3a3a3',
+      color: '#1a1a1a',
+      links: '#5c5c5c'
+    }
+  },
+  features: {
+    scrollbar: false,
+    loop: false,
+    live: false,
+    hashtags: true,
+    timestamp: true,
+    avatars: false,
+    behavior: 'all'
+  }
+}).render().setUser('minedraft').start();
+</script>      
       <br />
       <p>Use this button to give a donation.  MineDraft is free but burritos are not.</p>
       <br />

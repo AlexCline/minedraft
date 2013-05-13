@@ -852,9 +852,10 @@ function zoom(dir) {
   oldCat = currCat;
   invalidate();
   resizeObjects(dir, oldSize);
-  closeFlyout();
-  if(oldCat != null)
+  if(oldCat != null) {
+    closeFlyout();
     toolboxFlyout(oldCat);
+  } 
 
   setCookie('gridSize', gridSize, 365);
 }
